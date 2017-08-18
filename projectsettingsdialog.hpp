@@ -1,5 +1,5 @@
-#ifndef PROJECTSETTINGSDIALOG_HPP
-#define PROJECTSETTINGSDIALOG_HPP
+#ifndef EE_EDITOR_PROJECT_SETTINGS_DIALOG_HPP
+#define EE_EDITOR_PROJECT_SETTINGS_DIALOG_HPP
 
 #include "projectsettings.hpp"
 
@@ -24,10 +24,12 @@ public:
     void setProjectSettings(const ProjectSettings& settings);
 
 private:
+    void updateResourcesPaths();
+
     Ui::ProjectSettingsDialog* ui_;
 
     ProjectSettings settings_;
 };
 } // namespace ee
 
-#endif // PROJECTSETTINGSDIALOG_HPP
+#endif // EE_EDITOR_PROJECT_SETTINGS_DIALOG_HPP

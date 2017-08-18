@@ -2,6 +2,8 @@
 #include "config.hpp"
 #include "ui_projectsettingsdialog.h"
 
+#include <QStringListModel>
+
 namespace ee {
 ProjectSettingsDialog::ProjectSettingsDialog(QWidget* parent)
     : QDialog(parent)
@@ -11,6 +13,11 @@ ProjectSettingsDialog::ProjectSettingsDialog(QWidget* parent)
     connect(ui_->contentProtectionKeyInput, &QLineEdit::textChanged,
             [this](const QString& value) {
                 settings_.setContentProtectionKey(value.toStdString());
+            });
+
+    connect(ui_->publishDirectoryInput, &QLineEdit::textChanged,
+            [this](const QString& value) {
+                settings_.setPublishDirectory(value.toStdString());
             });
 }
 
@@ -27,6 +34,23 @@ void ProjectSettingsDialog::setProjectSettings(
     settings_ = settings;
 
     ui_->contentProtectionKeyInput->setText(
-        settings.getContentProtectionKey().c_str());
+        QString::fromStdString(settings.getContentProtectionKey()));
+
+    ui_->publishDirectoryInput->setText(
+        QString::fromStdString(settings.getPublishDirectory()));
+
+    updateResourcesPaths();
+}
+
+void ProjectSettingsDialog::updateResourcesPaths() {
+    auto list = QStringList();
+
+    auto&& resourcesPaths = settings_.getResourcesPaths();
+    for (auto&& path : resourcesPaths) {
+        list.append(QString::fromStdString(path));
+    }
+
+    auto model = new QStringListModel(list);
+    ui_->resoucesPathList->setModel(model);
 }
 } // namespace ee

@@ -1,5 +1,5 @@
-#ifndef CONFIG_HPP
-#define CONFIG_HPP
+#ifndef EE_EDITOR_CONFIG_HPP
+#define EE_EDITOR_CONFIG_HPP
 
 #include "projectsettings.hpp"
 
@@ -26,4 +26,4 @@ private:
 };
 } // namespace ee
 
-#endif // CONFIG_HPP
+#endif // EE_EDITOR_CONFIG_HPP
