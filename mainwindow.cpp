@@ -1,12 +1,13 @@
-#include "mainwindow.h"
+#include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 
+namespace ee {
 MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow) {
-    ui->setupUi(this);
+    : Super(parent)
+    , view_(new Ui::MainWindow()) {
+    view_->setupUi(this);
 }
 
 MainWindow::~MainWindow() {
-    delete ui;
 }
+} // namespace ee
