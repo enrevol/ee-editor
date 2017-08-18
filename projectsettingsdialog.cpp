@@ -34,8 +34,9 @@ ProjectSettingsDialog::ProjectSettingsDialog(QWidget* parent)
 
                 dialog.exec();
 
-                settings_->setPublishDirectory(dialog.directory());
-                updatePublishDirectory(dialog.directory());
+                auto&& directory = dialog.directory();
+                settings_->setPublishDirectory(directory);
+                updatePublishDirectory(directory);
             });
 }
 
@@ -90,6 +91,6 @@ void ProjectSettingsDialog::updatePublishDirectory() {
 }
 
 void ProjectSettingsDialog::updatePublishDirectory(const QDir& directory) {
-    ui_->publishDirectoryInput->setText(directory.absolutePath());
+    ui_->publishDirectoryInput->setText(settings_->getRelativePath(directory));
 }
 } // namespace ee

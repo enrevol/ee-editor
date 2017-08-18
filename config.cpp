@@ -18,7 +18,28 @@ void Config::setProjectSettings(const ProjectSettings& settings) {
     projectSettings_ = settings;
 }
 
-void Config::loadProject(const QDir& path) {
+bool Config::loadProject(const QDir& path) {
     setProjectSettings(ProjectSettings(path));
+    return true;
+}
+
+bool Config::saveProject() const {
+    auto&& settings = getProjectSettings();
+    if (not settings.has_value()) {
+        return false;
+    }
+    return settings->write();
+}
+
+bool Config::createProject(const QDir& path) {
+    QFile file(path.absolutePath());
+    if (not file.open(QIODevice::OpenModeFlag::WriteOnly)) {
+        return false;
+    }
+
+    ProjectSettings settings(path);
+    settings.write();
+
+    return true;
 }
 } // namespace ee

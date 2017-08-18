@@ -1,9 +1,17 @@
 #include "projectsettings.hpp"
 
+#include <QDebug>
 #include <QJsonArray>
+#include <QJsonDocument>
 #include <QJsonObject>
 
 namespace ee {
+namespace key {
+constexpr auto content_protection_key = "contentProtectionKey";
+constexpr auto resource_paths = "resourcePaths";
+constexpr auto publish_directory = "publishDirectory";
+} // namespace key
+
 ProjectSettings::ProjectSettings(const QDir& projectPath)
     : projectPath_(projectPath) {}
 
@@ -13,8 +21,8 @@ const QDir& ProjectSettings::getProjectPath() const {
     return projectPath_;
 }
 
-const QString& ProjectSettings::getRelativeFilePath(const QDir& path) const {
-    return path.relativeFilePath(projectPath_.absolutePath());
+QString ProjectSettings::getRelativePath(const QDir& path) const {
+    return getProjectPath().relativeFilePath(path.absolutePath());
 }
 
 const QVector<QDir>& ProjectSettings::getResourceDirectories() const {
@@ -41,31 +49,57 @@ void ProjectSettings::setPublishDirectory(const QDir& directory) {
     publishDirectory_ = directory;
 }
 
-void ProjectSettings::readFromFile() {}
+bool ProjectSettings::read() {
+    QFile file(getProjectPath().absolutePath());
+    if (not file.open(QIODevice::OpenModeFlag::ReadOnly)) {
+        qWarning() << "Could't open project file to read";
+        return false;
+    }
 
-void ProjectSettings::writeToFile() {}
-
-void ProjectSettings::read(const QJsonObject& json) {
-    // setContentProtectionKey(json["AA"].toString());
+    auto obj = QJsonDocument().fromJson(file.readAll()).object();
+    return load(obj);
 }
 
-QJsonObject ProjectSettings::write() const {
+bool ProjectSettings::write() const {
+    QFile file(getProjectPath().absolutePath());
+    if (not file.open(QIODevice::OpenModeFlag::WriteOnly)) {
+        qWarning() << "Could't open project file to write";
+        return false;
+    }
+
+    auto obj = store();
+    QJsonDocument doc(obj);
+    file.write(doc.toJson());
+    return true;
+}
+
+bool ProjectSettings::load(const QJsonObject& json) {
+    if (json.contains(key::content_protection_key)) {
+        setContentProtectionKey(json[key::content_protection_key].toString());
+    }
+    if (json.contains(key::publish_directory)) {
+        setPublishDirectory(QDir(json[key::publish_directory].toString()));
+    }
+    return true;
+}
+
+QJsonObject ProjectSettings::store() const {
     QJsonObject dict;
 
     QJsonArray dirs;
     for (const QDir& dir : getResourceDirectories()) {
         QJsonObject obj;
-        obj["path"] = getRelativeFilePath(dir);
+        obj["path"] = getRelativePath(dir);
     }
-    dict["resourcePaths"] = dirs;
+    dict[key::resource_paths] = dirs;
 
     if (getContentProtectionKey().has_value()) {
-        dict["contentProtectionKey"] = getContentProtectionKey().value();
+        dict[key::content_protection_key] = getContentProtectionKey().value();
     }
 
     if (getPublishDirectory().has_value()) {
-        dict["publishDirectory"] =
-            getRelativeFilePath(getPublishDirectory().value());
+        dict[key::publish_directory] =
+            getRelativePath(getPublishDirectory().value());
     }
 
     return dict;

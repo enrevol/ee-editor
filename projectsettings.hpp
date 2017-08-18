@@ -17,9 +17,13 @@ public:
     ProjectSettings(const QDir& projectPath);
     ~ProjectSettings();
 
+    /// Gets the project's path.
     const QDir& getProjectPath() const;
-    const QString& getRelativeFilePath(const QDir& path) const;
 
+    /// Gets the relative path to the project path.
+    QString getRelativePath(const QDir& path) const;
+
+    /// Get the resource directories.
     const QVector<QDir>& getResourceDirectories() const;
     void setResourceDirectories(const QVector<QDir>& directories);
 
@@ -31,11 +35,11 @@ public:
     const std::optional<QDir>& getPublishDirectory() const;
     void setPublishDirectory(const QDir& directory);
 
-    void readFromFile();
-    void writeToFile();
+    bool read();
+    bool write() const;
 
-    void read(const QJsonObject& json);
-    QJsonObject write() const;
+    bool load(const QJsonObject& json);
+    QJsonObject store() const;
 
 private:
     QDir projectPath_;

@@ -21,8 +21,15 @@ public:
     void setProjectSettings(const ProjectSettings& settings);
 
     /// Attempts to load a project whose the specified path.
+    /// @param path The project file's path.
+    bool loadProject(const QDir& path);
+
+    /// Attempts to save the current project.
+    bool saveProject() const;
+
+    /// Attempts to create a project at the specified path.
     /// @param path The project's path.
-    void loadProject(const QDir& path);
+    bool createProject(const QDir& path);
 
 protected:
     Config();

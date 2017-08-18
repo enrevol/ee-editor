@@ -30,7 +30,8 @@ main.cpp \
 mainwindow.cpp \
     projectsettings.cpp \
     projectsettingsdialog.cpp \
-    config.cpp
+    config.cpp \
+    settings.cpp
 
 HEADERS += \
 mainwindow.hpp \
@@ -38,7 +39,8 @@ mainwindow.hpp \
     projectsettingsdialog.hpp \
     config.hpp \
     optional/optional.hpp \
-    optional.hpp
+    optional.hpp \
+    settings.hpp
 
 FORMS += \
 mainwindow.ui \
