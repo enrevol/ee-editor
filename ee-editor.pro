@@ -34,7 +34,8 @@ HEADERS += \
 mainwindow.hpp \
     projectsettings.hpp \
     projectsettingsdialog.hpp \
-    config.hpp
+    config.hpp \
+    optional/optional.hpp
 
 FORMS += \
 mainwindow.ui \
