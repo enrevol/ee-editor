@@ -19,8 +19,11 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     virtual ~MainWindow() override;
 
+protected slots:
+    void onProjectSettingsButtonPressed();
+
 private:
-    std::unique_ptr<Ui::MainWindow> view_;
+    Ui::MainWindow* ui_;
 };
 } // namespace ee
 

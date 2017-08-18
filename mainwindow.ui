@@ -484,11 +484,11 @@
     <string>Ctrl+U</string>
    </property>
   </action>
-  <zorder>dockWidget_3</zorder>
-  <zorder>dockWidget_8</zorder>
-  <zorder>dockWidget_9</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
+ <slots>
+  <slot>onProjectSettingsButtonPressed()</slot>
+ </slots>
 </ui>
