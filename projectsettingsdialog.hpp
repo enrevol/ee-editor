@@ -24,11 +24,18 @@ public:
     void setProjectSettings(const ProjectSettings& settings);
 
 private:
-    void updateResourcesPaths();
+    void updateResourcesDirectories();
+    void updateResourcesDirectories(const QVector<QDir>& directories);
+
+    void updateContentProtectionKey();
+    void updateContentProtectionKey(const QString& key);
+
+    void updatePublishDirectory();
+    void updatePublishDirectory(const QDir& directory);
 
     Ui::ProjectSettingsDialog* ui_;
 
-    ProjectSettings settings_;
+    std::unique_ptr<ProjectSettings> settings_;
 };
 } // namespace ee
 

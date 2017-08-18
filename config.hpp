@@ -1,6 +1,7 @@
 #ifndef EE_EDITOR_CONFIG_HPP
 #define EE_EDITOR_CONFIG_HPP
 
+#include "optional.hpp"
 #include "projectsettings.hpp"
 
 namespace ee {
@@ -11,8 +12,17 @@ private:
 public:
     static Self& getInstance();
 
-    const ProjectSettings& getProjectSettings() const;
+    /// Gets the current project settings.
+    /// @return std::nullopt if there is not any loaded project.
+    const std::optional<ProjectSettings>& getProjectSettings() const;
+
+    /// Sets the project settings.
+    /// @param settings The desired project settings.
     void setProjectSettings(const ProjectSettings& settings);
+
+    /// Attempts to load a project whose the specified path.
+    /// @param path The project's path.
+    void loadProject(const QDir& path);
 
 protected:
     Config();
@@ -22,7 +32,7 @@ protected:
     Self& operator=(const Self&) = delete;
 
 private:
-    ProjectSettings projectSettings_;
+    std::optional<ProjectSettings> projectSettings_;
 };
 } // namespace ee
 

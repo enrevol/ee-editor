@@ -1,8 +1,10 @@
 #ifndef EE_EDITOR_PROJECT_SETTINGS_HPP
 #define EE_EDITOR_PROJECT_SETTINGS_HPP
 
-#include <string>
-#include <vector>
+#include "optional.hpp"
+
+#include <QDir>
+#include <QVector>
 
 namespace ee {
 class ProjectSettings {
@@ -10,22 +12,36 @@ private:
     using Self = ProjectSettings;
 
 public:
-    ProjectSettings();
+    /// Constructs a project settings.
+    /// @param projectPath The project's path.
+    ProjectSettings(const QDir& projectPath);
     ~ProjectSettings();
 
-    const std::vector<std::string>& getResourcesPaths() const;
-    void setResourcesPaths(const std::vector<std::string>& paths);
+    const QDir& getProjectPath() const;
+    const QString& getRelativeFilePath(const QDir& path) const;
 
-    const std::string& getContentProtectionKey() const;
-    void setContentProtectionKey(const std::string& key);
+    const QVector<QDir>& getResourceDirectories() const;
+    void setResourceDirectories(const QVector<QDir>& directories);
 
-    const std::string& getPublishDirectory() const;
-    void setPublishDirectory(const std::string& directory);
+    /// Gets the content protection key, used by TexturePacker.
+    const std::optional<QString>& getContentProtectionKey() const;
+    void setContentProtectionKey(const QString& key);
+
+    /// Gets the publish directory.
+    const std::optional<QDir>& getPublishDirectory() const;
+    void setPublishDirectory(const QDir& directory);
+
+    void readFromFile();
+    void writeToFile();
+
+    void read(const QJsonObject& json);
+    QJsonObject write() const;
 
 private:
-    std::vector<std::string> resourcesPaths_;
-    std::string contentProtectionKey_;
-    std::string publishDirectory_;
+    QDir projectPath_;
+    QVector<QDir> resourcesDirectories_;
+    std::optional<QString> contentProtectionKey_;
+    std::optional<QDir> publishDirectory_;
 };
 } // namespace ee
 

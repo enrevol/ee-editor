@@ -37,7 +37,8 @@ mainwindow.hpp \
     projectsettings.hpp \
     projectsettingsdialog.hpp \
     config.hpp \
-    optional/optional.hpp
+    optional/optional.hpp \
+    optional.hpp
 
 FORMS += \
 mainwindow.ui \

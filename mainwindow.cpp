@@ -23,11 +23,14 @@ void MainWindow::onProjectSettingsButtonPressed() {
     qDebug() << __PRETTY_FUNCTION__;
     auto dialog = new ProjectSettingsDialog(this);
 
-    connect(dialog, &ProjectSettingsDialog::accepted, [dialog] {
-        Config::getInstance().setProjectSettings(dialog->getProjectSettings());
+    auto&& config = Config::getInstance();
+    connect(dialog, &ProjectSettingsDialog::accepted, [dialog, &config] {
+        config.setProjectSettings(dialog->getProjectSettings());
     });
 
-    dialog->setProjectSettings(Config::getInstance().getProjectSettings());
+    auto&& settings = config.getProjectSettings();
+    Q_ASSERT(settings.has_value());
+    dialog->setProjectSettings(settings.value());
     dialog->exec();
 }
 } // namespace ee
