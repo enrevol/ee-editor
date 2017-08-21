@@ -132,7 +132,7 @@
           <property name="handleWidth">
            <number>10</number>
           </property>
-          <widget class="QOpenGLWidget" name="sceneDesignerView">
+          <widget class="QOpenGLWidget" name="sceneView">
            <property name="minimumSize">
             <size>
              <width>400</width>

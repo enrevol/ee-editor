@@ -51,6 +51,8 @@ MainWindow::MainWindow(QWidget* parent)
             config.loadProject(filePath);
         }
     });
+
+    ui_->sceneView
 }
 
 MainWindow::~MainWindow() {
