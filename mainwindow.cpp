@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget* parent)
             filter);
 
         if (not path.isEmpty()) {
-            qDebug() << "select: " << path;
+            qDebug() << "Create new project: " << path;
             auto&& filePath = QDir(path);
             settings.setLastBrowsingPath(filePath);
             auto&& config = Config::getInstance();
@@ -59,17 +59,16 @@ MainWindow::~MainWindow() {
 
 void MainWindow::onProjectSettingsButtonPressed() {
     qDebug() << __PRETTY_FUNCTION__;
-    auto dialog = new ProjectSettingsDialog(this);
 
     auto&& config = Config::getInstance();
+    auto&& settings = config.getProjectSettings();
+    Q_ASSERT(settings.has_value());
+
+    auto dialog = new ProjectSettingsDialog(this, settings.value());
     connect(dialog, &ProjectSettingsDialog::accepted, [dialog, &config] {
         config.setProjectSettings(dialog->getProjectSettings());
         config.saveProject();
     });
-
-    auto&& settings = config.getProjectSettings();
-    Q_ASSERT(settings.has_value());
-    dialog->setProjectSettings(settings.value());
     dialog->exec();
 }
 } // namespace ee

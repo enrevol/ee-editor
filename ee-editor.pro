@@ -31,7 +31,9 @@ mainwindow.cpp \
     projectsettings.cpp \
     projectsettingsdialog.cpp \
     config.cpp \
-    settings.cpp
+    settings.cpp \
+    contentprotectionkey.cpp \
+    iserializable.cpp
 
 HEADERS += \
 mainwindow.hpp \
@@ -40,7 +42,9 @@ mainwindow.hpp \
     config.hpp \
     optional/optional.hpp \
     optional.hpp \
-    settings.hpp
+    settings.hpp \
+    contentprotectionkey.hpp \
+    iserializable.hpp
 
 FORMS += \
 mainwindow.ui \

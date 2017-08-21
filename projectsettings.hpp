@@ -1,13 +1,15 @@
 #ifndef EE_EDITOR_PROJECT_SETTINGS_HPP
 #define EE_EDITOR_PROJECT_SETTINGS_HPP
 
+#include "contentprotectionkey.hpp"
+#include "iserializable.hpp"
 #include "optional.hpp"
 
 #include <QDir>
 #include <QVector>
 
 namespace ee {
-class ProjectSettings {
+class ProjectSettings : public ISerializable {
 private:
     using Self = ProjectSettings;
 
@@ -23,29 +25,39 @@ public:
     /// Gets the relative path to the project path.
     QString getRelativePath(const QDir& path) const;
 
-    /// Get the resource directories.
+    /// Gets the resource directories.
     const QVector<QDir>& getResourceDirectories() const;
+
+    /// Sets the resource directories.
+    /// @param directories The desired directories.
     void setResourceDirectories(const QVector<QDir>& directories);
 
     /// Gets the content protection key, used by TexturePacker.
-    const std::optional<QString>& getContentProtectionKey() const;
-    void setContentProtectionKey(const QString& key);
+    const ContentProtectionKey& getContentProtectionKey() const;
+
+    /// Sets the content protection key.
+    /// @param key The content protection key.
+    void setContentProtectionKey(const ContentProtectionKey& key);
 
     /// Gets the publish directory.
-    const std::optional<QDir>& getPublishDirectory() const;
+    /// Defaults is projectPath/generated.
+    const QDir& getPublishDirectory() const;
     void setPublishDirectory(const QDir& directory);
 
-    bool read();
-    bool write() const;
+    virtual bool deserialize(const QJsonObject& json) override;
+    virtual void serialize(QJsonObject& json) const override;
 
-    bool load(const QJsonObject& json);
-    QJsonObject store() const;
+    /// Attempts to read from file.
+    bool read();
+
+    /// Attempts to write to file.
+    bool write() const;
 
 private:
     QDir projectPath_;
     QVector<QDir> resourcesDirectories_;
-    std::optional<QString> contentProtectionKey_;
-    std::optional<QDir> publishDirectory_;
+    ContentProtectionKey contentProtectionKey_;
+    QDir publishDirectory_;
 };
 } // namespace ee
 

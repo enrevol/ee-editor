@@ -6,19 +6,24 @@
 #include <QStringListModel>
 
 namespace ee {
-ProjectSettingsDialog::ProjectSettingsDialog(QWidget* parent)
-    : QDialog(parent)
+ProjectSettingsDialog::ProjectSettingsDialog(QWidget* parent,
+                                             const ProjectSettings& settings)
+    : Super(parent)
+    , settings_(settings)
     , ui_(new Ui::ProjectSettingsDialog) {
     ui_->setupUi(this);
 
+    updateResourcesDirectories();
+    updatePublishDirectory();
+
     connect(ui_->contentProtectionKeyInput, &QLineEdit::textChanged,
             [this](const QString& value) {
-                settings_->setContentProtectionKey(value);
+                settings_.setContentProtectionKey(value);
             });
 
     connect(ui_->publishDirectoryInput, &QLineEdit::textChanged,
-            [this](const QString& value) {
-                settings_->setPublishDirectory(value);
+            [this](const QString& value) { //
+                settings_.setPublishDirectory(value);
             });
 
     connect(ui_->selectPublishDirectoryButton, &QPushButton::clicked,
@@ -27,15 +32,13 @@ ProjectSettingsDialog::ProjectSettingsDialog(QWidget* parent)
                 dialog.setFileMode(QFileDialog::FileMode::Directory);
                 dialog.setOption(QFileDialog::Option::ShowDirsOnly);
 
-                auto&& currentDir = settings_->getPublishDirectory();
-                if (currentDir.has_value()) {
-                    dialog.setDirectory(currentDir.value());
-                }
+                auto&& currentDir = settings_.getPublishDirectory();
+                dialog.setDirectory(currentDir);
 
                 dialog.exec();
 
                 auto&& directory = dialog.directory();
-                settings_->setPublishDirectory(directory);
+                settings_.setPublishDirectory(directory);
                 updatePublishDirectory(directory);
             });
 }
@@ -45,15 +48,7 @@ ProjectSettingsDialog::~ProjectSettingsDialog() {
 }
 
 const ProjectSettings& ProjectSettingsDialog::getProjectSettings() const {
-    return *settings_;
-}
-
-void ProjectSettingsDialog::setProjectSettings(
-    const ProjectSettings& settings) {
-    settings_ = std::make_unique<ProjectSettings>(settings);
-
-    updateResourcesDirectories();
-    updatePublishDirectory();
+    return settings_;
 }
 
 void ProjectSettingsDialog::updateResourcesDirectories() {
@@ -74,9 +69,7 @@ void ProjectSettingsDialog::updateResourcesDirectories(
 
 void ProjectSettingsDialog::updateContentProtectionKey() {
     auto&& key = getProjectSettings().getContentProtectionKey();
-    if (key.has_value()) {
-        updateContentProtectionKey(key.value());
-    }
+    updateContentProtectionKey(key.toString());
 }
 
 void ProjectSettingsDialog::updateContentProtectionKey(const QString& key) {
@@ -85,12 +78,10 @@ void ProjectSettingsDialog::updateContentProtectionKey(const QString& key) {
 
 void ProjectSettingsDialog::updatePublishDirectory() {
     auto&& dir = getProjectSettings().getPublishDirectory();
-    if (dir.has_value()) {
-        updatePublishDirectory(dir.value());
-    }
+    updatePublishDirectory(dir);
 }
 
 void ProjectSettingsDialog::updatePublishDirectory(const QDir& directory) {
-    ui_->publishDirectoryInput->setText(settings_->getRelativePath(directory));
+    ui_->publishDirectoryInput->setText(settings_.getRelativePath(directory));
 }
 } // namespace ee

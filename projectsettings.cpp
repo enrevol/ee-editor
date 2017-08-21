@@ -7,13 +7,14 @@
 
 namespace ee {
 namespace key {
-constexpr auto content_protection_key = "contentProtectionKey";
 constexpr auto resource_paths = "resourcePaths";
 constexpr auto publish_directory = "publishDirectory";
 } // namespace key
 
 ProjectSettings::ProjectSettings(const QDir& projectPath)
-    : projectPath_(projectPath) {}
+    : projectPath_(projectPath) {
+    setPublishDirectory(getProjectPath().filePath("generated"));
+}
 
 ProjectSettings::~ProjectSettings() {}
 
@@ -33,15 +34,15 @@ void ProjectSettings::setResourceDirectories(const QVector<QDir>& directories) {
     resourcesDirectories_ = directories;
 }
 
-const std::optional<QString>& ProjectSettings::getContentProtectionKey() const {
+const ContentProtectionKey& ProjectSettings::getContentProtectionKey() const {
     return contentProtectionKey_;
 }
 
-void ProjectSettings::setContentProtectionKey(const QString& key) {
+void ProjectSettings::setContentProtectionKey(const ContentProtectionKey& key) {
     contentProtectionKey_ = key;
 }
 
-const std::optional<QDir>& ProjectSettings::getPublishDirectory() const {
+const QDir& ProjectSettings::getPublishDirectory() const {
     return publishDirectory_;
 }
 
@@ -57,7 +58,7 @@ bool ProjectSettings::read() {
     }
 
     auto obj = QJsonDocument().fromJson(file.readAll()).object();
-    return load(obj);
+    return deserialize(obj);
 }
 
 bool ProjectSettings::write() const {
@@ -67,41 +68,41 @@ bool ProjectSettings::write() const {
         return false;
     }
 
-    auto obj = store();
-    QJsonDocument doc(obj);
+    QJsonObject json;
+    serialize(json);
+    QJsonDocument doc(json);
     file.write(doc.toJson());
     return true;
 }
 
-bool ProjectSettings::load(const QJsonObject& json) {
-    if (json.contains(key::content_protection_key)) {
-        setContentProtectionKey(json[key::content_protection_key].toString());
+bool ProjectSettings::deserialize(const QJsonObject& json) {
+    if (not contentProtectionKey_.deserialize(json)) {
+        return false;
     }
-    if (json.contains(key::publish_directory)) {
-        setPublishDirectory(QDir(json[key::publish_directory].toString()));
+
+    auto&& v = json.value(key::publish_directory);
+    if (v.isUndefined()) {
+        setPublishDirectory(getProjectPath().filePath("generated"));
+    } else if (v.isString()) {
+        setPublishDirectory(v.toString());
+    } else {
+        return false;
     }
+
     return true;
 }
 
-QJsonObject ProjectSettings::store() const {
-    QJsonObject dict;
-
+void ProjectSettings::serialize(QJsonObject& json) const {
     QJsonArray dirs;
     for (const QDir& dir : getResourceDirectories()) {
         QJsonObject obj;
         obj["path"] = getRelativePath(dir);
+        dirs.append(obj);
     }
-    dict[key::resource_paths] = dirs;
+    json[key::resource_paths] = dirs;
 
-    if (getContentProtectionKey().has_value()) {
-        dict[key::content_protection_key] = getContentProtectionKey().value();
-    }
+    contentProtectionKey_.serialize(json);
 
-    if (getPublishDirectory().has_value()) {
-        dict[key::publish_directory] =
-            getRelativePath(getPublishDirectory().value());
-    }
-
-    return dict;
+    json.insert(key::publish_directory, getRelativePath(getPublishDirectory()));
 }
 } // namespace ee
