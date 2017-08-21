@@ -40,11 +40,11 @@ mainwindow.hpp \
     projectsettings.hpp \
     projectsettingsdialog.hpp \
     config.hpp \
-    optional/optional.hpp \
     optional.hpp \
     settings.hpp \
     contentprotectionkey.hpp \
-    iserializable.hpp
+    iserializable.hpp \
+    libraries/optional/optional.hpp
 
 FORMS += \
 mainwindow.ui \
