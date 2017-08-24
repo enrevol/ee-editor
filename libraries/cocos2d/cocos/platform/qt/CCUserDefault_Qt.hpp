@@ -1,0 +1,6 @@
+#ifndef EE_EDITOR_CC_USER_DEFAULT_QT_HPP
+#define EE_EDITOR_CC_USER_DEFAULT_QT_HPP
+
+#include "base/CCUserDefault.h"
+
+#endif // EE_EDITOR_CC_USER_DEFAULT_QT_HPP
