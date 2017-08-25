@@ -104,7 +104,7 @@ public:
         CC_REF_PTR_SAFE_RETAIN(_ptr);
     }
     
-    RefPtr(std::nullptr_t ptr)
+    RefPtr(std::nullptr_t)
         : _ptr(nullptr)
     {
         
@@ -157,7 +157,7 @@ public:
         return *this;
     }
     
-    RefPtr<T> & operator = (std::nullptr_t other)
+    RefPtr<T> & operator = (std::nullptr_t)
     {
         CC_REF_PTR_SAFE_RELEASE_NULL(_ptr);
         return *this;

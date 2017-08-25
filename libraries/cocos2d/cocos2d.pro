@@ -36,13 +36,6 @@ INCLUDEPATH += /usr/local/include
 INCLUDEPATH += /usr/local/include/freetype2
 INCLUDEPATH += /usr/local/include/webp
 
-LIBS += -L/usr/local/lib -lwebp
-LIBS += -L/usr/local/lib -ltiff
-LIBS += -L/usr/local/lib -lpng
-LIBS += -L/usr/local/lib -ljpeg
-LIBS += -L/usr/local/lib -lfreetype
-LIBS += -L/usr/local/lib -lz
-
 SOURCES += \
     cocos/2d/CCAction.cpp \
     cocos/2d/CCActionCamera.cpp \
@@ -125,7 +118,6 @@ SOURCES += \
     cocos/base/ccCArray.cpp \
     cocos/base/CCConfiguration.cpp \
     cocos/base/CCConsole.cpp \
-    cocos/base/CCController-android.cpp \
     cocos/base/CCController.cpp \
     cocos/base/CCData.cpp \
     cocos/base/CCDataVisitor.cpp \
@@ -169,6 +161,7 @@ SOURCES += \
     cocos/base/s3tc.cpp \
     cocos/base/TGAlib.cpp \
     cocos/base/ZipUtils.cpp \
+    cocos/editor-support/cocostudio/CocosStudioExtension.cpp \
     cocos/editor-support/spine/AttachmentVertices.cpp \
     cocos/editor-support/spine/Cocos2dAttachmentLoader.cpp \
     cocos/editor-support/spine/SkeletonAnimation.cpp \
@@ -208,9 +201,6 @@ SOURCES += \
     cocos/renderer/CCGLProgramStateCache.cpp \
     cocos/renderer/ccGLStateCache.cpp \
     cocos/renderer/CCGroupCommand.cpp \
-    cocos/renderer/CCMaterial.cpp \
-    cocos/renderer/CCMeshCommand.cpp \
-    cocos/renderer/CCPass.cpp \
     cocos/renderer/CCPrimitive.cpp \
     cocos/renderer/CCPrimitiveCommand.cpp \
     cocos/renderer/CCQuadCommand.cpp \
@@ -218,13 +208,11 @@ SOURCES += \
     cocos/renderer/CCRenderer.cpp \
     cocos/renderer/CCRenderState.cpp \
     cocos/renderer/ccShaders.cpp \
-    cocos/renderer/CCTechnique.cpp \
     cocos/renderer/CCTexture2D.cpp \
     cocos/renderer/CCTextureAtlas.cpp \
     cocos/renderer/CCTextureCache.cpp \
     cocos/renderer/CCTextureCube.cpp \
     cocos/renderer/CCTrianglesCommand.cpp \
-    cocos/renderer/CCVertexAttribBinding.cpp \
     cocos/renderer/CCVertexIndexBuffer.cpp \
     cocos/renderer/CCVertexIndexData.cpp \
     cocos/ui/CocosGUI.cpp \
@@ -291,59 +279,19 @@ SOURCES += \
     cocos/editor-support/spine/TransformConstraint.c \
     cocos/editor-support/spine/TransformConstraintData.c \
     cocos/editor-support/spine/VertexAttachment.c \
-    cocos/base/CCController-apple.mm \
-    cocos/editor-support/cocostudio/CocosStudioExtension.cpp \
-    external/clipper/clipper.cpp \
-    external/clipper/clipper.cpp \
-    external/poly2tri/common/shapes.cc \
-    external/poly2tri/sweep/advancing_front.cc \
-    external/poly2tri/sweep/cdt.cc \
-    external/poly2tri/sweep/sweep.cc \
-    external/poly2tri/sweep/sweep_context.cc \
-    cocos/3d/CCFrustum.cpp \
-    cocos/3d/CCAABB.cpp \
-    cocos/3d/CCAnimate3D.cpp \
-    cocos/3d/CCAnimation3D.cpp \
-    cocos/3d/CCAnimationCurve.inl \
-    cocos/3d/CCAttachNode.cpp \
-    cocos/3d/CCBillBoard.cpp \
-    cocos/3d/CCBundle3D.cpp \
-    cocos/3d/CCBundleReader.cpp \
-    cocos/3d/CCFrustum.cpp \
-    cocos/3d/CCMesh.cpp \
-    cocos/3d/CCMeshSkin.cpp \
-    cocos/3d/CCMeshVertexIndexData.cpp \
-    cocos/3d/CCMotionStreak3D.cpp \
-    cocos/3d/CCOBB.cpp \
-    cocos/3d/CCObjLoader.cpp \
-    cocos/3d/CCPlane.cpp \
-    cocos/3d/CCRay.cpp \
-    cocos/3d/CCSkeleton3D.cpp \
-    cocos/3d/CCSkybox.cpp \
-    cocos/3d/CCSprite3D.cpp \
-    cocos/3d/CCSprite3DMaterial.cpp \
-    cocos/3d/CCTerrain.cpp \
-    external/edtaa3func/edtaa3func.cpp \
     cocos/deprecated/CCArray.cpp \
     cocos/deprecated/CCDeprecated.cpp \
     cocos/deprecated/CCDictionary.cpp \
     cocos/deprecated/CCNotificationCenter.cpp \
     cocos/deprecated/CCSet.cpp \
     cocos/deprecated/CCString.cpp \
-    external/tinyxml2/tinyxml2.cpp \
-    external/ConvertUTF/ConvertUTFWrapper.cpp \
-    external/ConvertUTF/ConvertUTF.c \
-    external/md5/md5.c \
-    external/unzip/ioapi.cpp \
-    external/unzip/ioapi_mem.cpp \
-    external/unzip/unzip.cpp \
     cocos/platform/qt/CCApplication_Qt.cpp \
     cocos/platform/qt/CCCommon_Qt.cpp \
     cocos/platform/qt/CCDevice_Qt.cpp \
     cocos/platform/qt/CCFileUtils_Qt.cpp \
     cocos/platform/qt/CCGLView_Qt.cpp \
     cocos/platform/qt/CCOpenGLWidget_Qt.cpp \
-    cocos/platform/qt/CCGLView_Qt.cpp \
+    cocos/platform/qt/CCUserDefault_Qt.cpp \
     external/clipper/clipper.cpp \
     external/ConvertUTF/ConvertUTFWrapper.cpp \
     external/edtaa3func/edtaa3func.cpp \
@@ -359,8 +307,7 @@ SOURCES += \
     external/xxtea/xxtea.cpp \
     external/ConvertUTF/ConvertUTF.c \
     external/md5/md5.c \
-    external/xxhash/xxhash.c \
-    cocos/platform/qt/CCUserDefault_Qt.cpp
+    external/xxhash/xxhash.c
 
 HEADERS += \
     cocos/2d/CCAction.h \
@@ -506,6 +453,7 @@ HEADERS += \
     cocos/base/uthash.h \
     cocos/base/utlist.h \
     cocos/base/ZipUtils.h \
+    cocos/editor-support/cocostudio/CocosStudioExtension.h \
     cocos/editor-support/spine/Animation.h \
     cocos/editor-support/spine/AnimationState.h \
     cocos/editor-support/spine/AnimationStateData.h \
@@ -563,6 +511,7 @@ HEADERS += \
     cocos/platform/CCCommon.h \
     cocos/platform/CCDevice.h \
     cocos/platform/CCFileUtils.h \
+    cocos/platform/CCGL.h \
     cocos/platform/CCGLView.h \
     cocos/platform/CCImage.h \
     cocos/platform/CCPlatformConfig.h \
@@ -571,6 +520,12 @@ HEADERS += \
     cocos/platform/CCSAXParser.h \
     cocos/platform/CCStdC.h \
     cocos/platform/CCThread.h \
+    cocos/platform/mac/CCStdC-mac.h \
+    cocos/platform/qt/CCApplication_Qt.hpp \
+    cocos/platform/qt/CCFileUtils_Qt.hpp \
+    cocos/platform/qt/CCGLView_Qt.hpp \
+    cocos/platform/qt/CCOpenGLWidget_Qt.hpp \
+    cocos/platform/qt/CCUserDefault_Qt.hpp \
     cocos/renderer/CCBatchCommand.h \
     cocos/renderer/CCCustomCommand.h \
     cocos/renderer/CCFrameBuffer.h \
@@ -580,9 +535,6 @@ HEADERS += \
     cocos/renderer/CCGLProgramStateCache.h \
     cocos/renderer/ccGLStateCache.h \
     cocos/renderer/CCGroupCommand.h \
-    cocos/renderer/CCMaterial.h \
-    cocos/renderer/CCMeshCommand.h \
-    cocos/renderer/CCPass.h \
     cocos/renderer/CCPrimitive.h \
     cocos/renderer/CCPrimitiveCommand.h \
     cocos/renderer/CCQuadCommand.h \
@@ -591,13 +543,11 @@ HEADERS += \
     cocos/renderer/CCRenderer.h \
     cocos/renderer/CCRenderState.h \
     cocos/renderer/ccShaders.h \
-    cocos/renderer/CCTechnique.h \
     cocos/renderer/CCTexture2D.h \
     cocos/renderer/CCTextureAtlas.h \
     cocos/renderer/CCTextureCache.h \
     cocos/renderer/CCTextureCube.h \
     cocos/renderer/CCTrianglesCommand.h \
-    cocos/renderer/CCVertexAttribBinding.h \
     cocos/renderer/CCVertexIndexBuffer.h \
     cocos/renderer/CCVertexIndexData.h \
     cocos/ui/CocosGUI.h \
@@ -632,43 +582,7 @@ HEADERS += \
     cocos/ui/UITextField.h \
     cocos/ui/UIVBox.h \
     cocos/ui/UIWidget.h \
-    cocos/cocos2d.h \
-    cocos/editor-support/cocostudio/CocosStudioExtension.h \
-    external/clipper/clipper.hpp \
-    external/clipper/clipper.hpp \
-    external/poly2tri/common/shapes.h \
-    external/poly2tri/common/utils.h \
-    external/poly2tri/sweep/advancing_front.h \
-    external/poly2tri/sweep/cdt.h \
-    external/poly2tri/sweep/sweep.h \
-    external/poly2tri/sweep/sweep_context.h \
-    external/poly2tri/poly2tri.h \
-    cocos/3d/CCFrustum.h \
-    cocos/3d/CCAABB.h \
-    cocos/3d/CCAnimate3D.h \
-    cocos/3d/CCAnimation3D.h \
-    cocos/3d/CCAnimationCurve.h \
-    cocos/3d/CCAttachNode.h \
-    cocos/3d/CCBillBoard.h \
-    cocos/3d/CCBundle3D.h \
-    cocos/3d/CCBundle3DData.h \
-    cocos/3d/CCBundleReader.h \
-    cocos/3d/CCFrustum.h \
-    cocos/3d/CCMesh.h \
-    cocos/3d/CCMeshSkin.h \
-    cocos/3d/CCMeshVertexIndexData.h \
-    cocos/3d/CCMotionStreak3D.h \
-    cocos/3d/CCOBB.h \
-    cocos/3d/CCObjLoader.h \
-    cocos/3d/CCPlane.h \
-    cocos/3d/CCRay.h \
-    cocos/3d/CCSkeleton3D.h \
-    cocos/3d/CCSkybox.h \
-    cocos/3d/CCSprite3D.h \
-    cocos/3d/CCSprite3DMaterial.h \
-    cocos/3d/CCTerrain.h \
-    cocos/3d/cocos3d.h \
-    external/edtaa3func/edtaa3func.h \
+    cocos/cocos2d.h \        
     cocos/deprecated/CCArray.h \
     cocos/deprecated/CCBool.h \
     cocos/deprecated/CCDeprecated.h \
@@ -678,25 +592,12 @@ HEADERS += \
     cocos/deprecated/CCInteger.h \
     cocos/deprecated/CCNotificationCenter.h \
     cocos/deprecated/CCSet.h \
-    cocos/deprecated/CCString.h \
-    external/tinyxml2/tinyxml2.h \
-    external/ConvertUTF/ConvertUTF.h \
-    external/md5/md5.h \
-    external/unzip/crypt.h \
-    external/unzip/ioapi.h \
-    external/unzip/ioapi_mem.h \
-    external/unzip/unzip.h \
-    cocos/platform/qt/CCApplication_Qt.hpp \
-    cocos/platform/qt/CCGLView_Qt.hpp \
-    cocos/platform/qt/CCOpenGLWidget_Qt.hpp \
-    cocos/platform/mac/CCStdC-mac.h \
-    cocos/platform/qt/CCGLView_Qt.hpp \
-    cocos/platform/CCGL.h \
-    external/tinydir/tinydir.h \
+    cocos/deprecated/CCString.h \    
     external/clipper/clipper.hpp \
     external/ConvertUTF/ConvertUTF.h \
     external/edtaa3func/edtaa3func.h \
     external/md5/md5.h \
+    external/poly2tri/poly2tri.h \
     external/poly2tri/common/shapes.h \
     external/poly2tri/common/utils.h \
     external/poly2tri/sweep/advancing_front.h \
@@ -716,9 +617,7 @@ HEADERS += \
     external/unzip/ioapi_mem.h \
     external/unzip/unzip.h \
     external/xxhash/xxhash.h \
-    external/xxtea/xxtea.h \
-    cocos/platform/qt/CCUserDefault_Qt.hpp \
-    cocos/platform/qt/CCFileUtils_Qt.hpp
+    external/xxtea/xxtea.h
 
 unix {
     target.path = /usr/lib

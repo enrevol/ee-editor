@@ -6,8 +6,19 @@ TARGET = editor
 TEMPLATE = app
 
 CONFIG += c++1z
+CONFIG += staticlib
 
 DEFINES += QT_DEPRECATED_WARNINGS
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+
+LIBS += /usr/local/lib/libjpeg.a
+LIBS += /usr/local/lib/libpng.a
+LIBS += /usr/local/lib/libwebp.a
+LIBS += /usr/local/lib/libtiff.a
+LIBS += /usr/local/lib/libfreetype.a
+LIBS += /usr/local/opt/zlib/lib/libz.a
+LIBS += /usr/lib/libiconv.dylib
+LIBS += /usr/lib/libbz2.dylib
 
 INCLUDEPATH += \
     ../libraries \
@@ -47,11 +58,3 @@ LIBS += -L$$OUT_PWD/../libraries/cocos2d/ -lcocos2d
 INCLUDEPATH += $$PWD/../libraries/cocos2d
 DEPENDPATH += $$PWD/../libraries/cocos2d
 PRE_TARGETDEPS += $$OUT_PWD/../libraries/cocos2d/libcocos2d.a
-
-LIBS += -L/usr/local/lib -lwebp
-LIBS += -L/usr/local/lib -ltiff
-LIBS += -L/usr/local/lib -lpng
-LIBS += -L/usr/local/lib -ljpeg
-LIBS += -L/usr/local/lib -lfreetype
-LIBS += -L/usr/local/lib -lz
-LIBS += -L/usr/local/lib -liconv

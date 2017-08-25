@@ -49,17 +49,12 @@ Configuration::Configuration()
 , _supportsBGRA8888(false)
 , _supportsDiscardFramebuffer(false)
 , _supportsShareableVAO(false)
+, _supportsOESMapBuffer(false)
 , _supportsOESDepth24(false)
 , _supportsOESPackedDepthStencil(false)
-, _supportsOESMapBuffer(false)
 , _maxSamplesAllowed(0)
 , _maxTextureUnits(0)
-, _glExtensions(nullptr)
-, _maxDirLightInShader(1)
-, _maxPointLightInShader(1)
-, _maxSpotLightInShader(1)
-, _animate3DQuality(Animate3DQuality::QUALITY_LOW)
-{
+, _glExtensions(nullptr) {
     _loadedEvent = new (std::nothrow) EventCustom(CONFIG_FILE_LOADED);
 }
 
@@ -304,28 +299,6 @@ bool Configuration::supportsOESPackedDepthStencil() const
     return _supportsOESPackedDepthStencil;
 }
 
-
-
-int Configuration::getMaxSupportDirLightInShader() const
-{
-    return _maxDirLightInShader;
-}
-
-int Configuration::getMaxSupportPointLightInShader() const
-{
-    return _maxPointLightInShader;
-}
-
-int Configuration::getMaxSupportSpotLightInShader() const
-{
-    return _maxSpotLightInShader;
-}
-
-Animate3DQuality Configuration::getAnimate3DQuality() const
-{
-    return _animate3DQuality;
-}
-
 //
 // generic getters for properties
 //
@@ -396,32 +369,7 @@ void Configuration::loadConfigFile(const std::string& filename)
         else
             CCLOG("Key already present. Ignoring '%s'",dataMapIter.first.c_str());
     }
-    
-    //light info
-    std::string name = "cocos2d.x.3d.max_dir_light_in_shader";
-	if (_valueDict.find(name) != _valueDict.end())
-        _maxDirLightInShader = _valueDict[name].asInt();
-    else
-        _valueDict[name] = Value(_maxDirLightInShader);
-    
-    name = "cocos2d.x.3d.max_point_light_in_shader";
-	if (_valueDict.find(name) != _valueDict.end())
-        _maxPointLightInShader = _valueDict[name].asInt();
-    else
-        _valueDict[name] = Value(_maxPointLightInShader);
-    
-    name = "cocos2d.x.3d.max_spot_light_in_shader";
-	if (_valueDict.find(name) != _valueDict.end())
-        _maxSpotLightInShader = _valueDict[name].asInt();
-    else
-        _valueDict[name] = Value(_maxSpotLightInShader);
-    
-    name = "cocos2d.x.3d.animate_quality";
-    if (_valueDict.find(name) != _valueDict.end())
-        _animate3DQuality = (Animate3DQuality)_valueDict[name].asInt();
-    else
-        _valueDict[name] = Value((int)_animate3DQuality);
-    
+
     Director::getInstance()->getEventDispatcher()->dispatchEvent(_loadedEvent);
 }
 

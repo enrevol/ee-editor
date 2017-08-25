@@ -30,6 +30,7 @@ bool Self::applicationDidFinishLaunching() {
     scene->addChild(layer);
 
     director->runWithScene(scene);
+    return true;
 }
 
 void Self::applicationDidEnterBackground() {

@@ -56,8 +56,8 @@ static void setProgram(Node *n, GLProgram *p)
 
 ClippingNode::ClippingNode()
 : _stencil(nullptr)
-, _stencilStateManager(new StencilStateManager())
 , _originStencilProgram(nullptr)
+, _stencilStateManager(new StencilStateManager())
 {
 }
 

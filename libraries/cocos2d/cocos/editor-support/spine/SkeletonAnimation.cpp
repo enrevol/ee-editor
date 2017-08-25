@@ -115,7 +115,7 @@ void SkeletonAnimation::initialize () {
 	_state->rendererObject = this;
 	_state->listener = animationCallback;
 
-	_spAnimationState* stateInternal = (_spAnimationState*)_state;
+    /* _spAnimationState* stateInternal = (_spAnimationState*)_state; */
 }
 
 SkeletonAnimation::SkeletonAnimation ()

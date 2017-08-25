@@ -32,7 +32,6 @@ THE SOFTWARE.
 #include "base/CCRef.h"
 #include "base/CCValue.h"
 #include "platform/CCGL.h"
-#include "3d/CCAnimate3D.h"
 
 /**
  * @addtogroup base
@@ -169,31 +168,6 @@ public:
      * @since v3.13
      */
     bool supportsMapBuffer() const;
-
-    
-    /** Max support directional light in shader, for Sprite3D.
-     *
-     * @return Maximum supports directional light in shader.
-     * @since v3.3
-     */
-    int getMaxSupportDirLightInShader() const;
-    
-    /** Max support point light in shader, for Sprite3D.
-     *
-     * @return Maximum supports point light in shader.
-     * @since v3.3
-     */
-    int getMaxSupportPointLightInShader() const;
-    
-    /** Max support spot light in shader, for Sprite3D.
-     *
-     * @return Maximum supports spot light in shader.
-     * @since v3.3
-     */
-    int getMaxSupportSpotLightInShader() const;
-
-    /** get 3d animate quality*/
-    Animate3DQuality getAnimate3DQuality() const;
     
     /** Returns whether or not an OpenGL is supported. 
      *
@@ -264,10 +238,6 @@ protected:
     GLint           _maxSamplesAllowed;
     GLint           _maxTextureUnits;
     char *          _glExtensions;
-    int             _maxDirLightInShader; //max support directional light in shader
-    int             _maxPointLightInShader; // max support point light in shader
-    int             _maxSpotLightInShader; // max support spot light in shader
-    Animate3DQuality  _animate3DQuality; // animate 3d quality
 	
 	ValueMap        _valueDict;
     
