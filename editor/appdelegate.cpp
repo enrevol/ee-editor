@@ -9,17 +9,20 @@ namespace ee {
 using Self = AppDelegate;
 
 Self::AppDelegate(int argc, char* argv[])
-    : Super(argc, argv) {}
+    : Super(argc, argv)
+    , openGLView_(nullptr) {}
 
 Self::~AppDelegate() {}
 
-void Self::setView(QWidget* view) {
-    view_ = view;
+void Self::setOpenGLView(cocos2d::OpenGLWidget* view) {
+    openGLView_ = view;
 }
 
 bool Self::applicationDidFinishLaunching() {
+    qDebug() << __PRETTY_FUNCTION__;
+
     auto director = cocos2d::Director::getInstance();
-    auto glView = cocos2d::GLViewImpl::createWithWidget(view_);
+    auto glView = cocos2d::GLViewImpl::create(openGLView_);
     glView->setDesignResolutionSize(960, 640, ResolutionPolicy::NO_BORDER);
     director->setOpenGLView(glView);
     director->setDisplayStats(true);
@@ -27,6 +30,7 @@ bool Self::applicationDidFinishLaunching() {
 
     auto scene = cocos2d::Scene::create();
     auto layer = cocos2d::LayerColor::create(cocos2d::Color4B::BLUE);
+    layer->setContentSize(cocos2d::Size(100, 100));
     scene->addChild(layer);
 
     director->runWithScene(scene);

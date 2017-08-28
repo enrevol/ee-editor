@@ -8,6 +8,8 @@ class MainWindow;
 } // namespace Ui
 
 namespace ee {
+class OpenGLWidget;
+
 class MainWindow : public QMainWindow {
 private:
     Q_OBJECT
@@ -18,6 +20,8 @@ private:
 public:
     explicit MainWindow(QWidget* parent = nullptr);
     virtual ~MainWindow() override;
+
+    OpenGLWidget* getOpenGLView();
 
 protected slots:
     void onProjectSettingsButtonPressed();

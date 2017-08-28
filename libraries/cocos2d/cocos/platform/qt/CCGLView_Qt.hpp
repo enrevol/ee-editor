@@ -14,25 +14,15 @@
 NS_CC_BEGIN
 class OpenGLWidget;
 
-enum class GLViewWindowMode {
-    FixSize,
-    Resizable,
-};
-
+/// Wraps a QOpenGLWidget and inherits from cocos2d::GLView.
 class CC_DLL GLViewImpl : public GLView {
 private:
     using Self = GLViewImpl;
     using Super = GLView;
 
 public:
-    static Self* create(const std::string& viewName);
-    static Self* create(QWidget* parent);
-    static Self* createWithWidget(QWidget* param = nullptr);
-    static Self* createWithRect(const std::string& viewName, const Rect& rect,
-                                float zoomFactor);
-    static Self* createWithFullScreen(const std::string& viewName);
+    static Self* create(OpenGLWidget* view);
 
-    GLViewImpl();
     virtual ~GLViewImpl() override;
 
     virtual void end() override;
@@ -42,26 +32,26 @@ public:
     virtual void setIMEKeyboardState(bool open) override;
     virtual void setViewName(const std::string& viewName) override;
 
-    void resize(int width, int height);
-
     virtual void setFrameZoomFactor(float zoomFactor) override;
     virtual float getFrameZoomFactor() const override;
 
-    void centerWindow();
-
     virtual void setViewPortInPoints(float x, float y, float w,
                                      float h) override;
+
     virtual void setScissorInPoints(float x, float y, float w,
                                     float h) override;
 
     void mouseMove(QMouseEvent* event);
     void mousePress(QMouseEvent* event);
     void mouseRelease(QMouseEvent* event);
+    void keyPress(QKeyEvent* event);
+    void keyRelease(QKeyEvent* event);
 
-    QWidget* getGLWidget();
+protected:
+    GLViewImpl();
 
 private:
-    virtual bool createInWidget(QWidget* param);
+    virtual bool initWithView(OpenGLWidget* view);
 
     bool initGL();
     void destroyGL();
@@ -72,11 +62,9 @@ private:
     float frameZoomFactor_;
     float screenScaleFactor_;
 
-    GLViewWindowMode windowMode_;
     std::vector<Touch*> touches_;
     Touch* touch_;
-    OpenGLWidget* window_;
-    QWidget* parentWidget_;
+    QOpenGLWidget* view_;
 };
 NS_CC_END
 

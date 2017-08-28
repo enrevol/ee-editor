@@ -8,11 +8,13 @@
 #include <QFileDialog>
 
 namespace ee {
+using Self = MainWindow;
+
 namespace {
 constexpr auto filter = "CocosBuilder Project File (*.ccbproj);;All Files (.*)";
 } // namespace
 
-MainWindow::MainWindow(QWidget* parent)
+Self::MainWindow(QWidget* parent)
     : Super(parent)
     , ui_(new Ui::MainWindow()) {
     ui_->setupUi(this);
@@ -59,11 +61,15 @@ MainWindow::MainWindow(QWidget* parent)
     ui_->actionProject_Settings->setEnabled(false);
 }
 
-MainWindow::~MainWindow() {
+Self::~MainWindow() {
     delete ui_;
 }
 
-void MainWindow::onProjectSettingsButtonPressed() {
+OpenGLWidget* Self::getOpenGLView() {
+    return ui_->sceneView;
+}
+
+void Self::onProjectSettingsButtonPressed() {
     qDebug() << __PRETTY_FUNCTION__;
 
     auto&& config = Config::getInstance();

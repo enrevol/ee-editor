@@ -3,8 +3,12 @@
 
 #include "platform/CCApplication.h"
 
+namespace cocos2d {
+class OpenGLWidget;
+} // namespace cocos2d
+
 namespace ee {
-class AppDelegate : private cocos2d::Application {
+class AppDelegate : public cocos2d::Application {
 private:
     using Self = AppDelegate;
     using Super = cocos2d::Application;
@@ -14,7 +18,7 @@ public:
 
     virtual ~AppDelegate() override;
 
-    void setView(QWidget* view);
+    void setOpenGLView(cocos2d::OpenGLWidget* view);
 
     virtual bool applicationDidFinishLaunching() override;
 
@@ -23,7 +27,7 @@ public:
     virtual void applicationWillEnterForeground() override;
 
 private:
-    QWidget* view_;
+    cocos2d::OpenGLWidget* openGLView_;
 };
 } // namespace ee
 

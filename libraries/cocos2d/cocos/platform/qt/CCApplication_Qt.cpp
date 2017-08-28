@@ -11,33 +11,26 @@
 NS_CC_BEGIN
 using Self = Application;
 
-static long getCurrentMillSecond() {
-    long lLastTime = 0;
-    struct timeval stCurrentTime;
-
-    gettimeofday(&stCurrentTime, NULL);
-    lLastTime = stCurrentTime.tv_sec * 1000 +
-                stCurrentTime.tv_usec * 0.001; // milliseconds
-    return lLastTime;
-}
-
 Self* Self::sharedApplication_ = nullptr;
 
 Self::Application(int argc, char* argv[])
     : Super(argc, argv)
     , animationInterval_(1.0f / 60.0f * 1000.0f) {
+    qDebug() << __PRETTY_FUNCTION__;
     timer_ = nullptr;
     referenceCount_ = 0;
     CC_ASSERT(sharedApplication_ == nullptr);
-    sharedApplication_= this;
+    sharedApplication_ = this;
 }
 
 Self::~Application() {
+    qDebug() << __PRETTY_FUNCTION__;
     CC_ASSERT(this == sharedApplication_);
     sharedApplication_ = nullptr;
 }
 
 int Self::run() {
+    qDebug() << __PRETTY_FUNCTION__;
     if (not applicationDidFinishLaunching()) {
         return 0;
     }
@@ -58,7 +51,7 @@ void Self::setAnimationInterval(float interval) {
 
 Self::Platform Self::getTargetPlatform() {
 #if CC_TARGET_PLATFORM == CC_PLATFORM_MAC
-    return Platform::OS_MAC;    
+    return Platform::OS_MAC;
 #elif CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
     return Platform::OS_WINDOWS;
 #else
@@ -69,10 +62,6 @@ Self::Platform Self::getTargetPlatform() {
 std::string Self::getVersion() {
     return "";
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-// static member function
-//////////////////////////////////////////////////////////////////////////////////////////////////
 
 Self* Self::getInstance() {
     CC_ASSERT(sharedApplication_ != nullptr);
@@ -85,9 +74,12 @@ const char* Self::getCurrentLanguageCode() {
 
 LanguageType Self::getCurrentLanguage() {
     switch (QLocale::system().language()) {
-    case QLocale::Chinese: return LanguageType::CHINESE;
-    case QLocale::English: return LanguageType::ENGLISH;
-    case QLocale::France: return LanguageType::FRENCH;
+    case QLocale::Chinese:
+        return LanguageType::CHINESE;
+    case QLocale::English:
+        return LanguageType::ENGLISH;
+    case QLocale::France:
+        return LanguageType::FRENCH;
     }
 
     // FIXME
@@ -131,14 +123,16 @@ LanguageType Self::getCurrentLanguage() {
 bool Self::openURL(const std::string& url) {
     // FIXME.
     // NSString* msg =
-    //     [NSString stringWithCString:url.c_str() encoding:NSUTF8StringEncoding];
+    //     [NSString stringWithCString:url.c_str()
+    //     encoding:NSUTF8StringEncoding];
     // NSURL* nsUrl = [NSURL URLWithString:msg];
     // return [[NSWorkspace sharedWorkspace] openURL:nsUrl];
     return false;
 }
 
 void Self::timerUpdate() {
-    // referencecount_ is here to prevent calling the mainloop from nested event loops.
+    // referencecount_ is here to prevent calling the mainloop from nested event
+    // loops.
     if (referenceCount_ == 0) {
         Director::getInstance()->mainLoop();
     }

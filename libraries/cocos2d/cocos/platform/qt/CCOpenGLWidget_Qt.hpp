@@ -3,14 +3,17 @@
 
 #include "platform/CCPlatformMacros.h"
 
+#include <QOpenGLFunctions>
 #include <QOpenGLWidget>
 
 NS_CC_BEGIN
 using MouseEventCallback = std::function<void(QMouseEvent* event)>;
-using ResizeEventCallback = std::function<void(QResizeEvent* event)>;
 using KeyEventCallback = std::function<void(QKeyEvent* event)>;
+using ResizeEventCallback = std::function<void(QResizeEvent* event)>;
 
-class CC_DLL OpenGLWidget : public QOpenGLWidget {
+/// Inherits from QOpenGLWidget and provides callbacks for mouse and keyboard
+/// events.
+class CC_DLL OpenGLWidget : public QOpenGLWidget, QOpenGLFunctions {
     Q_OBJECT
 
 private:
@@ -18,16 +21,20 @@ private:
     using Super = QOpenGLWidget;
 
 public:
-    explicit OpenGLWidget(QWidget* parent = nullptr, int width = 800,
-                          int height = 600);
+    explicit OpenGLWidget(QWidget* parent = nullptr);
 
     virtual ~OpenGLWidget() override;
+
+    virtual void initializeGL() override;
+    virtual void resizeGL(int width, int height) override;
+    virtual void paintGL() override;
 
     void setMouseMoveCallback(const MouseEventCallback& callback);
     void setMousePressCallback(const MouseEventCallback& callback);
     void setMouseReleaseCallback(const MouseEventCallback& callback);
+    void setKeyPressCallback(const KeyEventCallback& callback);
+    void setKeyReleaseCallback(const KeyEventCallback& callback);
     void setResizeCallback(const ResizeEventCallback& callback);
-    void setKeyEventCallback(const KeyEventCallback& callback);
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent* event) override;
@@ -41,8 +48,9 @@ private:
     MouseEventCallback mouseMoveCallback_;
     MouseEventCallback mousePressCallback_;
     MouseEventCallback mouseReleaseCallback_;
+    KeyEventCallback keyPressCallback_;
+    KeyEventCallback keyReleaseCallback_;
     ResizeEventCallback resizeCallback_;
-    KeyEventCallback keyEventCallback_;
 };
 NS_CC_END
 

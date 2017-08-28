@@ -35,7 +35,8 @@ SOURCES += \
     settings.cpp \
     contentprotectionkey.cpp \
     iserializable.cpp \
-    appdelegate.cpp
+    appdelegate.cpp \
+    openglwidget.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -46,7 +47,8 @@ HEADERS += \
     settings.hpp \
     contentprotectionkey.hpp \
     iserializable.hpp \
-    appdelegate.hpp
+    appdelegate.hpp \
+    openglwidget.hpp
 
 FORMS += \
     mainwindow.ui \
