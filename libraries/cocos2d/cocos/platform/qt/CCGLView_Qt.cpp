@@ -55,6 +55,9 @@ bool Self::initWithView(OpenGLWidget* view) {
 
     view->setResizeCallback([this](QResizeEvent* event) {
         setFrameSize(event->size().width(), event->size().height());
+        updateDesignResolutionSize();
+        auto director = Director::getInstance();
+        director->setProjection(director->getProjection());
     });
 
     view->setRepaintCallback([this] {
