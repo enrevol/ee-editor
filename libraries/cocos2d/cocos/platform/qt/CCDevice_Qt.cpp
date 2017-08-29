@@ -133,8 +133,8 @@ Data Device::getTextureDataForText(const char* text,
     }
     auto&& dc = BitmapDC::getInstance();
     QSize size;
-    size.setWidth(width);
-    size.setHeight(height);
+    size.setWidth(textDefinition._dimensions.width);
+    size.setHeight(textDefinition._dimensions.height);
 
     // Draw the text on the Bitmap DC.
     auto result =
@@ -147,6 +147,9 @@ Data Device::getTextureDataForText(const char* text,
     // FIXME:
     // hasPremultipliedAlpha = ???
     hasPremultipliedAlpha = true;
+
+    width = size.width();
+    height = size.height();
 
     auto data = Data::Null;
     auto len = dc.image_->byteCount();
