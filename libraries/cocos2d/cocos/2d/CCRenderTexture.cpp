@@ -76,16 +76,16 @@ RenderTexture::~RenderTexture()
 {
     CC_SAFE_RELEASE(_sprite);
     CC_SAFE_RELEASE(_textureCopy);
-    
-    glDeleteFramebuffers(1, &_FBO);
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    f->glDeleteFramebuffers(1, &_FBO);
     if (_depthRenderBuffer)
     {
-        glDeleteRenderbuffers(1, &_depthRenderBuffer);
+        f->glDeleteRenderbuffers(1, &_depthRenderBuffer);
     }
 
     if (_stencilRenderBuffer)
     {
-        glDeleteRenderbuffers(1, &_stencilRenderBuffer);
+        f->glDeleteRenderbuffers(1, &_stencilRenderBuffer);
     }
 
     CC_SAFE_DELETE(_UITextureImage);

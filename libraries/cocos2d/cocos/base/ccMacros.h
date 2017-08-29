@@ -246,7 +246,8 @@ It should work same as apples CFSwapInt32LittleToHost(..)
 #else
 #define CHECK_GL_ERROR_DEBUG() \
     do { \
-        GLenum __error = glGetError(); \
+        auto f = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions(); \
+        GLenum __error = f->glGetError(); \
         if(__error) { \
             cocos2d::log("OpenGL error 0x%04X in %s %s %d\n", __error, __FILE__, __FUNCTION__, __LINE__); \
         } \
@@ -267,7 +268,8 @@ It should work same as apples CFSwapInt32LittleToHost(..)
 #define CC_GL_ASSERT( gl_code ) do \
 { \
 gl_code; \
-__gl_error_code = glGetError(); \
+auto f = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions(); \
+__gl_error_code = f->glGetError(); \
 CC_ASSERT(__gl_error_code == GL_NO_ERROR, "Error"); \
 } while(0)
 #endif

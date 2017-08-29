@@ -191,8 +191,9 @@ void TMXLayer::onDraw(Primitive *primitive)
     
     GL::bindVAO(0);
     primitive->draw();
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, primitive->getCount() * 4);
 }
 

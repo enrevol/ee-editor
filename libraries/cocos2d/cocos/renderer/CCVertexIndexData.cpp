@@ -25,6 +25,7 @@
 #include "renderer/CCVertexIndexData.h"
 #include "renderer/ccGLStateCache.h"
 #include "renderer/CCVertexIndexBuffer.h"
+#include "base/CCDirector.h"
 
 NS_CC_BEGIN
 
@@ -122,6 +123,7 @@ void VertexData::use()
     }
     
     GL::enableVertexAttribs(flags);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
 
     int lastVBO = -1;
     for(auto& element : _vertexStreams)
@@ -133,15 +135,15 @@ void VertexData::use()
         // don't call glBindBuffer() if not needed. Expensive operation.
         int vbo = vertexBuffer->getVBO();
         if (vbo != lastVBO) {
-            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->getVBO());
+            f->glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->getVBO());
             lastVBO = vbo;
         }
-        glVertexAttribPointer(GLint(vertexStreamAttrib._semantic),
-                              vertexStreamAttrib._size,
-                              vertexStreamAttrib._type,
-                              vertexStreamAttrib._normalize,
-                              vertexBuffer->getSizePerVertex(),
-                              (GLvoid*)((long)vertexStreamAttrib._offset));
+        f->glVertexAttribPointer(GLint(vertexStreamAttrib._semantic),
+                                 vertexStreamAttrib._size,
+                                 vertexStreamAttrib._type,
+                                 vertexStreamAttrib._normalize,
+                                 vertexBuffer->getSizePerVertex(),
+                                 (GLvoid*)((long)vertexStreamAttrib._offset));
     }
 }
 

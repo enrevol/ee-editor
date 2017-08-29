@@ -219,10 +219,11 @@ void ClippingNode::visit(Renderer *renderer, const Mat4 &parentTransform, uint32
     if (alphaThreshold < 1)
     {
 #if CC_CLIPPING_NODE_OPENGLES
+        auto f = _director->getOpenGLView()->getOpenGLContext()()->functions();
         // since glAlphaTest do not exists in OES, use a shader that writes
         // pixel only if greater than an alpha threshold
         GLProgram *program = GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_ALPHA_TEST_NO_MV);
-        GLint alphaValueLocation = glGetUniformLocation(program->getProgram(), GLProgram::UNIFORM_NAME_ALPHA_TEST_VALUE);
+        GLint alphaValueLocation = f->glGetUniformLocation(program->getProgram(), GLProgram::UNIFORM_NAME_ALPHA_TEST_VALUE);
         // set our alphaThreshold
         program->use();
         program->setUniformLocationWith1f(alphaValueLocation, alphaThreshold);

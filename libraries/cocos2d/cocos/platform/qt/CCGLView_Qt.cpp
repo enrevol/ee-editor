@@ -27,9 +27,12 @@ Self::GLViewImpl()
     , frameZoomFactor_(1.0f)
     , screenScaleFactor_(false)
     , touch_(nullptr)
-    , view_(nullptr) {}
+    , view_(nullptr) {
+    qDebug() << __PRETTY_FUNCTION__;
+}
 
 Self::~GLViewImpl() {
+    qDebug() << __PRETTY_FUNCTION__;
     CC_SAFE_DELETE(touch_);
 }
 
@@ -60,6 +63,11 @@ bool Self::initWithView(OpenGLWidget* view) {
     view->setKeyReleaseCallback(
         std::bind(&Self::keyRelease, this, std::placeholders::_1));
 
+    view->setUpdateBehavior(QOpenGLWidget::UpdateBehavior::NoPartialUpdate);
+
+    _screenSize.width = _designResolutionSize.width = view->size().width();
+    _screenSize.height = _designResolutionSize.height = view->size().height();
+
     if (not initGL()) {
         destroyGL();
     }
@@ -73,6 +81,7 @@ bool Self::isOpenGLReady() {
 }
 
 void Self::end() {
+    qDebug() << __PRETTY_FUNCTION__;
     CC_SAFE_DELETE(touch_);
     CC_SAFE_DELETE(view_);
     delete this;
@@ -80,8 +89,9 @@ void Self::end() {
 
 void Self::swapBuffers() {
     if (initialized_) {
-        // view_->makeCurrent();
-        // window_->swapBuffer() ??
+        auto context = view_->context();
+        context->makeCurrent(context->surface());
+        context->swapBuffers(context->surface());
     }
 }
 
@@ -114,6 +124,10 @@ void Self::setViewPortInPoints(float x, float y, float w, float h) {
 
 void Self::setScissorInPoints(float x, float y, float w, float h) {
     Super::setScissorInPoints(x, y, w, h);
+}
+
+QOpenGLContext* Self::getOpenGLContext() const {
+    return view_->context();
 }
 
 void Self::mouseMove(QMouseEvent* event) {

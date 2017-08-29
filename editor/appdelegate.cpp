@@ -28,6 +28,12 @@ bool Self::applicationDidFinishLaunching() {
     director->setDisplayStats(true);
     director->setAnimationInterval(1.0f / 60);
 
+    auto&& frameSize = director->getOpenGLView()->getFrameSize();
+    qDebug() << "frameSize = " << frameSize.width << " " << frameSize.height;
+
+    auto&& winSize = director->getWinSize();
+    qDebug() << "winSize = " << winSize.width << " " << winSize.height;
+
     auto scene = cocos2d::Scene::create();
     auto layer = cocos2d::LayerColor::create(cocos2d::Color4B::BLUE);
     layer->setContentSize(cocos2d::Size(100, 100));

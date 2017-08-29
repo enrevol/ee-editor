@@ -169,7 +169,8 @@ void GLView::updateDesignResolutionSize()
         // A default viewport is needed in order to display the FPS,
         // since the FPS are rendered in the Director, and there is no viewport there.
         // Everything, including the FPS should renderer in the Scene.
-        glViewport(0, 0, _screenSize.width, _screenSize.height);
+        auto f = getOpenGLContext()->functions();
+        f->glViewport(0, 0, _screenSize.width, _screenSize.height);
     }
 }
 
@@ -252,21 +253,24 @@ void GLView::setViewPortInPoints(float x , float y , float w , float h)
 
 void GLView::setScissorInPoints(float x , float y , float w , float h)
 {
-    glScissor((GLint)(x * _scaleX + _viewPortRect.origin.x),
-              (GLint)(y * _scaleY + _viewPortRect.origin.y),
-              (GLsizei)(w * _scaleX),
-              (GLsizei)(h * _scaleY));
+    auto f = getOpenGLContext()->functions();
+    f->glScissor((GLint)(x * _scaleX + _viewPortRect.origin.x),
+                 (GLint)(y * _scaleY + _viewPortRect.origin.y),
+                 (GLsizei)(w * _scaleX),
+                 (GLsizei)(h * _scaleY));
 }
 
 bool GLView::isScissorEnabled()
 {
-    return (GL_FALSE == glIsEnabled(GL_SCISSOR_TEST)) ? false : true;
+    auto f = getOpenGLContext()->functions();
+    return (GL_FALSE == f->glIsEnabled(GL_SCISSOR_TEST)) ? false : true;
 }
 
 Rect GLView::getScissorRect() const
 {
     GLfloat params[4];
-    glGetFloatv(GL_SCISSOR_BOX, params);
+    auto f = getOpenGLContext()->functions();
+    f->glGetFloatv(GL_SCISSOR_BOX, params);
     float x = (params[0] - _viewPortRect.origin.x) / _scaleX;
     float y = (params[1] - _viewPortRect.origin.y) / _scaleY;
     float w = params[2] / _scaleX;

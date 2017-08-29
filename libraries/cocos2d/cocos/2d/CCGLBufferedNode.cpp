@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 #include "2d/CCGLBufferedNode.h"
 
+#include "base/CCDirector.h"
+
 GLBufferedNode::GLBufferedNode()
 {
     for(int i = 0; i < BUFFER_SLOTS; i++)
@@ -38,15 +40,16 @@ GLBufferedNode::GLBufferedNode()
 
 GLBufferedNode::~GLBufferedNode()
 {
+    auto f = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     for(int i = 0; i < BUFFER_SLOTS; i++)
     {
         if(_bufferSize[i])
         {
-            glDeleteBuffers(1, &(_bufferObject[i]));
+            f->glDeleteBuffers(1, &(_bufferObject[i]));
         }
         if(_indexBufferSize[i])
         {
-            glDeleteBuffers(1, &(_indexBufferObject[i]));
+            f->glDeleteBuffers(1, &(_indexBufferObject[i]));
         }
     }
 }
@@ -54,44 +57,46 @@ GLBufferedNode::~GLBufferedNode()
 void GLBufferedNode::setGLBufferData(void *buf, GLuint bufSize, int slot)
 {
     // WebGL doesn't support client-side arrays, so generate a buffer and load the data first.
+    auto f = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     if(_bufferSize[slot] < bufSize)
     {
         if(_bufferObject[slot])
         {
-            glDeleteBuffers(1, &(_bufferObject[slot]));
+            f->glDeleteBuffers(1, &(_bufferObject[slot]));
         }
-        glGenBuffers(1, &(_bufferObject[slot]));
+        f->glGenBuffers(1, &(_bufferObject[slot]));
         _bufferSize[slot] = bufSize;
 
-        glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[slot]);
-        glBufferData(GL_ARRAY_BUFFER, bufSize, buf, GL_DYNAMIC_DRAW);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[slot]);
+        f->glBufferData(GL_ARRAY_BUFFER, bufSize, buf, GL_DYNAMIC_DRAW);
     }
     else
     {
-        glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[slot]);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, bufSize, buf);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[slot]);
+        f->glBufferSubData(GL_ARRAY_BUFFER, 0, bufSize, buf);
     }
 }
 
 void GLBufferedNode::setGLIndexData(void *buf, GLuint bufSize, int slot)
 {
+    auto f = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     // WebGL doesn't support client-side arrays, so generate a buffer and load the data first.
     if(_indexBufferSize[slot] < bufSize)
     {
         if(_indexBufferObject[slot])
         {
-            glDeleteBuffers(1, &(_indexBufferObject[slot]));
+            f->glDeleteBuffers(1, &(_indexBufferObject[slot]));
         }
-        glGenBuffers(1, &(_indexBufferObject[slot]));
+        f->glGenBuffers(1, &(_indexBufferObject[slot]));
         _indexBufferSize[slot] = bufSize;
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferObject[slot]);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, bufSize, buf, GL_DYNAMIC_DRAW);
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferObject[slot]);
+        f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, bufSize, buf, GL_DYNAMIC_DRAW);
     }
     else
     {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferObject[slot]);
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, bufSize, buf);
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferObject[slot]);
+        f->glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, bufSize, buf);
     }
 }
 

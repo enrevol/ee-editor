@@ -43,6 +43,8 @@
 #include "2d/CCCamera.h"
 #include "2d/CCScene.h"
 
+#include <QOpenGLFunctions_3_0>
+
 NS_CC_BEGIN
 
 // helper
@@ -147,38 +149,40 @@ void RenderQueue::realloc(size_t reserveSize)
 
 void RenderQueue::saveRenderState()
 {
-    _isDepthEnabled = glIsEnabled(GL_DEPTH_TEST) != GL_FALSE;
-    _isCullEnabled = glIsEnabled(GL_CULL_FACE) != GL_FALSE;
-    glGetBooleanv(GL_DEPTH_WRITEMASK, &_isDepthWrite);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    _isDepthEnabled = f->glIsEnabled(GL_DEPTH_TEST) != GL_FALSE;
+    _isCullEnabled = f->glIsEnabled(GL_CULL_FACE) != GL_FALSE;
+    f->glGetBooleanv(GL_DEPTH_WRITEMASK, &_isDepthWrite);
     
     CHECK_GL_ERROR_DEBUG();
 }
 
 void RenderQueue::restoreRenderState()
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     if (_isCullEnabled)
     {
-        glEnable(GL_CULL_FACE);
+        f->glEnable(GL_CULL_FACE);
         RenderState::StateBlock::_defaultState->setCullFace(true);
     }
     else
     {
-        glDisable(GL_CULL_FACE);
+        f->glDisable(GL_CULL_FACE);
         RenderState::StateBlock::_defaultState->setCullFace(false);
     }
 
     if (_isDepthEnabled)
     {
-        glEnable(GL_DEPTH_TEST);
+        f->glEnable(GL_DEPTH_TEST);
         RenderState::StateBlock::_defaultState->setDepthTest(true);
     }
     else
     {
-        glDisable(GL_DEPTH_TEST);
+        f->glDisable(GL_DEPTH_TEST);
         RenderState::StateBlock::_defaultState->setDepthTest(false);
     }
     
-    glDepthMask(_isDepthWrite);
+    f->glDepthMask(_isDepthWrite);
     RenderState::StateBlock::_defaultState->setDepthWrite(_isDepthEnabled);
 
     CHECK_GL_ERROR_DEBUG();
@@ -225,13 +229,16 @@ Renderer::~Renderer()
     _renderGroups.clear();
     _groupCommandManager->release();
     
-    glDeleteBuffers(2, _buffersVBO);
+    auto context = Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    auto f = context->functions();
+    f->glDeleteBuffers(2, _buffersVBO);
 
     free(_triBatchesToDraw);
 
     if (Configuration::getInstance()->supportsShareableVAO())
     {
-        glDeleteVertexArrays(1, &_buffersVAO);
+        auto f2 = context->extraFunctions();
+        f2->glDeleteVertexArrays(1, &_buffersVAO);
         GL::bindVAO(0);
     }
 #if CC_ENABLE_CACHE_TEXTURE_DATA
@@ -269,41 +276,48 @@ void Renderer::setupBuffer()
 
 void Renderer::setupVBOAndVAO()
 {
+    auto context = Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    auto f = context->extraFunctions();
+
     //generate vbo and vao for trianglesCommand
-    glGenVertexArrays(1, &_buffersVAO);
+    f->glGenVertexArrays(1, &_buffersVAO);
+    CHECK_GL_ERROR_DEBUG();
     GL::bindVAO(_buffersVAO);
 
-    glGenBuffers(2, &_buffersVBO[0]);
+    CHECK_GL_ERROR_DEBUG();
 
-    glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * VBO_SIZE, _verts, GL_DYNAMIC_DRAW);
+    f->glGenBuffers(2, &_buffersVBO[0]);
+
+    f->glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
+    f->glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * VBO_SIZE, _verts, GL_DYNAMIC_DRAW);
 
     // vertices
-    glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), (GLvoid*) offsetof( V3F_C4B_T2F, vertices));
+    f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), (GLvoid*) offsetof( V3F_C4B_T2F, vertices));
 
     // colors
-    glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V3F_C4B_T2F), (GLvoid*) offsetof( V3F_C4B_T2F, colors));
+    f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V3F_C4B_T2F), (GLvoid*) offsetof( V3F_C4B_T2F, colors));
 
     // tex coords
-    glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), (GLvoid*) offsetof( V3F_C4B_T2F, texCoords));
+    f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), (GLvoid*) offsetof( V3F_C4B_T2F, texCoords));
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * INDEX_VBO_SIZE, _indices, GL_STATIC_DRAW);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
+    f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * INDEX_VBO_SIZE, _indices, GL_STATIC_DRAW);
 
     // Must unbind the VAO before changing the element buffer.
     GL::bindVAO(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     CHECK_GL_ERROR_DEBUG();
 }
 
 void Renderer::setupVBO()
 {
-    glGenBuffers(2, &_buffersVBO[0]);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGenBuffers(2, &_buffersVBO[0]);
     // Issue #15652
     // Should not initialize VBO with a large size (VBO_SIZE=65536),
     // it may cause low FPS on some Android devices like LG G4 & Nexus 5X.
@@ -319,16 +333,17 @@ void Renderer::mapBuffers()
     // Avoid changing the element buffer for whatever VAO might be bound.
     GL::bindVAO(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * VBO_SIZE, _verts, GL_DYNAMIC_DRAW);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
+    f->glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * VBO_SIZE, _verts, GL_DYNAMIC_DRAW);
     
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * INDEX_VBO_SIZE, _indices, GL_STATIC_DRAW);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
+    f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * INDEX_VBO_SIZE, _indices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     CHECK_GL_ERROR_DEBUG();
 }
@@ -425,6 +440,7 @@ void Renderer::processRenderCommand(RenderCommand* command)
 void Renderer::visitRenderQueue(RenderQueue& queue)
 {
     queue.saveRenderState();
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     
     //
     //Process Global-Z < 0 Objects
@@ -434,23 +450,23 @@ void Renderer::visitRenderQueue(RenderQueue& queue)
     {
         if(_isDepthTestFor2D)
         {
-            glEnable(GL_DEPTH_TEST);
-            glDepthMask(true);
-            glEnable(GL_BLEND);
+            f->glEnable(GL_DEPTH_TEST);
+            f->glDepthMask(true);
+            f->glEnable(GL_BLEND);
             RenderState::StateBlock::_defaultState->setDepthTest(true);
             RenderState::StateBlock::_defaultState->setDepthWrite(true);
             RenderState::StateBlock::_defaultState->setBlend(true);
         }
         else
         {
-            glDisable(GL_DEPTH_TEST);
-            glDepthMask(false);
-            glEnable(GL_BLEND);
+            f->glDisable(GL_DEPTH_TEST);
+            f->glDepthMask(false);
+            f->glEnable(GL_BLEND);
             RenderState::StateBlock::_defaultState->setDepthTest(false);
             RenderState::StateBlock::_defaultState->setDepthWrite(false);
             RenderState::StateBlock::_defaultState->setBlend(true);
         }
-        glDisable(GL_CULL_FACE);
+        f->glDisable(GL_CULL_FACE);
         RenderState::StateBlock::_defaultState->setCullFace(false);
         
         for (const auto& zNegNext : zNegQueue)
@@ -467,10 +483,10 @@ void Renderer::visitRenderQueue(RenderQueue& queue)
     if (opaqueQueue.size() > 0)
     {
         //Clear depth to achieve layered rendering
-        glEnable(GL_DEPTH_TEST);
-        glDepthMask(true);
-        glDisable(GL_BLEND);
-        glEnable(GL_CULL_FACE);
+        f->glEnable(GL_DEPTH_TEST);
+        f->glDepthMask(true);
+        f->glDisable(GL_BLEND);
+        f->glEnable(GL_CULL_FACE);
         RenderState::StateBlock::_defaultState->setDepthTest(true);
         RenderState::StateBlock::_defaultState->setDepthWrite(true);
         RenderState::StateBlock::_defaultState->setBlend(false);
@@ -489,10 +505,10 @@ void Renderer::visitRenderQueue(RenderQueue& queue)
     const auto& transQueue = queue.getSubQueue(RenderQueue::QUEUE_GROUP::TRANSPARENT_3D);
     if (transQueue.size() > 0)
     {
-        glEnable(GL_DEPTH_TEST);
-        glDepthMask(false);
-        glEnable(GL_BLEND);
-        glEnable(GL_CULL_FACE);
+        f->glEnable(GL_DEPTH_TEST);
+        f->glDepthMask(false);
+        f->glEnable(GL_BLEND);
+        f->glEnable(GL_CULL_FACE);
 
         RenderState::StateBlock::_defaultState->setDepthTest(true);
         RenderState::StateBlock::_defaultState->setDepthWrite(false);
@@ -515,9 +531,9 @@ void Renderer::visitRenderQueue(RenderQueue& queue)
     {
         if(_isDepthTestFor2D)
         {
-            glEnable(GL_DEPTH_TEST);
-            glDepthMask(true);
-            glEnable(GL_BLEND);
+            f->glEnable(GL_DEPTH_TEST);
+            f->glDepthMask(true);
+            f->glEnable(GL_BLEND);
 
             RenderState::StateBlock::_defaultState->setDepthTest(true);
             RenderState::StateBlock::_defaultState->setDepthWrite(true);
@@ -525,15 +541,15 @@ void Renderer::visitRenderQueue(RenderQueue& queue)
         }
         else
         {
-            glDisable(GL_DEPTH_TEST);
-            glDepthMask(false);
-            glEnable(GL_BLEND);
+            f->glDisable(GL_DEPTH_TEST);
+            f->glDepthMask(false);
+            f->glEnable(GL_BLEND);
 
             RenderState::StateBlock::_defaultState->setDepthTest(false);
             RenderState::StateBlock::_defaultState->setDepthWrite(false);
             RenderState::StateBlock::_defaultState->setBlend(true);
         }
-        glDisable(GL_CULL_FACE);
+        f->glDisable(GL_CULL_FACE);
         RenderState::StateBlock::_defaultState->setCullFace(false);
         
         for (const auto& zZeroNext : zZeroQueue)
@@ -551,9 +567,9 @@ void Renderer::visitRenderQueue(RenderQueue& queue)
     {
         if(_isDepthTestFor2D)
         {
-            glEnable(GL_DEPTH_TEST);
-            glDepthMask(true);
-            glEnable(GL_BLEND);
+            f->glEnable(GL_DEPTH_TEST);
+            f->glDepthMask(true);
+            f->glEnable(GL_BLEND);
             
             RenderState::StateBlock::_defaultState->setDepthTest(true);
             RenderState::StateBlock::_defaultState->setDepthWrite(true);
@@ -561,15 +577,15 @@ void Renderer::visitRenderQueue(RenderQueue& queue)
         }
         else
         {
-            glDisable(GL_DEPTH_TEST);
-            glDepthMask(false);
-            glEnable(GL_BLEND);
+            f->glDisable(GL_DEPTH_TEST);
+            f->glDepthMask(false);
+            f->glEnable(GL_BLEND);
             
             RenderState::StateBlock::_defaultState->setDepthTest(false);
             RenderState::StateBlock::_defaultState->setDepthWrite(false);
             RenderState::StateBlock::_defaultState->setBlend(true);
         }
-        glDisable(GL_CULL_FACE);
+        f->glDisable(GL_CULL_FACE);
         RenderState::StateBlock::_defaultState->setCullFace(false);
         
         for (const auto& zPosNext : zPosQueue)
@@ -625,22 +641,24 @@ void Renderer::clean()
 
 void Renderer::clear()
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     //Enable Depth mask to make sure glClear clear the depth buffer correctly
-    glDepthMask(true);
-    glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDepthMask(false);
+    f->glDepthMask(true);
+    f->glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
+    f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    f->glDepthMask(false);
 
     RenderState::StateBlock::_defaultState->setDepthWrite(false);
 }
 
 void Renderer::setDepthTest(bool enable)
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     if (enable)
     {
-        glClearDepth(1.0f);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LEQUAL);
+        f->glClearDepthf(1.0f);
+        f->glEnable(GL_DEPTH_TEST);
+        f->glDepthFunc(GL_LEQUAL);
 
         RenderState::StateBlock::_defaultState->setDepthTest(true);
         RenderState::StateBlock::_defaultState->setDepthFunction(RenderState::DEPTH_LEQUAL);
@@ -649,7 +667,7 @@ void Renderer::setDepthTest(bool enable)
     }
     else
     {
-        glDisable(GL_DEPTH_TEST);
+        f->glDisable(GL_DEPTH_TEST);
 
         RenderState::StateBlock::_defaultState->setDepthTest(false);
     }
@@ -742,13 +760,17 @@ void Renderer::drawBatchedTriangles()
     batchesTotal++;
 
     /************** 2: Copy vertices/indices to GL objects *************/
+    auto context = Director::getInstance()->getOpenGLView()->getOpenGLContext();    
+
     auto conf = Configuration::getInstance();
     if (conf->supportsShareableVAO() && conf->supportsMapBuffer())
     {
+        auto f = context->versionFunctions<QOpenGLFunctions_3_0>();
+
         //Bind VAO
         GL::bindVAO(_buffersVAO);
         //Set VBO data
-        glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
 
         // option 1: subdata
 //        glBufferSubData(GL_ARRAY_BUFFER, sizeof(_quads[0])*start, sizeof(_quads[0]) * n , &_quads[start] );
@@ -760,45 +782,50 @@ void Renderer::drawBatchedTriangles()
         // FIXME: in order to work as fast as possible, it must "and the exact same size and usage hints it had before."
         //  source: https://www.opengl.org/wiki/Buffer_Object_Streaming#Explicit_multiple_buffering
         // so most probably we won't have any benefit of using it
-        glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * _filledVertex, nullptr, GL_STATIC_DRAW);
-        void *buf = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-        memcpy(buf, _verts, sizeof(_verts[0]) * _filledVertex);
-        glUnmapBuffer(GL_ARRAY_BUFFER);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * _filledVertex, nullptr, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        void *buf = f->glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        memcpy(buf, _verts, sizeof(_verts[0]) * _filledVertex);
+        f->glUnmapBuffer(GL_ARRAY_BUFFER);
+
+        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
         
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _filledIndex, _indices, GL_STATIC_DRAW);
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
+        f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _filledIndex, _indices, GL_STATIC_DRAW);
     }
     else
     {
+        auto f = context->functions();
+
         // Client Side Arrays
 #define kQuadSize sizeof(_verts[0])
-        glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
 
-        glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * _filledVertex , _verts, GL_DYNAMIC_DRAW);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * _filledVertex , _verts, GL_DYNAMIC_DRAW);
 
         GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 
         // vertices
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof(V3F_C4B_T2F, vertices));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof(V3F_C4B_T2F, vertices));
 
         // colors
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (GLvoid*) offsetof(V3F_C4B_T2F, colors));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (GLvoid*) offsetof(V3F_C4B_T2F, colors));
 
         // tex coords
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof(V3F_C4B_T2F, texCoords));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof(V3F_C4B_T2F, texCoords));
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _filledIndex, _indices, GL_STATIC_DRAW);
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
+        f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _filledIndex, _indices, GL_STATIC_DRAW);
     }
+
+    auto f = context->functions();
 
     /************** 3: Draw *************/
     for (int i=0; i<batchesTotal; ++i)
     {
         CC_ASSERT(_triBatchesToDraw[i].cmd && "Invalid batch");
         _triBatchesToDraw[i].cmd->useMaterial();
-        glDrawElements(GL_TRIANGLES, (GLsizei) _triBatchesToDraw[i].indicesToDraw, GL_UNSIGNED_SHORT, (GLvoid*) (_triBatchesToDraw[i].offset*sizeof(_indices[0])) );
+        f->glDrawElements(GL_TRIANGLES, (GLsizei) _triBatchesToDraw[i].indicesToDraw, GL_UNSIGNED_SHORT, (GLvoid*) (_triBatchesToDraw[i].offset*sizeof(_indices[0])) );
         _drawnBatches++;
         _drawnVertices += _triBatchesToDraw[i].indicesToDraw;
     }
@@ -811,8 +838,8 @@ void Renderer::drawBatchedTriangles()
     }
     else
     {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     _queuedTriangleCommands.clear();

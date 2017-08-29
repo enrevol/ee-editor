@@ -370,15 +370,15 @@ void Director::setOpenGLView(GLView *openGLView)
 
     if (_openGLView != openGLView)
     {
-        // Configuration. Gather GPU info
-        Configuration *conf = Configuration::getInstance();
-        conf->gatherGPUInfo();
-        CCLOG("%s\n",conf->getInfo().c_str());
-
         if(_openGLView)
             _openGLView->release();
         _openGLView = openGLView;
         _openGLView->retain();
+
+        // Configuration. Gather GPU info
+        Configuration *conf = Configuration::getInstance();
+        conf->gatherGPUInfo();
+        CCLOG("%s\n",conf->getInfo().c_str());
 
         // set size
         _winSizeInPoints = _openGLView->getDesignResolutionSize();

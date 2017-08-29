@@ -99,8 +99,9 @@ void onCaptureScreen(const std::function<void(bool, const std::string&)>& afterC
             break;
         }
 
-        glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer.get());
+        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+        f->glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        f->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer.get());
 
         std::shared_ptr<GLubyte> flippedBuffer(new GLubyte[width * height * 4], [](GLubyte* p) { CC_SAFE_DELETE_ARRAY(p); });
         if (!flippedBuffer)

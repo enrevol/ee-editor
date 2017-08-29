@@ -318,12 +318,13 @@ void VertexAttribValue::apply()
         }
         else
         {
-            glVertexAttribPointer(_vertexAttrib->index,
-                                  _value.pointer.size,
-                                  _value.pointer.type,
-                                  _value.pointer.normalized,
-                                  _value.pointer.stride,
-                                  _value.pointer.pointer);
+            auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+            f->glVertexAttribPointer(_vertexAttrib->index,
+                                     _value.pointer.size,
+                                     _value.pointer.type,
+                                     _value.pointer.normalized,
+                                     _value.pointer.stride,
+                                     _value.pointer.pointer);
         }
     }
 }

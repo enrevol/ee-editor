@@ -41,6 +41,8 @@ public:
     virtual void setScissorInPoints(float x, float y, float w,
                                     float h) override;
 
+    virtual QOpenGLContext* getOpenGLContext() const override;
+
     void mouseMove(QMouseEvent* event);
     void mousePress(QMouseEvent* event);
     void mouseRelease(QMouseEvent* event);

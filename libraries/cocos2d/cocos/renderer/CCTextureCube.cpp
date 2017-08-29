@@ -190,7 +190,8 @@ bool TextureCube::init(const std::string& positive_x, const std::string& negativ
     images[5] = createImage(negative_z);
 
     GLuint handle;
-    glGenTextures(1, &handle);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGenTextures(1, &handle);
 
     GL::bindTextureN(0, handle, GL_TEXTURE_CUBE_MAP);
 
@@ -202,37 +203,37 @@ bool TextureCube::init(const std::string& positive_x, const std::string& negativ
         unsigned char*          pData = getImageData(img, ePixelFmt);
         if (ePixelFmt == Texture2D::PixelFormat::RGBA8888 || ePixelFmt == Texture2D::PixelFormat::DEFAULT)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                         0,                  // level
-                         GL_RGBA,            // internal format
-                         img->getWidth(),    // width
-                         img->getHeight(),   // height
-                         0,                  // border
-                         GL_RGBA,            // format
-                         GL_UNSIGNED_BYTE,   // type
-                         pData);             // pixel data
+            f->glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                            0,                  // level
+                            GL_RGBA,            // internal format
+                            img->getWidth(),    // width
+                            img->getHeight(),   // height
+                            0,                  // border
+                            GL_RGBA,            // format
+                            GL_UNSIGNED_BYTE,   // type
+                            pData);             // pixel data
         }
         else if (ePixelFmt == Texture2D::PixelFormat::RGB888)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                         0,                  // level
-                         GL_RGB,             // internal format
-                         img->getWidth(),    // width
-                         img->getHeight(),   // height
-                         0,                  // border
-                         GL_RGB,             // format
-                         GL_UNSIGNED_BYTE,   // type
-                         pData);             // pixel data
+            f->glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                            0,                  // level
+                            GL_RGB,             // internal format
+                            img->getWidth(),    // width
+                            img->getHeight(),   // height
+                            0,                  // border
+                            GL_RGB,             // format
+                            GL_UNSIGNED_BYTE,   // type
+                            pData);             // pixel data
         }
 
         if (pData != img->getData())
             delete[] pData;
     }
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     _name = handle;
 
@@ -252,10 +253,11 @@ void TextureCube::setTexParameters(const TexParams& texParams)
 
     GL::bindTextureN(0, _name, GL_TEXTURE_CUBE_MAP);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, texParams.minFilter);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, texParams.magFilter);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, texParams.wrapS);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, texParams.wrapT);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, texParams.minFilter);
+    f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, texParams.magFilter);
+    f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, texParams.wrapS);
+    f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, texParams.wrapT);
 
     GL::bindTextureN(0, 0, GL_TEXTURE_CUBE_MAP);
 }

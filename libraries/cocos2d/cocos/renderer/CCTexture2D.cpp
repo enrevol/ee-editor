@@ -596,6 +596,8 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
         return false;
     }
 
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
     //Set the row align only when mipmapsNum == 1 and the data is uncompressed
     if (mipmapsNum == 1 && !info.compressed)
     {
@@ -603,23 +605,23 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
 
         if(bytesPerRow % 8 == 0)
         {
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 8);
+            f->glPixelStorei(GL_UNPACK_ALIGNMENT, 8);
         }
         else if(bytesPerRow % 4 == 0)
         {
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+            f->glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
         }
         else if(bytesPerRow % 2 == 0)
         {
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+            f->glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
         }
         else
         {
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            f->glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         }
     }else
     {
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        f->glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     }
 
     if(_name != 0)
@@ -628,20 +630,20 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
         _name = 0;
     }
 
-    glGenTextures(1, &_name);
+    f->glGenTextures(1, &_name);
     GL::bindTexture2D(_name);
 
     if (mipmapsNum == 1)
     {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _antialiasEnabled ? GL_LINEAR : GL_NEAREST);
+        f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _antialiasEnabled ? GL_LINEAR : GL_NEAREST);
     }else
     {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _antialiasEnabled ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_NEAREST);
+        f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _antialiasEnabled ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_NEAREST);
     }
     
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _antialiasEnabled ? GL_LINEAR : GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _antialiasEnabled ? GL_LINEAR : GL_NEAREST );
+    f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 #if CC_ENABLE_CACHE_TEXTURE_DATA
     if (_antialiasEnabled)
@@ -657,7 +659,7 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
 #endif
 
     // clean possible GL error
-    GLenum err = glGetError();
+    GLenum err = f->glGetError();
     if (err != GL_NO_ERROR)
     {
         cocos2d::log("OpenGL error 0x%04X in %s %s %d\n", err, __FILE__, __FUNCTION__, __LINE__);
@@ -674,11 +676,11 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
 
         if (info.compressed)
         {
-            glCompressedTexImage2D(GL_TEXTURE_2D, i, info.internalFormat, (GLsizei)width, (GLsizei)height, 0, datalen, data);
+            f->glCompressedTexImage2D(GL_TEXTURE_2D, i, info.internalFormat, (GLsizei)width, (GLsizei)height, 0, datalen, data);
         }
         else
         {
-            glTexImage2D(GL_TEXTURE_2D, i, info.internalFormat, (GLsizei)width, (GLsizei)height, 0, info.format, info.type, data);
+            f->glTexImage2D(GL_TEXTURE_2D, i, info.internalFormat, (GLsizei)width, (GLsizei)height, 0, info.format, info.type, data);
         }
 
         if (i > 0 && (width != height || ccNextPOT(width) != width ))
@@ -686,7 +688,7 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
             CCLOG("cocos2d: Texture2D. WARNING. Mipmap level %u is not squared. Texture won't render correctly. width=%d != height=%d", i, width, height);
         }
 
-        err = glGetError();
+        err = f->glGetError();
         if (err != GL_NO_ERROR)
         {
             CCLOG("cocos2d: Texture2D: Error uploading compressed texture level: %u . glError: 0x%04X", i, err);
@@ -718,7 +720,8 @@ bool Texture2D::updateWithData(const void *data,int offsetX,int offsetY,int widt
     {
         GL::bindTexture2D(_name);
         const PixelFormatInfo& info = _pixelFormatInfoTables.at(_pixelFormat);
-        glTexSubImage2D(GL_TEXTURE_2D,0,offsetX,offsetY,width,height,info.format, info.type,data);
+        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+        f->glTexSubImage2D(GL_TEXTURE_2D,0,offsetX,offsetY,width,height,info.format, info.type,data);
 
         return true;
     }
@@ -1193,11 +1196,11 @@ void Texture2D::drawAtPoint(const Vec2& point)
 
     GL::bindTexture2D( _name );
 
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, coordinates);
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, coordinates);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    f->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void Texture2D::drawInRect(const Rect& rect)
@@ -1219,9 +1222,10 @@ void Texture2D::drawInRect(const Rect& rect)
 
     GL::bindTexture2D( _name );
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, coordinates);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, coordinates);
+    f->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void Texture2D::PVRImagesHavePremultipliedAlpha(bool haveAlphaPremultiplied)
@@ -1239,7 +1243,8 @@ void Texture2D::generateMipmap()
 {
     CCASSERT(_pixelsWide == ccNextPOT(_pixelsWide) && _pixelsHigh == ccNextPOT(_pixelsHigh), "Mipmap texture only works in POT textures");
     GL::bindTexture2D( _name );
-    glGenerateMipmap(GL_TEXTURE_2D);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGenerateMipmap(GL_TEXTURE_2D);
     _hasMipmaps = true;
 #if CC_ENABLE_CACHE_TEXTURE_DATA
     VolatileTextureMgr::setHasMipmaps(this, _hasMipmaps);
@@ -1258,10 +1263,11 @@ void Texture2D::setTexParameters(const TexParams &texParams)
         "GL_CLAMP_TO_EDGE should be used in NPOT dimensions");
 
     GL::bindTexture2D( _name );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texParams.minFilter );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texParams.magFilter );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texParams.wrapS );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texParams.wrapT );
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texParams.minFilter );
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texParams.magFilter );
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texParams.wrapS );
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texParams.wrapT );
 
 #if CC_ENABLE_CACHE_TEXTURE_DATA
     VolatileTextureMgr::setTexParameters(this, texParams);
@@ -1284,16 +1290,17 @@ void Texture2D::setAliasTexParameters()
 
     GL::bindTexture2D( _name );
 
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     if( ! _hasMipmaps )
     {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+        f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
     }
     else
     {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST );
+        f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST );
     }
 
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 #if CC_ENABLE_CACHE_TEXTURE_DATA
     TexParams texParams = {(GLuint)(_hasMipmaps?GL_NEAREST_MIPMAP_NEAREST:GL_NEAREST),GL_NEAREST,GL_NONE,GL_NONE};
     VolatileTextureMgr::setTexParameters(this, texParams);
@@ -1316,16 +1323,17 @@ void Texture2D::setAntiAliasTexParameters()
 
     GL::bindTexture2D( _name );
 
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     if( ! _hasMipmaps )
     {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     }
     else
     {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
+        f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
     }
 
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 #if CC_ENABLE_CACHE_TEXTURE_DATA
     TexParams texParams = {(GLuint)(_hasMipmaps?GL_LINEAR_MIPMAP_NEAREST:GL_LINEAR),GL_LINEAR,GL_NONE,GL_NONE};
     VolatileTextureMgr::setTexParameters(this, texParams);

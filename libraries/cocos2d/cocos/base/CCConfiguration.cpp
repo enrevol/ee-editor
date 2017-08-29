@@ -107,20 +107,22 @@ std::string Configuration::getInfo() const
 
 void Configuration::gatherGPUInfo()
 {
-	_valueDict["gl.vendor"] = Value((const char*)glGetString(GL_VENDOR));
-	_valueDict["gl.renderer"] = Value((const char*)glGetString(GL_RENDERER));
-	_valueDict["gl.version"] = Value((const char*)glGetString(GL_VERSION));
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
 
-    _glExtensions = (char *)glGetString(GL_EXTENSIONS);
+    _valueDict["gl.vendor"] = Value((const char*)f->glGetString(GL_VENDOR));
+    _valueDict["gl.renderer"] = Value((const char*)f->glGetString(GL_RENDERER));
+    _valueDict["gl.version"] = Value((const char*)f->glGetString(GL_VERSION));
 
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxTextureSize);
+    _glExtensions = (char *)f->glGetString(GL_EXTENSIONS);
+
+    f->glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxTextureSize);
 	_valueDict["gl.max_texture_size"] = Value((int)_maxTextureSize);
 
-    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &_maxTextureUnits);
+    f->glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &_maxTextureUnits);
 	_valueDict["gl.max_texture_units"] = Value((int)_maxTextureUnits);
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    glGetIntegerv(GL_MAX_SAMPLES_APPLE, &_maxSamplesAllowed);
+    f->glGetIntegerv(GL_MAX_SAMPLES_APPLE, &_maxSamplesAllowed);
 	_valueDict["gl.max_samples_allowed"] = Value((int)_maxSamplesAllowed);
 #endif
     
@@ -146,7 +148,7 @@ void Configuration::gatherGPUInfo()
 	_valueDict["gl.supports_discard_framebuffer"] = Value(_supportsDiscardFramebuffer);
 
 #ifdef CC_PLATFORM_PC
-    _supportsShareableVAO = checkForGLExtension("vertex_array_object");
+    _supportsShareableVAO = false; // FIXME: checkForGLExtension("vertex_array_object");
 #else
     _supportsShareableVAO = checkForGLExtension("GL_OES_vertex_array_object");
 #endif

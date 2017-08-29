@@ -250,7 +250,8 @@ bool GLProgram::initWithByteArrays(const GLchar* vShaderByteArray, const GLchar*
 
 bool GLProgram::initWithByteArrays(const GLchar* vShaderByteArray, const GLchar* fShaderByteArray, const std::string& compileTimeHeaders, const std::string& compileTimeDefines)
 {
-    _program = glCreateProgram();
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    _program = f->glCreateProgram();
     CHECK_GL_ERROR_DEBUG();
 
     // convert defines here. If we do it in "compileShader" we will do it twice.
@@ -281,13 +282,13 @@ bool GLProgram::initWithByteArrays(const GLchar* vShaderByteArray, const GLchar*
 
     if (_vertShader)
     {
-        glAttachShader(_program, _vertShader);
+        f->glAttachShader(_program, _vertShader);
     }
     CHECK_GL_ERROR_DEBUG();
 
     if (_fragShader)
     {
-        glAttachShader(_program, _fragShader);
+        f->glAttachShader(_program, _fragShader);
     }
 
     clearHashUniforms();
@@ -334,8 +335,9 @@ void GLProgram::bindPredefinedVertexAttribs()
 
     const int size = sizeof(attribute_locations) / sizeof(attribute_locations[0]);
 
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
     for(int i=0; i<size;i++) {
-        glBindAttribLocation(_program, attribute_locations[i].location, attribute_locations[i].attributeName);
+        f->glBindAttribLocation(_program, attribute_locations[i].location, attribute_locations[i].attributeName);
     }
 }
 
@@ -346,12 +348,13 @@ void GLProgram::parseVertexAttribs()
     // Query and store vertex attribute meta-data from the program.
     GLint activeAttributes;
     GLint length;
-    glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &activeAttributes);
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &activeAttributes);
     if(activeAttributes > 0)
     {
         VertexAttrib attribute;
 
-        glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &length);
+        f->glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &length);
         if(length > 0)
         {
             GLchar* attribName = (GLchar*) alloca(length + 1);
@@ -359,12 +362,12 @@ void GLProgram::parseVertexAttribs()
             for(int i = 0; i < activeAttributes; ++i)
             {
                 // Query attribute info.
-                glGetActiveAttrib(_program, i, length, nullptr, &attribute.size, &attribute.type, attribName);
+                f->glGetActiveAttrib(_program, i, length, nullptr, &attribute.size, &attribute.type, attribName);
                 attribName[length] = '\0';
                 attribute.name = std::string(attribName);
 
                 // Query the pre-assigned attribute location
-                attribute.index = glGetAttribLocation(_program, attribName);
+                attribute.index = f->glGetAttribLocation(_program, attribName);
                 _vertexAttribs[attribute.name] = attribute;
             }
         }
@@ -372,7 +375,7 @@ void GLProgram::parseVertexAttribs()
     else
     {
         GLchar ErrorLog[1024];
-        glGetProgramInfoLog(_program, sizeof(ErrorLog), nullptr, ErrorLog);
+        f->glGetProgramInfoLog(_program, sizeof(ErrorLog), nullptr, ErrorLog);
         CCLOG("Error linking shader program: '%s'\n", ErrorLog);
     }
 }
@@ -383,11 +386,12 @@ void GLProgram::parseUniforms()
 
     // Query and store uniforms from the program.
     GLint activeUniforms;
-    glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &activeUniforms);
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &activeUniforms);
     if(activeUniforms > 0)
     {
         GLint length;
-        glGetProgramiv(_program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &length);
+        f->glGetProgramiv(_program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &length);
         if(length > 0)
         {
             Uniform uniform;
@@ -397,7 +401,7 @@ void GLProgram::parseUniforms()
             for(int i = 0; i < activeUniforms; ++i)
             {
                 // Query uniform info.
-                glGetActiveUniform(_program, i, length, nullptr, &uniform.size, &uniform.type, uniformName);
+                f->glGetActiveUniform(_program, i, length, nullptr, &uniform.size, &uniform.type, uniformName);
                 uniformName[length] = '\0';
 
                 // Only add uniforms that are not built-in.
@@ -414,8 +418,8 @@ void GLProgram::parseUniforms()
                         }
                     }
                     uniform.name = std::string(uniformName);
-                    uniform.location = glGetUniformLocation(_program, uniformName);
-                    GLenum __gl_error_code = glGetError();
+                    uniform.location = f->glGetUniformLocation(_program, uniformName);
+                    GLenum __gl_error_code = f->glGetError();
                     if (__gl_error_code != GL_NO_ERROR)
                     {
                         CCLOG("error: 0x%x  uniformName: %s", (int)__gl_error_code, uniformName);
@@ -430,7 +434,7 @@ void GLProgram::parseUniforms()
     else
     {
         GLchar ErrorLog[1024];
-        glGetProgramInfoLog(_program, sizeof(ErrorLog), nullptr, ErrorLog);
+        f->glGetProgramInfoLog(_program, sizeof(ErrorLog), nullptr, ErrorLog);
         CCLOG("Error linking shader program: '%s'\n", ErrorLog);
 
     }
@@ -497,19 +501,20 @@ bool GLProgram::compileShader(GLuint * shader, GLenum type, const GLchar* source
         convertedDefines.c_str(),
         source};
 
-    *shader = glCreateShader(type);
-    glShaderSource(*shader, sizeof(sources)/sizeof(*sources), sources, nullptr);
-    glCompileShader(*shader);
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    *shader = f->glCreateShader(type);
+    f->glShaderSource(*shader, sizeof(sources)/sizeof(*sources), sources, nullptr);
+    f->glCompileShader(*shader);
 
-    glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
+    f->glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
 
     if (! status)
     {
         GLsizei length;
-        glGetShaderiv(*shader, GL_SHADER_SOURCE_LENGTH, &length);
+        f->glGetShaderiv(*shader, GL_SHADER_SOURCE_LENGTH, &length);
         GLchar* src = (GLchar *)malloc(sizeof(GLchar) * length);
 
-        glGetShaderSource(*shader, length, nullptr, src);
+        f->glGetShaderSource(*shader, length, nullptr, src);
         CCLOG("cocos2d: ERROR: Failed to compile shader:\n%s", src);
 
         if (type == GL_VERTEX_SHADER)
@@ -530,39 +535,43 @@ bool GLProgram::compileShader(GLuint * shader, GLenum type, const GLchar* source
 
 GLint GLProgram::getAttribLocation(const std::string &attributeName) const
 {
-    return glGetAttribLocation(_program, attributeName.c_str());
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    return f->glGetAttribLocation(_program, attributeName.c_str());
 }
 
 GLint GLProgram::getUniformLocation(const std::string &attributeName) const
 {
-    return glGetUniformLocation(_program, attributeName.c_str());
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    return f->glGetUniformLocation(_program, attributeName.c_str());
 }
 
 void GLProgram::bindAttribLocation(const std::string &attributeName, GLuint index) const
 {
-    glBindAttribLocation(_program, index, attributeName.c_str());
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    f->glBindAttribLocation(_program, index, attributeName.c_str());
 }
 
 void GLProgram::updateUniforms()
 {
-    _builtInUniforms[UNIFORM_AMBIENT_COLOR] = glGetUniformLocation(_program, UNIFORM_NAME_AMBIENT_COLOR);
-    _builtInUniforms[UNIFORM_P_MATRIX] = glGetUniformLocation(_program, UNIFORM_NAME_P_MATRIX);
-    _builtInUniforms[UNIFORM_MULTIVIEW_P_MATRIX] = glGetUniformLocation(_program, UNIFORM_NAME_MULTIVIEW_P_MATRIX);
-    _builtInUniforms[UNIFORM_MV_MATRIX] = glGetUniformLocation(_program, UNIFORM_NAME_MV_MATRIX);
-    _builtInUniforms[UNIFORM_MVP_MATRIX] = glGetUniformLocation(_program, UNIFORM_NAME_MVP_MATRIX);
-    _builtInUniforms[UNIFORM_MULTIVIEW_MVP_MATRIX] = glGetUniformLocation(_program, UNIFORM_NAME_MULTIVIEW_MVP_MATRIX);
-    _builtInUniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(_program, UNIFORM_NAME_NORMAL_MATRIX);
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    _builtInUniforms[UNIFORM_AMBIENT_COLOR] = f->glGetUniformLocation(_program, UNIFORM_NAME_AMBIENT_COLOR);
+    _builtInUniforms[UNIFORM_P_MATRIX] = f->glGetUniformLocation(_program, UNIFORM_NAME_P_MATRIX);
+    _builtInUniforms[UNIFORM_MULTIVIEW_P_MATRIX] = f->glGetUniformLocation(_program, UNIFORM_NAME_MULTIVIEW_P_MATRIX);
+    _builtInUniforms[UNIFORM_MV_MATRIX] = f->glGetUniformLocation(_program, UNIFORM_NAME_MV_MATRIX);
+    _builtInUniforms[UNIFORM_MVP_MATRIX] = f->glGetUniformLocation(_program, UNIFORM_NAME_MVP_MATRIX);
+    _builtInUniforms[UNIFORM_MULTIVIEW_MVP_MATRIX] = f->glGetUniformLocation(_program, UNIFORM_NAME_MULTIVIEW_MVP_MATRIX);
+    _builtInUniforms[UNIFORM_NORMAL_MATRIX] = f->glGetUniformLocation(_program, UNIFORM_NAME_NORMAL_MATRIX);
 
-    _builtInUniforms[UNIFORM_TIME] = glGetUniformLocation(_program, UNIFORM_NAME_TIME);
-    _builtInUniforms[UNIFORM_SIN_TIME] = glGetUniformLocation(_program, UNIFORM_NAME_SIN_TIME);
-    _builtInUniforms[UNIFORM_COS_TIME] = glGetUniformLocation(_program, UNIFORM_NAME_COS_TIME);
+    _builtInUniforms[UNIFORM_TIME] = f->glGetUniformLocation(_program, UNIFORM_NAME_TIME);
+    _builtInUniforms[UNIFORM_SIN_TIME] = f->glGetUniformLocation(_program, UNIFORM_NAME_SIN_TIME);
+    _builtInUniforms[UNIFORM_COS_TIME] = f->glGetUniformLocation(_program, UNIFORM_NAME_COS_TIME);
 
-    _builtInUniforms[UNIFORM_RANDOM01] = glGetUniformLocation(_program, UNIFORM_NAME_RANDOM01);
+    _builtInUniforms[UNIFORM_RANDOM01] = f->glGetUniformLocation(_program, UNIFORM_NAME_RANDOM01);
 
-    _builtInUniforms[UNIFORM_SAMPLER0] = glGetUniformLocation(_program, UNIFORM_NAME_SAMPLER0);
-    _builtInUniforms[UNIFORM_SAMPLER1] = glGetUniformLocation(_program, UNIFORM_NAME_SAMPLER1);
-    _builtInUniforms[UNIFORM_SAMPLER2] = glGetUniformLocation(_program, UNIFORM_NAME_SAMPLER2);
-    _builtInUniforms[UNIFORM_SAMPLER3] = glGetUniformLocation(_program, UNIFORM_NAME_SAMPLER3);
+    _builtInUniforms[UNIFORM_SAMPLER0] = f->glGetUniformLocation(_program, UNIFORM_NAME_SAMPLER0);
+    _builtInUniforms[UNIFORM_SAMPLER1] = f->glGetUniformLocation(_program, UNIFORM_NAME_SAMPLER1);
+    _builtInUniforms[UNIFORM_SAMPLER2] = f->glGetUniformLocation(_program, UNIFORM_NAME_SAMPLER2);
+    _builtInUniforms[UNIFORM_SAMPLER3] = f->glGetUniformLocation(_program, UNIFORM_NAME_SAMPLER3);
 
     _flags.usesP = _builtInUniforms[UNIFORM_P_MATRIX] != -1;
     _flags.usesMultiViewP = _builtInUniforms[UNIFORM_MULTIVIEW_P_MATRIX] != -1;
@@ -590,7 +599,7 @@ void GLProgram::updateUniforms()
         setUniformLocationWith1i(_builtInUniforms[UNIFORM_SAMPLER3], 3);
 
     // clear any glErrors created by any not found uniforms
-    glGetError();
+    f->glGetError();
 }
 
 bool GLProgram::link()
@@ -601,14 +610,15 @@ bool GLProgram::link()
 
     bindPredefinedVertexAttribs();
 
-    glLinkProgram(_program);
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    f->glLinkProgram(_program);
 
     // Calling glGetProgramiv(...GL_LINK_STATUS...) will force linking of the program at this moment.
     // Otherwise, they might be linked when they are used for the first time. (I guess this depends on the driver implementation)
     // So it might slow down the "booting" process on certain devices. But, on the other hand it is important to know if the shader
     // linked successfully. Some shaders might be downloaded in runtime so, release version should have this check.
     // For more info, see Github issue #16231
-    glGetProgramiv(_program, GL_LINK_STATUS, &status);
+    f->glGetProgramiv(_program, GL_LINK_STATUS, &status);
 
     if (status == GL_FALSE)
     {
@@ -636,12 +646,13 @@ static std::string logForOpenGLShader(GLuint shader)
 {
     GLint logLength = 0;
 
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength < 1)
         return "";
 
     char *logBytes = (char*)malloc(sizeof(char) * logLength);
-    glGetShaderInfoLog(shader, logLength, nullptr, logBytes);
+    f->glGetShaderInfoLog(shader, logLength, nullptr, logBytes);
     std::string ret(logBytes);
 
     free(logBytes);
@@ -652,12 +663,13 @@ static std::string logForOpenGLProgram(GLuint program)
 {
     GLint logLength = 0;
 
-    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength < 1)
         return "";
 
     char *logBytes = (char*)malloc(sizeof(char) * logLength);
-    glGetProgramInfoLog(program, logLength, nullptr, logBytes);
+    f->glGetProgramInfoLog(program, logLength, nullptr, logBytes);
     std::string ret(logBytes);
 
     free(logBytes);
@@ -724,7 +736,8 @@ GLint GLProgram::getUniformLocationForName(const char* name) const
     CCASSERT(name != nullptr, "Invalid uniform name" );
     CCASSERT(_program != 0, "Invalid operation. Cannot get uniform location when program is not initialized");
 
-    return glGetUniformLocation(_program, name);
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    return f->glGetUniformLocation(_program, name);
 }
 
 void GLProgram::setUniformLocationWith1i(GLint location, GLint i1)
@@ -733,7 +746,8 @@ void GLProgram::setUniformLocationWith1i(GLint location, GLint i1)
 
     if (updated)
     {
-        glUniform1i( (GLint)location, i1);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform1i( (GLint)location, i1);
     }
 }
 
@@ -744,7 +758,8 @@ void GLProgram::setUniformLocationWith2i(GLint location, GLint i1, GLint i2)
 
     if (updated)
     {
-        glUniform2i( (GLint)location, i1, i2);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform2i( (GLint)location, i1, i2);
     }
 }
 
@@ -755,7 +770,8 @@ void GLProgram::setUniformLocationWith3i(GLint location, GLint i1, GLint i2, GLi
 
     if (updated)
     {
-        glUniform3i( (GLint)location, i1, i2, i3);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform3i( (GLint)location, i1, i2, i3);
     }
 }
 
@@ -766,7 +782,8 @@ void GLProgram::setUniformLocationWith4i(GLint location, GLint i1, GLint i2, GLi
 
     if (updated)
     {
-        glUniform4i( (GLint)location, i1, i2, i3, i4);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform4i( (GLint)location, i1, i2, i3, i4);
     }
 }
 
@@ -776,7 +793,8 @@ void GLProgram::setUniformLocationWith2iv(GLint location, GLint* ints, unsigned 
 
     if (updated)
     {
-        glUniform2iv( (GLint)location, (GLsizei)numberOfArrays, ints );
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform2iv( (GLint)location, (GLsizei)numberOfArrays, ints );
     }
 }
 
@@ -786,7 +804,8 @@ void GLProgram::setUniformLocationWith3iv(GLint location, GLint* ints, unsigned 
 
     if (updated)
     {
-        glUniform3iv( (GLint)location, (GLsizei)numberOfArrays, ints );
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform3iv( (GLint)location, (GLsizei)numberOfArrays, ints );
     }
 }
 
@@ -796,7 +815,8 @@ void GLProgram::setUniformLocationWith4iv(GLint location, GLint* ints, unsigned 
 
     if (updated)
     {
-        glUniform4iv( (GLint)location, (GLsizei)numberOfArrays, ints );
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform4iv( (GLint)location, (GLsizei)numberOfArrays, ints );
     }
 }
 
@@ -806,7 +826,8 @@ void GLProgram::setUniformLocationWith1f(GLint location, GLfloat f1)
 
     if (updated)
     {
-        glUniform1f( (GLint)location, f1);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform1f( (GLint)location, f1);
     }
 }
 
@@ -817,7 +838,8 @@ void GLProgram::setUniformLocationWith2f(GLint location, GLfloat f1, GLfloat f2)
 
     if (updated)
     {
-        glUniform2f( (GLint)location, f1, f2);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform2f( (GLint)location, f1, f2);
     }
 }
 
@@ -828,7 +850,8 @@ void GLProgram::setUniformLocationWith3f(GLint location, GLfloat f1, GLfloat f2,
 
     if (updated)
     {
-        glUniform3f( (GLint)location, f1, f2, f3);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform3f( (GLint)location, f1, f2, f3);
     }
 }
 
@@ -839,7 +862,8 @@ void GLProgram::setUniformLocationWith4f(GLint location, GLfloat f1, GLfloat f2,
 
     if (updated)
     {
-        glUniform4f( (GLint)location, f1, f2, f3,f4);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform4f( (GLint)location, f1, f2, f3,f4);
     }
 }
 
@@ -850,7 +874,8 @@ void GLProgram::setUniformLocationWith1fv( GLint location, const GLfloat* floats
 
     if (updated)
     {
-        glUniform1fv( (GLint)location, (GLsizei)numberOfArrays, floats );
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform1fv( (GLint)location, (GLsizei)numberOfArrays, floats );
     }
 }
 
@@ -860,7 +885,8 @@ void GLProgram::setUniformLocationWith2fv(GLint location, const GLfloat* floats,
 
     if (updated)
     {
-        glUniform2fv( (GLint)location, (GLsizei)numberOfArrays, floats );
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform2fv( (GLint)location, (GLsizei)numberOfArrays, floats );
     }
 }
 
@@ -870,7 +896,8 @@ void GLProgram::setUniformLocationWith3fv(GLint location, const GLfloat* floats,
 
     if (updated)
     {
-        glUniform3fv( (GLint)location, (GLsizei)numberOfArrays, floats );
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform3fv( (GLint)location, (GLsizei)numberOfArrays, floats );
     }
 }
 
@@ -880,7 +907,8 @@ void GLProgram::setUniformLocationWith4fv(GLint location, const GLfloat* floats,
 
     if (updated)
     {
-        glUniform4fv( (GLint)location, (GLsizei)numberOfArrays, floats );
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniform4fv( (GLint)location, (GLsizei)numberOfArrays, floats );
     }
 }
 
@@ -889,7 +917,8 @@ void GLProgram::setUniformLocationWithMatrix2fv(GLint location, const GLfloat* m
 
     if (updated)
     {
-        glUniformMatrix2fv( (GLint)location, (GLsizei)numberOfMatrices, GL_FALSE, matrixArray);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniformMatrix2fv( (GLint)location, (GLsizei)numberOfMatrices, GL_FALSE, matrixArray);
     }
 }
 
@@ -898,7 +927,8 @@ void GLProgram::setUniformLocationWithMatrix3fv(GLint location, const GLfloat* m
 
     if (updated)
     {
-        glUniformMatrix3fv( (GLint)location, (GLsizei)numberOfMatrices, GL_FALSE, matrixArray);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniformMatrix3fv( (GLint)location, (GLsizei)numberOfMatrices, GL_FALSE, matrixArray);
     }
 }
 
@@ -909,7 +939,8 @@ void GLProgram::setUniformLocationWithMatrix4fv(GLint location, const GLfloat* m
 
     if (updated)
     {
-        glUniformMatrix4fv( (GLint)location, (GLsizei)numberOfMatrices, GL_FALSE, matrixArray);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glUniformMatrix4fv( (GLint)location, (GLsizei)numberOfMatrices, GL_FALSE, matrixArray);
     }
 }
 
@@ -997,14 +1028,15 @@ void GLProgram::reset()
 
 inline void GLProgram::clearShader()
 {
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
     if (_vertShader)
     {
-        glDeleteShader(_vertShader);
+        f->glDeleteShader(_vertShader);
     }
 
     if (_fragShader)
     {
-        glDeleteShader(_fragShader);
+        f->glDeleteShader(_fragShader);
     }
 
     _vertShader = _fragShader = 0;

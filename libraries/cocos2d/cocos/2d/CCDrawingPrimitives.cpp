@@ -117,9 +117,10 @@ void drawPoint(const Vec2& point)
     s_shader->setUniformLocationWith4fv(s_colorLocation, (GLfloat*) &s_color.r, 1);
     s_shader->setUniformLocationWith1f(s_pointSizeLocation, s_pointSize);
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, &p);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, &p);
 
-    glDrawArrays(GL_POINTS, 0, 1);
+    f->glDrawArrays(GL_POINTS, 0, 1);
 
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,1);
 }
@@ -134,8 +135,9 @@ void drawPoints( const Vec2 *points, unsigned int numberOfPoints )
     s_shader->setUniformLocationWith4fv(s_colorLocation, (GLfloat*) &s_color.r, 1);
     s_shader->setUniformLocationWith1f(s_pointSizeLocation, s_pointSize);
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, points);
-    glDrawArrays(GL_POINTS, 0, (GLsizei) numberOfPoints);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, points);
+    f->glDrawArrays(GL_POINTS, 0, (GLsizei) numberOfPoints);
 
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, numberOfPoints);
 }
@@ -155,8 +157,9 @@ void drawLine(const Vec2& origin, const Vec2& destination)
     s_shader->setUniformLocationWith4fv(s_colorLocation, (GLfloat*) &s_color.r, 1);
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glDrawArrays(GL_LINES, 0, 2);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    f->glDrawArrays(GL_LINES, 0, 2);
 
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,2);
 }
@@ -191,12 +194,13 @@ void drawPoly(const Vec2 *poli, unsigned int numberOfPoints, bool closePolygon)
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, poli);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, poli);
 
     if( closePolygon )
-        glDrawArrays(GL_LINE_LOOP, 0, (GLsizei) numberOfPoints);
+        f->glDrawArrays(GL_LINE_LOOP, 0, (GLsizei) numberOfPoints);
     else
-        glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) numberOfPoints);
+        f->glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) numberOfPoints);
 
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, numberOfPoints);
 }
@@ -211,8 +215,9 @@ void drawSolidPoly(const Vec2 *poli, unsigned int numberOfPoints, Color4F color)
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, poli);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) numberOfPoints);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, poli);
+    f->glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) numberOfPoints);
 
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, numberOfPoints);
 }
@@ -248,8 +253,9 @@ void drawCircle( const Vec2& center, float radius, float angle, unsigned int seg
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments+additionalSegment);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    f->glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments+additionalSegment);
 
     ::free( vertices );
 
@@ -288,9 +294,10 @@ void drawSolidCircle( const Vec2& center, float radius, float angle, unsigned in
     
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
     
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
 
-    glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) segments+1);
+    f->glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) segments+1);
     
     ::free( vertices );
     
@@ -324,8 +331,9 @@ void drawQuadBezier(const Vec2& origin, const Vec2& control, const Vec2& destina
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments + 1);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    f->glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments + 1);
     CC_SAFE_DELETE_ARRAY(vertices);
 
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,segments+1);
@@ -376,8 +384,9 @@ void drawCardinalSpline( PointArray *config, float tension,  unsigned int segmen
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments + 1);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    f->glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments + 1);
 
     CC_SAFE_DELETE_ARRAY(vertices);
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,segments+1);
@@ -405,8 +414,9 @@ void drawCubicBezier(const Vec2& origin, const Vec2& control1, const Vec2& contr
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments + 1);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    f->glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments + 1);
     CC_SAFE_DELETE_ARRAY(vertices);
 
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,segments+1);

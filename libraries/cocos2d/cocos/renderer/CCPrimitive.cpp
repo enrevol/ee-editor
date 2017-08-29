@@ -23,6 +23,7 @@
  ****************************************************************************/
 
 #include "renderer/CCPrimitive.h"
+#include "base/CCDirector.h"
 #include "renderer/CCVertexIndexBuffer.h"
 
 NS_CC_BEGIN
@@ -91,21 +92,22 @@ void Primitive::draw()
 {
     if(_verts)
     {
+        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
         _verts->use();
         if(_indices!= nullptr)
         {
             GLenum type = (_indices->getType() == IndexBuffer::IndexType::INDEX_TYPE_SHORT_16) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indices->getVBO());
+            f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indices->getVBO());
             size_t offset = _start * _indices->getSizePerIndex();
-            glDrawElements((GLenum)_type, _count, type, (GLvoid*)offset);
+            f->glDrawElements((GLenum)_type, _count, type, (GLvoid*)offset);
         }
         else
         {
-            glDrawArrays((GLenum)_type, _start, _count);
+            f->glDrawArrays((GLenum)_type, _start, _count);
         }
         
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }
 

@@ -337,7 +337,8 @@ void Layout::onBeforeVisitScissor()
     _scissorOldState = glview->isScissorEnabled();
     if (false == _scissorOldState)
     {
-        glEnable(GL_SCISSOR_TEST);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glEnable(GL_SCISSOR_TEST);
     }
 
     // apply scissor box
@@ -369,7 +370,8 @@ void Layout::onAfterVisitScissor()
     else
     {
         // revert scissor test
-        glDisable(GL_SCISSOR_TEST);
+        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        f->glDisable(GL_SCISSOR_TEST);
     }
 }
     

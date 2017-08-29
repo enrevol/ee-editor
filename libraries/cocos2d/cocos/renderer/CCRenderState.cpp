@@ -28,6 +28,7 @@
 
 #include <string>
 
+#include "base/CCDirector.h"
 #include "renderer/CCTexture2D.h"
 #include "renderer/ccGLStateCache.h"
 
@@ -233,13 +234,14 @@ void RenderState::StateBlock::bindNoRestore()
 {
     CC_ASSERT(_defaultState);
 
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     // Update any state that differs from _defaultState and flip _defaultState bits
     if ((_bits & RS_BLEND) && (_blendEnabled != _defaultState->_blendEnabled))
     {
         if (_blendEnabled)
-            glEnable(GL_BLEND);
+            f->glEnable(GL_BLEND);
         else
-            glDisable(GL_BLEND);
+            f->glDisable(GL_BLEND);
         _defaultState->_blendEnabled = _blendEnabled;
     }
     if ((_bits & RS_BLEND_FUNC) && (_blendSrc != _defaultState->_blendSrc || _blendDst != _defaultState->_blendDst))
@@ -251,37 +253,37 @@ void RenderState::StateBlock::bindNoRestore()
     if ((_bits & RS_CULL_FACE) && (_cullFaceEnabled != _defaultState->_cullFaceEnabled))
     {
         if (_cullFaceEnabled)
-            glEnable(GL_CULL_FACE);
+            f->glEnable(GL_CULL_FACE);
         else
-            glDisable(GL_CULL_FACE);
+            f->glDisable(GL_CULL_FACE);
         _defaultState->_cullFaceEnabled = _cullFaceEnabled;
     }
     if ((_bits & RS_CULL_FACE_SIDE) && (_cullFaceSide != _defaultState->_cullFaceSide))
     {
-        glCullFace((GLenum)_cullFaceSide);
+        f->glCullFace((GLenum)_cullFaceSide);
         _defaultState->_cullFaceSide = _cullFaceSide;
     }
     if ((_bits & RS_FRONT_FACE) && (_frontFace != _defaultState->_frontFace))
     {
-        glFrontFace((GLenum)_frontFace);
+        f->glFrontFace((GLenum)_frontFace);
         _defaultState->_frontFace = _frontFace;
     }
     if ((_bits & RS_DEPTH_TEST) && (_depthTestEnabled != _defaultState->_depthTestEnabled))
     {
         if (_depthTestEnabled)
-            glEnable(GL_DEPTH_TEST);
+            f->glEnable(GL_DEPTH_TEST);
         else
-            glDisable(GL_DEPTH_TEST);
+            f->glDisable(GL_DEPTH_TEST);
         _defaultState->_depthTestEnabled = _depthTestEnabled;
     }
     if ((_bits & RS_DEPTH_WRITE) && (_depthWriteEnabled != _defaultState->_depthWriteEnabled))
     {
-        glDepthMask(_depthWriteEnabled ? GL_TRUE : GL_FALSE);
+        f->glDepthMask(_depthWriteEnabled ? GL_TRUE : GL_FALSE);
         _defaultState->_depthWriteEnabled = _depthWriteEnabled;
     }
     if ((_bits & RS_DEPTH_FUNC) && (_depthFunction != _defaultState->_depthFunction))
     {
-        glDepthFunc((GLenum)_depthFunction);
+        f->glDepthFunc((GLenum)_depthFunction);
         _defaultState->_depthFunction = _depthFunction;
     }
 //    if ((_bits & RS_STENCIL_TEST) && (_stencilTestEnabled != _defaultState->_stencilTestEnabled))
@@ -323,6 +325,8 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
 {
     CC_ASSERT(_defaultState);
 
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
     // If there is no state to restore (i.e. no non-default state), do nothing.
 //    if (_defaultState->_bits == 0)
     if ( (stateOverrideBits | _defaultState->_bits) == stateOverrideBits)
@@ -333,7 +337,7 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
     // Restore any state that is not overridden and is not default
     if (!(stateOverrideBits & RS_BLEND) && (_defaultState->_bits & RS_BLEND))
     {
-        glEnable(GL_BLEND);
+        f->glEnable(GL_BLEND);
         _defaultState->_bits &= ~RS_BLEND;
         _defaultState->_blendEnabled = true;
     }
@@ -346,37 +350,37 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
     }
     if (!(stateOverrideBits & RS_CULL_FACE) && (_defaultState->_bits & RS_CULL_FACE))
     {
-        glDisable(GL_CULL_FACE);
+        f->glDisable(GL_CULL_FACE);
         _defaultState->_bits &= ~RS_CULL_FACE;
         _defaultState->_cullFaceEnabled = false;
     }
     if (!(stateOverrideBits & RS_CULL_FACE_SIDE) && (_defaultState->_bits & RS_CULL_FACE_SIDE))
     {
-        glCullFace((GLenum)GL_BACK);
+        f->glCullFace((GLenum)GL_BACK);
         _defaultState->_bits &= ~RS_CULL_FACE_SIDE;
         _defaultState->_cullFaceSide = RenderState::CULL_FACE_SIDE_BACK;
     }
     if (!(stateOverrideBits & RS_FRONT_FACE) && (_defaultState->_bits & RS_FRONT_FACE))
     {
-        glFrontFace((GLenum)GL_CCW);
+        f->glFrontFace((GLenum)GL_CCW);
         _defaultState->_bits &= ~RS_FRONT_FACE;
         _defaultState->_frontFace = RenderState::FRONT_FACE_CCW;
     }
     if (!(stateOverrideBits & RS_DEPTH_TEST) && (_defaultState->_bits & RS_DEPTH_TEST))
     {
-        glEnable(GL_DEPTH_TEST);
+        f->glEnable(GL_DEPTH_TEST);
         _defaultState->_bits &= ~RS_DEPTH_TEST;
         _defaultState->_depthTestEnabled = true;
     }
     if (!(stateOverrideBits & RS_DEPTH_WRITE) && (_defaultState->_bits & RS_DEPTH_WRITE))
     {
-        glDepthMask(GL_FALSE);
+        f->glDepthMask(GL_FALSE);
         _defaultState->_bits &= ~RS_DEPTH_WRITE;
         _defaultState->_depthWriteEnabled = false;
     }
     if (!(stateOverrideBits & RS_DEPTH_FUNC) && (_defaultState->_bits & RS_DEPTH_FUNC))
     {
-        glDepthFunc((GLenum)GL_LESS);
+        f->glDepthFunc((GLenum)GL_LESS);
         _defaultState->_bits &= ~RS_DEPTH_FUNC;
         _defaultState->_depthFunction = RenderState::DEPTH_LESS;
     }
@@ -419,7 +423,8 @@ void RenderState::StateBlock::enableDepthWrite()
     // next frame leaves depth writing disabled.
     if (!_defaultState->_depthWriteEnabled)
     {
-        glDepthMask(GL_TRUE);
+        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+        f->glDepthMask(GL_TRUE);
         _defaultState->_bits &= ~RS_DEPTH_WRITE;
         _defaultState->_depthWriteEnabled = true;
     }

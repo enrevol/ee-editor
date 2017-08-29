@@ -90,32 +90,35 @@ void deleteProgram( GLuint program )
     }
 #endif // CC_ENABLE_GL_STATE_CACHE
 
-    glDeleteProgram( program );
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glDeleteProgram( program );
 }
 
 void useProgram( GLuint program )
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
 #if CC_ENABLE_GL_STATE_CACHE
     if( program != s_currentShaderProgram ) {
         s_currentShaderProgram = program;
-        glUseProgram(program);
+        f->glUseProgram(program);
     }
 #else
-    glUseProgram(program);
+    f->glUseProgram(program);
 #endif // CC_ENABLE_GL_STATE_CACHE
 }
 
 static void SetBlending(GLenum sfactor, GLenum dfactor)
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
 	if (sfactor == GL_ONE && dfactor == GL_ZERO)
     {
-		glDisable(GL_BLEND);
+        f->glDisable(GL_BLEND);
         RenderState::StateBlock::_defaultState->setBlend(false);
 	}
     else
     {
-		glEnable(GL_BLEND);
-		glBlendFunc(sfactor, dfactor);
+        f->glEnable(GL_BLEND);
+        f->glBlendFunc(sfactor, dfactor);
 
         RenderState::StateBlock::_defaultState->setBlend(true);
         RenderState::StateBlock::_defaultState->setBlendSrc((RenderState::Blend)sfactor);
@@ -139,7 +142,8 @@ void blendFunc(GLenum sfactor, GLenum dfactor)
 
 void blendResetToCache(void)
 {
-	glBlendEquation(GL_FUNC_ADD);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glBlendEquation(GL_FUNC_ADD);
 #if CC_ENABLE_GL_STATE_CACHE
 	SetBlending(s_blendingSource, s_blendingDest);
 #else
@@ -163,33 +167,35 @@ void bindTexture2D(Texture2D* texture)
 
 void bindTexture2DN(GLuint textureUnit, GLuint textureId)
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
 #if CC_ENABLE_GL_STATE_CACHE
 	CCASSERT(textureUnit < MAX_ACTIVE_TEXTURE, "textureUnit is too big");
 	if (s_currentBoundTexture[textureUnit] != textureId)
 	{
 		s_currentBoundTexture[textureUnit] = textureId;
 		activeTexture(GL_TEXTURE0 + textureUnit);
-		glBindTexture(GL_TEXTURE_2D, textureId);
+        f->glBindTexture(GL_TEXTURE_2D, textureId);
 	}
 #else
-	glActiveTexture(GL_TEXTURE0 + textureUnit);
-	glBindTexture(GL_TEXTURE_2D, textureId);
+    f->glActiveTexture(GL_TEXTURE0 + textureUnit);
+    f->glBindTexture(GL_TEXTURE_2D, textureId);
 #endif
 }
 
 void bindTextureN(GLuint textureUnit, GLuint textureId, GLuint textureType/* = GL_TEXTURE_2D*/)
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
 #if CC_ENABLE_GL_STATE_CACHE
     CCASSERT(textureUnit < MAX_ACTIVE_TEXTURE, "textureUnit is too big");
     if (s_currentBoundTexture[textureUnit] != textureId)
     {
         s_currentBoundTexture[textureUnit] = textureId;
         activeTexture(GL_TEXTURE0 + textureUnit);
-        glBindTexture(textureType, textureId);
+        f->glBindTexture(textureType, textureId);
     }
 #else
-    glActiveTexture(GL_TEXTURE0 + textureUnit);
-    glBindTexture(textureType, textureId);
+    f->glActiveTexture(GL_TEXTURE0 + textureUnit);
+    f->glBindTexture(textureType, textureId);
 #endif
 }
 
@@ -206,7 +212,8 @@ void deleteTexture(GLuint textureId)
     }
 #endif // CC_ENABLE_GL_STATE_CACHE
     
-	glDeleteTextures(1, &textureId);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glDeleteTextures(1, &textureId);
 }
 
 void deleteTextureN(GLuint /*textureUnit*/, GLuint textureId)
@@ -216,29 +223,30 @@ void deleteTextureN(GLuint /*textureUnit*/, GLuint textureId)
 
 void activeTexture(GLenum texture)
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
 #if CC_ENABLE_GL_STATE_CACHE
     if(s_activeTexture != texture) {
         s_activeTexture = texture;
-        glActiveTexture(s_activeTexture);
+        f->glActiveTexture(s_activeTexture);
     }
 #else
-    glActiveTexture(texture);
+    f->glActiveTexture(texture);
 #endif
 }
 
 void bindVAO(GLuint vaoId)
-{
+{    
     if (Configuration::getInstance()->supportsShareableVAO())
     {
-    
+        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->extraFunctions();
 #if CC_ENABLE_GL_STATE_CACHE
         if (s_VAO != vaoId)
         {
             s_VAO = vaoId;
-            glBindVertexArray(vaoId);
+            f->glBindVertexArray(vaoId);
         }
 #else
-        glBindVertexArray(vaoId);
+        f->glBindVertexArray(vaoId);
 #endif // CC_ENABLE_GL_STATE_CACHE
     
     }
@@ -248,6 +256,7 @@ void bindVAO(GLuint vaoId)
 
 void enableVertexAttribs(uint32_t flags)
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     bindVAO(0);
 
     // hardcoded!
@@ -259,9 +268,9 @@ void enableVertexAttribs(uint32_t flags)
         if(enabled != enabledBefore) 
         {
             if( enabled )
-                glEnableVertexAttribArray(i);
+                f->glEnableVertexAttribArray(i);
             else
-                glDisableVertexAttribArray(i);
+                f->glDisableVertexAttribArray(i);
         }
     }
     s_attributeFlags = flags;

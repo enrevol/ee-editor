@@ -620,13 +620,14 @@ void LayerColor::onDraw(const Mat4& transform, uint32_t /*flags*/)
     //
     // Attributes
     //
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 0, _noMVPVertices);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, _squareColors);
+    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 0, _noMVPVertices);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, _squareColors);
 
     GL::blendFunc( _blendFunc.src, _blendFunc.dst );
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    f->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,4);
 }

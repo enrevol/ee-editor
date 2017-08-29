@@ -75,9 +75,10 @@ VertexBuffer::VertexBuffer()
 
 VertexBuffer::~VertexBuffer()
 {
-    if(glIsBuffer(_vbo))
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    if(f->glIsBuffer(_vbo))
     {
-        glDeleteBuffers(1, &_vbo);
+        f->glDeleteBuffers(1, &_vbo);
         _vbo = 0;
     }
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
@@ -98,10 +99,11 @@ bool VertexBuffer::init(int sizePerVertex, int vertexNumber, GLenum usage/* = GL
         _shadowCopy.resize(sizePerVertex * _vertexNumber);
     }
     
-    glGenBuffers(1, &_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, getSize(), nullptr, _usage);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGenBuffers(1, &_vbo);
+    f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    f->glBufferData(GL_ARRAY_BUFFER, getSize(), nullptr, _usage);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     return true;
 }
 
@@ -136,9 +138,10 @@ bool VertexBuffer::updateVertices(const void* verts, int count, int begin)
         memcpy(&_shadowCopy[begin * _sizePerVertex], verts, count * _sizePerVertex);
     }
     
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferSubData(GL_ARRAY_BUFFER, begin * _sizePerVertex, count * _sizePerVertex, verts);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    f->glBufferSubData(GL_ARRAY_BUFFER, begin * _sizePerVertex, count * _sizePerVertex, verts);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     return true;
 }
@@ -151,17 +154,19 @@ GLuint VertexBuffer::getVBO() const
 void VertexBuffer::recreateVBO() const
 {
     CCLOG("come to foreground of VertexBuffer");
-    glGenBuffers(1, &_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGenBuffers(1, &_vbo);
+    f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     const void* buffer = nullptr;
     if(isShadowCopyEnabled())
     {
         buffer = &_shadowCopy[0];
     }
     CCLOG("recreate IndexBuffer with size %d %d", getSizePerVertex(), _vertexNumber);
-    glBufferData(GL_ARRAY_BUFFER, _sizePerVertex * _vertexNumber, buffer, _usage);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    if(!glIsBuffer(_vbo))
+    f->glBufferData(GL_ARRAY_BUFFER, _sizePerVertex * _vertexNumber, buffer, _usage);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
+    if(!f->glIsBuffer(_vbo))
     {
         CCLOGERROR("recreate VertexBuffer Error");
     }
@@ -202,9 +207,10 @@ IndexBuffer::IndexBuffer()
 
 IndexBuffer::~IndexBuffer()
 {
-    if(glIsBuffer(_vbo))
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    if(f->glIsBuffer(_vbo))
     {
-        glDeleteBuffers(1, &_vbo);
+        f->glDeleteBuffers(1, &_vbo);
         _vbo = 0;
     }
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
@@ -220,10 +226,11 @@ bool IndexBuffer::init(IndexBuffer::IndexType type, int number, GLenum usage/* =
     _indexNumber = number;
     _usage = usage;
     
-    glGenBuffers(1, &_vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, getSize(), nullptr, _usage);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glGenBuffers(1, &_vbo);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo);
+    f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, getSize(), nullptr, _usage);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     
     if(isShadowCopyEnabled())
     {
@@ -264,9 +271,10 @@ bool IndexBuffer::updateIndices(const void* indices, int count, int begin)
         count = _indexNumber - begin;
     }
     
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, begin * getSizePerIndex(), count * getSizePerIndex(), indices);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo);
+    f->glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, begin * getSizePerIndex(), count * getSizePerIndex(), indices);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     
     if(isShadowCopyEnabled())
     {
@@ -288,18 +296,19 @@ GLuint IndexBuffer::getVBO() const
 
 void IndexBuffer::recreateVBO() const
 {
+    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     CCLOG("come to foreground of IndexBuffer");
-    glGenBuffers(1, &_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    f->glGenBuffers(1, &_vbo);
+    f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     const void* buffer = nullptr;
     if(isShadowCopyEnabled())
     {
         buffer = &_shadowCopy[0];
     }
     CCLOG("recreate IndexBuffer with size %d %d ", getSizePerIndex(), _indexNumber);
-    glBufferData(GL_ARRAY_BUFFER, getSize(), buffer, _usage);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    if(!glIsBuffer(_vbo))
+    f->glBufferData(GL_ARRAY_BUFFER, getSize(), buffer, _usage);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
+    if(!f->glIsBuffer(_vbo))
     {
         CCLOGERROR("recreate IndexBuffer Error");
     }

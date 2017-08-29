@@ -13,8 +13,14 @@ int main(int argc, char* argv[]) {
     ee::AppDelegate app(argc, argv);
 
     QSurfaceFormat format;
-    format.setVersion(4, 3);
-    format.setProfile(QSurfaceFormat::OpenGLContextProfile::CoreProfile);
+    format.setVersion(3, 1);
+    format.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
+    format.setRenderableType(QSurfaceFormat::RenderableType::OpenGL);
+    format.setSwapBehavior(QSurfaceFormat::SwapBehavior::DoubleBuffer);
+    format.setRedBufferSize(8);
+    format.setGreenBufferSize(8);
+    format.setBlueBufferSize(8);
+    format.setAlphaBufferSize(8);
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);
     QSurfaceFormat::setDefaultFormat(format);

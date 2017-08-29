@@ -213,6 +213,8 @@ public:
      * @return Returns whether or not the view is in Retina Display mode.
      */
     virtual bool isRetinaDisplay() const { return false; }
+
+    virtual QOpenGLContext* getOpenGLContext() const = 0;
  
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     virtual void* getEAGLView() const { return nullptr; }
