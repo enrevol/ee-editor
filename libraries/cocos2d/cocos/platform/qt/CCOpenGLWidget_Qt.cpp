@@ -1,4 +1,5 @@
 #include "platform/qt/CCOpenGLWidget_Qt.hpp"
+#include "base/CCDirector.h"
 
 #include <QDebug>
 
@@ -22,18 +23,20 @@ Self::~OpenGLWidget() {
 
 void Self::initializeGL() {
     qDebug() << __PRETTY_FUNCTION__;
-    Super::initializeGL();
     initializeOpenGLFunctions();
 }
 
 void Self::resizeGL(int width, int height) {
     qDebug() << __PRETTY_FUNCTION__;
-    Super::resizeGL(width, height);
 }
 
 void Self::paintGL() {
     qDebug() << __PRETTY_FUNCTION__;
-    Super::paintGL();
+    auto director = Director::getInstance();
+    auto glView = director->getOpenGLView();
+    if (glView != nullptr) {
+        director->mainLoop();
+    }
 }
 
 void Self::setMouseMoveCallback(const MouseEventCallback& callback) {

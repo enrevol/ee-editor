@@ -51,7 +51,6 @@ protected:
 
 private:
     QTimer* timer_;
-    int referenceCount_;
 };
 NS_CC_END
 

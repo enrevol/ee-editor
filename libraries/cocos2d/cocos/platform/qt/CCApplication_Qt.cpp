@@ -18,7 +18,6 @@ Self::Application(int argc, char* argv[])
     , animationInterval_(1.0f / 60.0f * 1000.0f) {
     qDebug() << __PRETTY_FUNCTION__;
     timer_ = nullptr;
-    referenceCount_ = 0;
     CC_ASSERT(sharedApplication_ == nullptr);
     sharedApplication_ = this;
 }
@@ -35,11 +34,15 @@ int Self::run() {
         return 0;
     }
 
+    auto director = Director::getInstance();
+    auto glView = director->getOpenGLView();
+    glView->retain();
+
     timer_ = new QTimer(this);
     connect(timer_, &QTimer::timeout, this, &Self::timerUpdate);
     timer_->start(animationInterval_);
 
-    return getInstance()->exec();
+    return exec();
 }
 
 void Self::setAnimationInterval(float interval) {
@@ -131,10 +134,8 @@ bool Self::openURL(const std::string& url) {
 }
 
 void Self::timerUpdate() {
-    // referencecount_ is here to prevent calling the mainloop from nested event
-    // loops.
-    if (referenceCount_ == 0) {
-        Director::getInstance()->mainLoop();
-    }
+    // Doesn't work.
+    // Moved to QOpenGLWidget::paintGL().
+    // Director::getInstance()->mainLoop();
 }
 NS_CC_END
