@@ -43,6 +43,8 @@ public:
 
     virtual QOpenGLContext* getOpenGLContext() const override;
 
+    virtual void setRepaintInterval(int milliseconds) override;
+
     void mouseMove(QMouseEvent* event);
     void mousePress(QMouseEvent* event);
     void mouseRelease(QMouseEvent* event);
@@ -55,18 +57,13 @@ protected:
 private:
     virtual bool initWithView(OpenGLWidget* view);
 
-    bool initGL();
-    void destroyGL();
-
-    bool initialized_;
     bool captured_;
-    bool touchSupported_;
     float frameZoomFactor_;
     float screenScaleFactor_;
 
     std::vector<Touch*> touches_;
     Touch* touch_;
-    QOpenGLWidget* view_;
+    OpenGLWidget* view_;
 };
 NS_CC_END
 

@@ -40,17 +40,11 @@ public:
 
     virtual bool openURL(const std::string& url) override;
 
-public Q_SLOTS:
-    void timerUpdate();
-
 protected:
     static Self* sharedApplication_;
 
-    /// micro second.
-    long animationInterval_;
-
-private:
-    QTimer* timer_;
+    /// Millisecond.
+    int animationInterval_;
 };
 NS_CC_END
 

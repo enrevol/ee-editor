@@ -17,7 +17,6 @@ Self::Application(int argc, char* argv[])
     : Super(argc, argv)
     , animationInterval_(1.0f / 60.0f * 1000.0f) {
     qDebug() << __PRETTY_FUNCTION__;
-    timer_ = nullptr;
     CC_ASSERT(sharedApplication_ == nullptr);
     sharedApplication_ = this;
 }
@@ -37,19 +36,15 @@ int Self::run() {
     auto director = Director::getInstance();
     auto glView = director->getOpenGLView();
     glView->retain();
-
-    timer_ = new QTimer(this);
-    connect(timer_, &QTimer::timeout, this, &Self::timerUpdate);
-    timer_->start(animationInterval_);
-
+    glView->setRepaintInterval(animationInterval_);
     return exec();
 }
 
 void Self::setAnimationInterval(float interval) {
     animationInterval_ = interval * 1000.0f;
-    if (timer_ != nullptr) {
-        timer_->start(animationInterval_);
-    }
+    auto director = Director::getInstance();
+    auto glView = director->getOpenGLView();
+    glView->setRepaintInterval(animationInterval_);
 }
 
 Self::Platform Self::getTargetPlatform() {
@@ -131,11 +126,5 @@ bool Self::openURL(const std::string& url) {
     // NSURL* nsUrl = [NSURL URLWithString:msg];
     // return [[NSWorkspace sharedWorkspace] openURL:nsUrl];
     return false;
-}
-
-void Self::timerUpdate() {
-    // Doesn't work.
-    // Moved to QOpenGLWidget::paintGL().
-    // Director::getInstance()->mainLoop();
 }
 NS_CC_END

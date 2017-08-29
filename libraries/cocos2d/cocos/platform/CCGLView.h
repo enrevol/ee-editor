@@ -215,6 +215,8 @@ public:
     virtual bool isRetinaDisplay() const { return false; }
 
     virtual QOpenGLContext* getOpenGLContext() const = 0;
+
+    virtual void setRepaintInterval(int milliseconds) = 0;
  
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     virtual void* getEAGLView() const { return nullptr; }

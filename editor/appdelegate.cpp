@@ -1,5 +1,6 @@
 #include "appdelegate.hpp"
 
+#include <2d/CCActionInterval.h>
 #include <2d/CCLayer.h>
 #include <base/CCDirector.h>
 #include <platform/CCGLView.h>
@@ -37,6 +38,9 @@ bool Self::applicationDidFinishLaunching() {
     auto scene = cocos2d::Scene::create();
     auto layer = cocos2d::LayerColor::create(cocos2d::Color4B::BLUE);
     layer->setContentSize(cocos2d::Size(100, 100));
+    layer->runAction(cocos2d::RepeatForever::create(cocos2d::Sequence::create(
+        cocos2d::ScaleTo::create(1.0f, 2.0f),
+        cocos2d::ScaleTo::create(1.0f, 1.0f), nullptr)));
     scene->addChild(layer);
 
     director->runWithScene(scene);

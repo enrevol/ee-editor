@@ -15,6 +15,12 @@ Self::OpenGLWidget(QWidget* parent)
     , keyReleaseCallback_(nullptr)
     , resizeCallback_(nullptr) {
     qDebug() << __PRETTY_FUNCTION__;
+    timer_ = new QTimer(this);
+    connect(timer_, &QTimer::timeout, [this] { update(); });
+
+    setUpdatesEnabled(true);
+    setRepaintInterval(1.0f / 60);
+    timer_->start();
 }
 
 Self::~OpenGLWidget() {
@@ -27,16 +33,24 @@ void Self::initializeGL() {
 }
 
 void Self::resizeGL(int width, int height) {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << __PRETTY_FUNCTION__ << ": width = " << width
+             << " height = " << height;
 }
 
 void Self::paintGL() {
-    qDebug() << __PRETTY_FUNCTION__;
-    auto director = Director::getInstance();
-    auto glView = director->getOpenGLView();
-    if (glView != nullptr) {
-        director->mainLoop();
+    // qDebug() << __PRETTY_FUNCTION__;
+    if (repaintCallback_) {
+        repaintCallback_();
     }
+}
+
+void Self::setRepaintInterval(int milliseconds) {
+    repaintInterval_ = milliseconds;
+    timer_->setInterval(milliseconds);
+}
+
+void Self::setRepaintCallback(const RepaintCallback& callback) {
+    repaintCallback_ = callback;
 }
 
 void Self::setMouseMoveCallback(const MouseEventCallback& callback) {
@@ -99,6 +113,8 @@ void Self::keyReleaseEvent(QKeyEvent* event) {
 }
 
 void Self::resizeEvent(QResizeEvent* event) {
+    qDebug() << __PRETTY_FUNCTION__ << ": width = " << event->size().width()
+             << " height = " << event->size().height();
     if (resizeCallback_) {
         resizeCallback_(event);
     }

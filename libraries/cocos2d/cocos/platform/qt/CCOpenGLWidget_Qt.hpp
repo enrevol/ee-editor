@@ -10,6 +10,7 @@ NS_CC_BEGIN
 using MouseEventCallback = std::function<void(QMouseEvent* event)>;
 using KeyEventCallback = std::function<void(QKeyEvent* event)>;
 using ResizeEventCallback = std::function<void(QResizeEvent* event)>;
+using RepaintCallback = std::function<void()>;
 
 /// Inherits from QOpenGLWidget and provides callbacks for mouse and keyboard
 /// events.
@@ -25,10 +26,11 @@ public:
 
     virtual ~OpenGLWidget() override;
 
-    virtual void initializeGL() override;
-    virtual void resizeGL(int width, int height) override;
-    virtual void paintGL() override;
+    /// Sets the repaint interval in milliseconds.
+    /// Defaults is 1 / 60 seconds.
+    void setRepaintInterval(int milliseconds);
 
+    void setRepaintCallback(const RepaintCallback& callback);
     void setMouseMoveCallback(const MouseEventCallback& callback);
     void setMousePressCallback(const MouseEventCallback& callback);
     void setMouseReleaseCallback(const MouseEventCallback& callback);
@@ -37,6 +39,10 @@ public:
     void setResizeCallback(const ResizeEventCallback& callback);
 
 protected:
+    virtual void initializeGL() override;
+    virtual void resizeGL(int width, int height) override;
+    virtual void paintGL() override;
+
     virtual void mouseMoveEvent(QMouseEvent* event) override;
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent* event) override;
@@ -45,6 +51,10 @@ protected:
     virtual void resizeEvent(QResizeEvent* event) override;
 
 private:
+    int repaintInterval_;
+    QTimer* timer_;
+
+    RepaintCallback repaintCallback_;
     MouseEventCallback mouseMoveCallback_;
     MouseEventCallback mousePressCallback_;
     MouseEventCallback mouseReleaseCallback_;

@@ -21,11 +21,9 @@ Self* Self::create(OpenGLWidget* view) {
 }
 
 Self::GLViewImpl()
-    : initialized_(false)
-    , captured_(false)
-    , touchSupported_(false)
+    : captured_(false)
     , frameZoomFactor_(1.0f)
-    , screenScaleFactor_(false)
+    , screenScaleFactor_(1.f)
     , touch_(nullptr)
     , view_(nullptr) {
     qDebug() << __PRETTY_FUNCTION__;
@@ -35,14 +33,6 @@ Self::~GLViewImpl() {
     qDebug() << __PRETTY_FUNCTION__;
     CC_SAFE_DELETE(touch_);
 }
-
-bool Self::initGL() {
-    // auto gl = QOpenGLFunctions(view_->context());
-    // gl.initializeOpenGLFunctions();
-    return true;
-}
-
-void Self::destroyGL() {}
 
 bool Self::initWithView(OpenGLWidget* view) {
     Q_ASSERT(view != nullptr);
@@ -63,21 +53,23 @@ bool Self::initWithView(OpenGLWidget* view) {
     view->setKeyReleaseCallback(
         std::bind(&Self::keyRelease, this, std::placeholders::_1));
 
-    view->setUpdateBehavior(QOpenGLWidget::UpdateBehavior::NoPartialUpdate);
+    view->setResizeCallback([this](QResizeEvent* event) {
+        setFrameSize(event->size().width(), event->size().height());
+    });
+
+    view->setRepaintCallback([this] {
+        auto director = Director::getInstance();
+        director->mainLoop();
+    });
 
     _screenSize.width = _designResolutionSize.width = view->size().width();
     _screenSize.height = _designResolutionSize.height = view->size().height();
 
-    if (not initGL()) {
-        destroyGL();
-    }
-
-    initialized_ = true;
     return true;
 }
 
 bool Self::isOpenGLReady() {
-    return initialized_;
+    return true;
 }
 
 void Self::end() {
@@ -88,11 +80,10 @@ void Self::end() {
 }
 
 void Self::swapBuffers() {
-    if (initialized_) {
-        auto context = view_->context();
-        context->makeCurrent(context->surface());
-        context->swapBuffers(context->surface());
-    }
+    // QOpenGLWidget already does this.
+    // auto context = view_->context();
+    // context->makeCurrent(context->surface());
+    // context->swapBuffers(context->surface());
 }
 
 void Self::setIMEKeyboardState(bool open) {
@@ -128,6 +119,10 @@ void Self::setScissorInPoints(float x, float y, float w, float h) {
 
 QOpenGLContext* Self::getOpenGLContext() const {
     return view_->context();
+}
+
+void Self::setRepaintInterval(int milliseconds) {
+    view_->setRepaintInterval(milliseconds);
 }
 
 void Self::mouseMove(QMouseEvent* event) {
