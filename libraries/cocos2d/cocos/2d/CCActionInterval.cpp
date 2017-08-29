@@ -104,7 +104,10 @@ bool ActionInterval::sendUpdateEventToScript(float dt, Action *actionObject)
         if (ScriptEngineManager::sendActionEventToJS(actionObject, kActionUpdate, (void *)&dt))
             return true;
     }
-#endif
+#else // CC_ENABLE_SCRIPT_BINDING
+    CC_UNUSED_PARAM(dt);
+    CC_UNUSED_PARAM(actionObject);
+#endif // CC_ENABLE_SCRIPT_BINDING
     return false;
 }
 

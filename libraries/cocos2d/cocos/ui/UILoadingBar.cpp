@@ -49,11 +49,11 @@ _barRenderer(nullptr),
 _renderBarTexType(TextureResType::LOCAL),
 _barRendererTextureSize(Size::ZERO),
 _originalRect(Rect::ZERO),
-_textureFile(""),
 _scale9Enabled(false),
 _prevIgnoreSize(true),
 _capInsets(Rect::ZERO),
-_barRendererAdaptDirty(true)
+_barRendererAdaptDirty(true),
+_textureFile("")
 {
 }
 

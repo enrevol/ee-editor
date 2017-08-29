@@ -29,7 +29,6 @@
 #include <string>
 
 #include "renderer/CCTexture2D.h"
-#include "renderer/CCPass.h"
 #include "renderer/ccGLStateCache.h"
 
 
