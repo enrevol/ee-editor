@@ -204,8 +204,12 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         w = (int)(w * CC_CONTENT_SCALE_FACTOR());
         h = (int)(h * CC_CONTENT_SCALE_FACTOR());
         _fullviewPort = Rect(0,0,w,h);
+
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
         
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
+        f->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
 
         // textures must be power of two squared
         int powW = 0;
@@ -239,7 +243,7 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
             break;
         }
         GLint oldRBO;
-        glGetIntegerv(GL_RENDERBUFFER_BINDING, &oldRBO);
+        f->glGetIntegerv(GL_RENDERBUFFER_BINDING, &oldRBO);
         
         if (Configuration::getInstance()->checkForGLExtension("GL_QCOM"))
         {
@@ -255,11 +259,11 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         }
 
         // generate FBO
-        glGenFramebuffers(1, &_FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
+        f->glGenFramebuffers(1, &_FBO);
+        f->glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
 
         // associate texture with FBO
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getName(), 0);
+        f->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getName(), 0);
 
         if (depthStencilFormat != 0)
         {
@@ -306,15 +310,15 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
 #else
             
             //create and attach depth buffer
-            glGenRenderbuffers(1, &_depthRenderBuffer);
-            glBindRenderbuffer(GL_RENDERBUFFER, _depthRenderBuffer);
-            glRenderbufferStorage(GL_RENDERBUFFER, depthStencilFormat, (GLsizei)powW, (GLsizei)powH);
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBuffer);
+            f->glGenRenderbuffers(1, &_depthRenderBuffer);
+            f->glBindRenderbuffer(GL_RENDERBUFFER, _depthRenderBuffer);
+            f->glRenderbufferStorage(GL_RENDERBUFFER, depthStencilFormat, (GLsizei)powW, (GLsizei)powH);
+            f->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBuffer);
             
             // if depth format is the one with stencil part, bind same render buffer as stencil attachment
             if (depthStencilFormat == GL_DEPTH24_STENCIL8)
             {
-                glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBuffer);
+                f->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBuffer);
             }
 
 #endif
@@ -322,7 +326,7 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         }
 
         // check if it worked (probably worth doing :) )
-        CCASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Could not attach texture to framebuffer");
+        CCASSERT(f->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Could not attach texture to framebuffer");
 
         _texture->setAliasTexParameters();
 
@@ -335,8 +339,8 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         _sprite->setBlendFunc( BlendFunc::ALPHA_PREMULTIPLIED );
         _sprite->setOpacityModifyRGB(true);
 
-        glBindRenderbuffer(GL_RENDERBUFFER, oldRBO);
-        glBindFramebuffer(GL_FRAMEBUFFER, _oldFBO);
+        f->glBindRenderbuffer(GL_RENDERBUFFER, oldRBO);
+        f->glBindFramebuffer(GL_FRAMEBUFFER, _oldFBO);
         
         // Disabled by default.
         _autoDraw = false;
@@ -440,15 +444,19 @@ void RenderTexture::clearDepth(float depthValue)
 
 void RenderTexture::clearStencil(int stencilValue)
 {
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     // save old stencil value
     int stencilClearValue;
-    glGetIntegerv(GL_STENCIL_CLEAR_VALUE, &stencilClearValue);
+    f->glGetIntegerv(GL_STENCIL_CLEAR_VALUE, &stencilClearValue);
 
-    glClearStencil(stencilValue);
-    glClear(GL_STENCIL_BUFFER_BIT);
+    f->glClearStencil(stencilValue);
+    f->glClear(GL_STENCIL_BUFFER_BIT);
 
     // restore clear color
-    glClearStencil(stencilClearValue);
+    f->glClearStencil(stencilClearValue);
 }
 
 void RenderTexture::visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags)
@@ -567,8 +575,12 @@ Image* RenderTexture::newImage(bool flipImage)
             break;
         }
 
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
-        glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
+        f->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
+        f->glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
 
         // TODO: move this to configuration, so we don't check it every time
         /*  Certain Qualcomm Adreno GPU's will retain data in memory after a frame buffer switch which corrupts the render to the texture. The solution is to clear the frame buffer before rendering to the texture. However, calling glClear has the unintended result of clearing the current texture. Create a temporary texture to overcome this. At the end of RenderTexture::begin(), switch the attached texture to the second one, call glClear, and then switch back to the original texture. This solution is unnecessary for other devices as they don't have the same issue with switching frame buffers.
@@ -576,14 +588,14 @@ Image* RenderTexture::newImage(bool flipImage)
         if (Configuration::getInstance()->checkForGLExtension("GL_QCOM"))
         {
             // -- bind a temporary texture so we can clear the render buffer without losing our texture
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _textureCopy->getName(), 0);
+            f->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _textureCopy->getName(), 0);
             CHECK_GL_ERROR_DEBUG();
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getName(), 0);
+            f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            f->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getName(), 0);
         }
-        glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        glReadPixels(0,0,savedBufferWidth, savedBufferHeight,GL_RGBA,GL_UNSIGNED_BYTE, tempData);
-        glBindFramebuffer(GL_FRAMEBUFFER, _oldFBO);
+        f->glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        f->glReadPixels(0,0,savedBufferWidth, savedBufferHeight,GL_RGBA,GL_UNSIGNED_BYTE, tempData);
+        f->glBindFramebuffer(GL_FRAMEBUFFER, _oldFBO);
 
         if ( flipImage ) // -- flip is only required when saving image to file
         {
@@ -636,6 +648,10 @@ void RenderTexture::onBegin()
         Mat4::createOrthographicOffCenter((float)-1.0 / widthRatio, (float)1.0 / widthRatio, (float)-1.0 / heightRatio, (float)1.0 / heightRatio, -1, 1, &orthoMatrix);
         director->multiplyMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, orthoMatrix);
     }
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
     
     //calculate viewport
     {
@@ -647,13 +663,13 @@ void RenderTexture::onBegin()
         viewport.origin.x = (_fullRect.origin.x - _rtTextureRect.origin.x) * viewPortRectWidthRatio;
         viewport.origin.y = (_fullRect.origin.y - _rtTextureRect.origin.y) * viewPortRectHeightRatio;
         //glViewport(_fullviewPort.origin.x, _fullviewPort.origin.y, (GLsizei)_fullviewPort.size.width, (GLsizei)_fullviewPort.size.height);
-        glViewport(viewport.origin.x, viewport.origin.y, (GLsizei)viewport.size.width, (GLsizei)viewport.size.height);
+        f->glViewport(viewport.origin.x, viewport.origin.y, (GLsizei)viewport.size.width, (GLsizei)viewport.size.height);
     }
 
     // Adjust the orthographic projection and viewport
     
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
+    f->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
+    f->glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
 
     // TODO: move this to configuration, so we don't check it every time
     /*  Certain Qualcomm Adreno GPU's will retain data in memory after a frame buffer switch which corrupts the render to the texture. The solution is to clear the frame buffer before rendering to the texture. However, calling glClear has the unintended result of clearing the current texture. Create a temporary texture to overcome this. At the end of RenderTexture::begin(), switch the attached texture to the second one, call glClear, and then switch back to the original texture. This solution is unnecessary for other devices as they don't have the same issue with switching frame buffers.
@@ -661,10 +677,10 @@ void RenderTexture::onBegin()
     if (Configuration::getInstance()->checkForGLExtension("GL_QCOM"))
     {
         // -- bind a temporary texture so we can clear the render buffer without losing our texture
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _textureCopy->getName(), 0);
+        f->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _textureCopy->getName(), 0);
         CHECK_GL_ERROR_DEBUG();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getName(), 0);
+        f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        f->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getName(), 0);
     }
 }
 
@@ -672,12 +688,16 @@ void RenderTexture::onEnd()
 {
     Director *director = Director::getInstance();
 
-    glBindFramebuffer(GL_FRAMEBUFFER, _oldFBO);
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
+    f->glBindFramebuffer(GL_FRAMEBUFFER, _oldFBO);
 
     // restore viewport
     director->setViewport();
     const auto& vp = Camera::getDefaultViewport();
-    glViewport(vp._left, vp._bottom, vp._width, vp._height);
+    f->glViewport(vp._left, vp._bottom, vp._width, vp._height);
     //
     director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, _oldProjMatrix);
     director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _oldTransMatrix);
@@ -692,58 +712,66 @@ void RenderTexture::onClear()
     GLint oldStencilClearValue = 0;
     GLboolean oldDepthWrite = GL_FALSE;
 
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     // backup and set
     if (_clearFlags & GL_COLOR_BUFFER_BIT)
     {
-        glGetFloatv(GL_COLOR_CLEAR_VALUE, oldClearColor);
-        glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
+        f->glGetFloatv(GL_COLOR_CLEAR_VALUE, oldClearColor);
+        f->glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
     }
 
     if (_clearFlags & GL_DEPTH_BUFFER_BIT)
     {
-        glGetFloatv(GL_DEPTH_CLEAR_VALUE, &oldDepthClearValue);
-        glClearDepth(_clearDepth);
+        f->glGetFloatv(GL_DEPTH_CLEAR_VALUE, &oldDepthClearValue);
+        f->glClearDepthf(_clearDepth);
 
-        glGetBooleanv(GL_DEPTH_WRITEMASK, &oldDepthWrite);
-        glDepthMask(GL_TRUE);
+        f->glGetBooleanv(GL_DEPTH_WRITEMASK, &oldDepthWrite);
+        f->glDepthMask(GL_TRUE);
     }
 
     if (_clearFlags & GL_STENCIL_BUFFER_BIT)
     {
-        glGetIntegerv(GL_STENCIL_CLEAR_VALUE, &oldStencilClearValue);
-        glClearStencil(_clearStencil);
+        f->glGetIntegerv(GL_STENCIL_CLEAR_VALUE, &oldStencilClearValue);
+        f->glClearStencil(_clearStencil);
     }
 
     // clear
-    glClear(_clearFlags);
+    f->glClear(_clearFlags);
 
     // restore
     if (_clearFlags & GL_COLOR_BUFFER_BIT)
     {
-        glClearColor(oldClearColor[0], oldClearColor[1], oldClearColor[2], oldClearColor[3]);
+        f->glClearColor(oldClearColor[0], oldClearColor[1], oldClearColor[2], oldClearColor[3]);
     }
     if (_clearFlags & GL_DEPTH_BUFFER_BIT)
     {
-        glClearDepth(oldDepthClearValue);
-        glDepthMask(oldDepthWrite);
+        f->glClearDepthf(oldDepthClearValue);
+        f->glDepthMask(oldDepthWrite);
     }
     if (_clearFlags & GL_STENCIL_BUFFER_BIT)
     {
-        glClearStencil(oldStencilClearValue);
+        f->glClearStencil(oldStencilClearValue);
     }
 }
 
 void RenderTexture::onClearDepth()
 {
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     //! save old depth value
     GLfloat depthClearValue;
-    glGetFloatv(GL_DEPTH_CLEAR_VALUE, &depthClearValue);
+    f->glGetFloatv(GL_DEPTH_CLEAR_VALUE, &depthClearValue);
 
-    glClearDepth(_clearDepth);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    f->glClearDepthf(_clearDepth);
+    f->glClear(GL_DEPTH_BUFFER_BIT);
 
     // restore clear color
-    glClearDepth(depthClearValue);
+    f->glClearDepthf(depthClearValue);
 }
 
 void RenderTexture::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)

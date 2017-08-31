@@ -132,10 +132,14 @@ DrawNode::~DrawNode()
     _bufferGLPoint = nullptr;
     free(_bufferGLLine);
     _bufferGLLine = nullptr;
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
     
-    glDeleteBuffers(1, &_vbo);
-    glDeleteBuffers(1, &_vboGLLine);
-    glDeleteBuffers(1, &_vboGLPoint);
+    f->glDeleteBuffers(1, &_vbo);
+    f->glDeleteBuffers(1, &_vboGLLine);
+    f->glDeleteBuffers(1, &_vboGLPoint);
     _vbo = 0;
     _vboGLPoint = 0;
     _vboGLLine = 0;
@@ -143,9 +147,11 @@ DrawNode::~DrawNode()
     if (Configuration::getInstance()->supportsShareableVAO())
     {
         GL::bindVAO(0);
-        glDeleteVertexArrays(1, &_vao);
-        glDeleteVertexArrays(1, &_vaoGLLine);
-        glDeleteVertexArrays(1, &_vaoGLPoint);
+
+        auto f2 = context->extraFunctions();
+        f2->glDeleteVertexArrays(1, &_vao);
+        f2->glDeleteVertexArrays(1, &_vaoGLLine);
+        f2->glDeleteVertexArrays(1, &_vaoGLPoint);
         _vao = _vaoGLLine = _vaoGLPoint = 0;
     }
 }
@@ -207,73 +213,79 @@ bool DrawNode::init()
     ensureCapacity(512);
     ensureCapacityGLPoint(64);
     ensureCapacityGLLine(256);
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
     
     if (Configuration::getInstance()->supportsShareableVAO())
     {
-        glGenVertexArrays(1, &_vao);
+        auto f2 = context->extraFunctions();
+
+        f2->glGenVertexArrays(1, &_vao);
         GL::bindVAO(_vao);
-        glGenBuffers(1, &_vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)* _bufferCapacity, _buffer, GL_STREAM_DRAW);
+        f->glGenBuffers(1, &_vbo);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)* _bufferCapacity, _buffer, GL_STREAM_DRAW);
         // vertex
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
         // color
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
         // texcoord
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
         
-        glGenVertexArrays(1, &_vaoGLLine);
+        f2->glGenVertexArrays(1, &_vaoGLLine);
         GL::bindVAO(_vaoGLLine);
-        glGenBuffers(1, &_vboGLLine);
-        glBindBuffer(GL_ARRAY_BUFFER, _vboGLLine);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLLine, _bufferGLLine, GL_STREAM_DRAW);
+        f->glGenBuffers(1, &_vboGLLine);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vboGLLine);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLLine, _bufferGLLine, GL_STREAM_DRAW);
         // vertex
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
         // color
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
         // texcoord
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
         
-        glGenVertexArrays(1, &_vaoGLPoint);
+        f2->glGenVertexArrays(1, &_vaoGLPoint);
         GL::bindVAO(_vaoGLPoint);
-        glGenBuffers(1, &_vboGLPoint);
-        glBindBuffer(GL_ARRAY_BUFFER, _vboGLPoint);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLPoint, _bufferGLPoint, GL_STREAM_DRAW);
+        f->glGenBuffers(1, &_vboGLPoint);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vboGLPoint);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLPoint, _bufferGLPoint, GL_STREAM_DRAW);
         // vertex
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
         // color
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
         // Texture coord as pointsize
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
         
         GL::bindVAO(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
         
     }
     else
     {
-        glGenBuffers(1, &_vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)* _bufferCapacity, _buffer, GL_STREAM_DRAW);
+        f->glGenBuffers(1, &_vbo);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)* _bufferCapacity, _buffer, GL_STREAM_DRAW);
         
-        glGenBuffers(1, &_vboGLLine);
-        glBindBuffer(GL_ARRAY_BUFFER, _vboGLLine);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLLine, _bufferGLLine, GL_STREAM_DRAW);
+        f->glGenBuffers(1, &_vboGLLine);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vboGLLine);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLLine, _bufferGLLine, GL_STREAM_DRAW);
         
-        glGenBuffers(1, &_vboGLPoint);
-        glBindBuffer(GL_ARRAY_BUFFER, _vboGLPoint);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLPoint, _bufferGLPoint, GL_STREAM_DRAW);
+        f->glGenBuffers(1, &_vboGLPoint);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vboGLPoint);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLPoint, _bufferGLPoint, GL_STREAM_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     
     CHECK_GL_ERROR_DEBUG();
@@ -326,10 +338,14 @@ void DrawNode::onDraw(const Mat4 &transform, uint32_t /*flags*/)
     glProgram->setUniformLocationWith1f(glProgram->getUniformLocation("u_alpha"), _displayedOpacity / 255.0);
     GL::blendFunc(_blendFunc.src, _blendFunc.dst);
 
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if (_dirty)
     {
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacity, _buffer, GL_STREAM_DRAW);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacity, _buffer, GL_STREAM_DRAW);
         
         _dirty = false;
     }
@@ -341,17 +357,17 @@ void DrawNode::onDraw(const Mat4 &transform, uint32_t /*flags*/)
     {
         GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
         // vertex
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
         // color
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
         // texcoord
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
     }
 
-    glDrawArrays(GL_TRIANGLES, 0, _bufferCount);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glDrawArrays(GL_TRIANGLES, 0, _bufferCount);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     if (Configuration::getInstance()->supportsShareableVAO())
     {
@@ -371,10 +387,14 @@ void DrawNode::onDrawGLLine(const Mat4 &transform, uint32_t /*flags*/)
 
     GL::blendFunc(_blendFunc.src, _blendFunc.dst);
 
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if (_dirtyGLLine)
     {
-        glBindBuffer(GL_ARRAY_BUFFER, _vboGLLine);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLLine, _bufferGLLine, GL_STREAM_DRAW);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vboGLLine);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLLine, _bufferGLLine, GL_STREAM_DRAW);
         _dirtyGLLine = false;
     }
     if (Configuration::getInstance()->supportsShareableVAO())
@@ -383,25 +403,25 @@ void DrawNode::onDrawGLLine(const Mat4 &transform, uint32_t /*flags*/)
     }
     else
     {
-        glBindBuffer(GL_ARRAY_BUFFER, _vboGLLine);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vboGLLine);
         GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
         // vertex
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
         // color
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
         // texcoord
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
     }
 
-    glLineWidth(_lineWidth);
-    glDrawArrays(GL_LINES, 0, _bufferCountGLLine);
+    f->glLineWidth(_lineWidth);
+    f->glDrawArrays(GL_LINES, 0, _bufferCountGLLine);
     
     if (Configuration::getInstance()->supportsShareableVAO())
     {
         GL::bindVAO(0);
     }
     
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,_bufferCountGLLine);
 
     CHECK_GL_ERROR_DEBUG();
@@ -416,10 +436,14 @@ void DrawNode::onDrawGLPoint(const Mat4 &transform, uint32_t /*flags*/)
 
     GL::blendFunc(_blendFunc.src, _blendFunc.dst);
 
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if (_dirtyGLPoint)
     {
-        glBindBuffer(GL_ARRAY_BUFFER, _vboGLPoint);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLPoint, _bufferGLPoint, GL_STREAM_DRAW);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vboGLPoint);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(V2F_C4B_T2F)*_bufferCapacityGLPoint, _bufferGLPoint, GL_STREAM_DRAW);
         
         _dirtyGLPoint = false;
     }
@@ -430,21 +454,21 @@ void DrawNode::onDrawGLPoint(const Mat4 &transform, uint32_t /*flags*/)
     }
     else
     {
-        glBindBuffer(GL_ARRAY_BUFFER, _vboGLPoint);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vboGLPoint);
         GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, vertices));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, colors));
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
     }
     
-    glDrawArrays(GL_POINTS, 0, _bufferCountGLPoint);
+    f->glDrawArrays(GL_POINTS, 0, _bufferCountGLPoint);
     
     if (Configuration::getInstance()->supportsShareableVAO())
     {
         GL::bindVAO(0);
     }
     
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,_bufferCountGLPoint);
     CHECK_GL_ERROR_DEBUG();

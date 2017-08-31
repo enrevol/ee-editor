@@ -268,11 +268,15 @@ void SkeletonRenderer::drawDebug (Renderer* renderer, const Mat4 &transform, uin
     director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
     
     DrawNode* drawNode = DrawNode::create();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
     
     if (_debugSlots) {
         // Slots.
         // DrawPrimitives::setDrawColor4B(0, 0, 255, 255);
-        glLineWidth(1);
+        f->glLineWidth(1);
         Vec2 points[4];
         V3F_C4B_T2F_Quad quad;
         for (int i = 0, n = _skeleton->slotsCount; i < n; i++) {
@@ -289,7 +293,7 @@ void SkeletonRenderer::drawDebug (Renderer* renderer, const Mat4 &transform, uin
     }
     if (_debugBones) {
         // Bone lengths.
-        glLineWidth(2);
+        f->glLineWidth(2);
         for (int i = 0, n = _skeleton->bonesCount; i < n; i++) {
             spBone *bone = _skeleton->bones[i];
             float x = bone->data->length * bone->a + bone->worldX;

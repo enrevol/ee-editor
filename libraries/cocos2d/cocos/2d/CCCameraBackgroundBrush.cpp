@@ -131,20 +131,24 @@ bool CameraBackgroundDepthBrush::init()
 
 void CameraBackgroundDepthBrush::drawBackground(Camera* /*camera*/)
 {
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     GLboolean oldDepthTest;
     GLint oldDepthFunc;
     GLboolean oldDepthMask;
     {
-        glColorMask(_clearColor, _clearColor, _clearColor, _clearColor);
-        glStencilMask(0);
+        f->glColorMask(_clearColor, _clearColor, _clearColor, _clearColor);
+        f->glStencilMask(0);
         
-        oldDepthTest = glIsEnabled(GL_DEPTH_TEST);
-        glGetIntegerv(GL_DEPTH_FUNC, &oldDepthFunc);
-        glGetBooleanv(GL_DEPTH_WRITEMASK, &oldDepthMask);
+        oldDepthTest = f->glIsEnabled(GL_DEPTH_TEST);
+        f->glGetIntegerv(GL_DEPTH_FUNC, &oldDepthFunc);
+        f->glGetBooleanv(GL_DEPTH_WRITEMASK, &oldDepthMask);
         
-        glDepthMask(GL_TRUE);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_ALWAYS);
+        f->glDepthMask(GL_TRUE);
+        f->glEnable(GL_DEPTH_TEST);
+        f->glDepthFunc(GL_ALWAYS);
     }
     
     //draw
@@ -155,34 +159,34 @@ void CameraBackgroundDepthBrush::drawBackground(Camera* /*camera*/)
     
     {
         GL::bindVAO(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
         
         GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
         
         // vertices
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), &_quad.tl.vertices);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), &_quad.tl.vertices);
         
         // colors
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V3F_C4B_T2F), &_quad.tl.colors);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V3F_C4B_T2F), &_quad.tl.colors);
         
         // tex coords
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), &_quad.tl.texCoords);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), &_quad.tl.texCoords);
         
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        f->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
     }
     
     
     {
         if(GL_FALSE == oldDepthTest)
         {
-            glDisable(GL_DEPTH_TEST);
+            f->glDisable(GL_DEPTH_TEST);
         }
-        glDepthFunc(oldDepthFunc);
+        f->glDepthFunc(oldDepthFunc);
         
         if(GL_FALSE == oldDepthMask)
         {
-            glDepthMask(GL_FALSE);
+            f->glDepthMask(GL_FALSE);
         }
         
         /* IMPORTANT: We only need to update the states that are not restored.
@@ -190,11 +194,11 @@ void CameraBackgroundDepthBrush::drawBackground(Camera* /*camera*/)
          after setting it.
          The other values don't need to be updated since they were restored to their original values
          */
-        glStencilMask(0xFFFFF);
+        f->glStencilMask(0xFFFFF);
         //        RenderState::StateBlock::_defaultState->setStencilWrite(0xFFFFF);
         
         /* BUG: RenderState does not support glColorMask yet. */
-        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        f->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     }
 }
 
@@ -264,16 +268,21 @@ CameraBackgroundSkyBoxBrush::CameraBackgroundSkyBoxBrush()
 CameraBackgroundSkyBoxBrush::~CameraBackgroundSkyBoxBrush()
 {
     CC_SAFE_RELEASE(_texture);
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
     
-    glDeleteBuffers(1, &_vertexBuffer);
-    glDeleteBuffers(1, &_indexBuffer);
+    f->glDeleteBuffers(1, &_vertexBuffer);
+    f->glDeleteBuffers(1, &_indexBuffer);
     
     _vertexBuffer = 0;
     _indexBuffer = 0;
     
     if (Configuration::getInstance()->supportsShareableVAO())
     {
-        glDeleteVertexArrays(1, &_vao);
+        auto f2 = context->extraFunctions();
+        f2->glDeleteVertexArrays(1, &_vao);
         GL::bindVAO(0);
         _vao = 0;
     }
@@ -353,23 +362,27 @@ void CameraBackgroundSkyBoxBrush::drawBackground(Camera* camera)
     _glProgramState->setUniformMat4("u_cameraRot", cameraModelMat);
     
     _glProgramState->apply(Mat4::IDENTITY);
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
     
-    glEnable(GL_DEPTH_TEST);
+    f->glEnable(GL_DEPTH_TEST);
     RenderState::StateBlock::_defaultState->setDepthTest(true);
     
-    glDepthMask(GL_TRUE);
+    f->glDepthMask(GL_TRUE);
     RenderState::StateBlock::_defaultState->setDepthWrite(true);
     
-    glDepthFunc(GL_ALWAYS);
+    f->glDepthFunc(GL_ALWAYS);
     RenderState::StateBlock::_defaultState->setDepthFunction(RenderState::DEPTH_ALWAYS);
     
-    glEnable(GL_CULL_FACE);
+    f->glEnable(GL_CULL_FACE);
     RenderState::StateBlock::_defaultState->setCullFace(true);
     
-    glCullFace(GL_BACK);
+    f->glCullFace(GL_BACK);
     RenderState::StateBlock::_defaultState->setCullFaceSide(RenderState::CULL_FACE_SIDE_BACK);
     
-    glDisable(GL_BLEND);
+    f->glDisable(GL_BLEND);
     RenderState::StateBlock::_defaultState->setBlend(false);
     
     if (Configuration::getInstance()->supportsShareableVAO())
@@ -380,13 +393,13 @@ void CameraBackgroundSkyBoxBrush::drawBackground(Camera* camera)
     {
         GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POSITION);
         
-        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), nullptr);
+        f->glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+        f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), nullptr);
         
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
     }
     
-    glDrawElements(GL_TRIANGLES, (GLsizei)36, GL_UNSIGNED_BYTE, nullptr);
+    f->glDrawElements(GL_TRIANGLES, (GLsizei)36, GL_UNSIGNED_BYTE, nullptr);
     
     if (Configuration::getInstance()->supportsShareableVAO())
     {
@@ -394,8 +407,8 @@ void CameraBackgroundSkyBoxBrush::drawBackground(Camera* camera)
     }
     else
     {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, 8);
@@ -417,21 +430,27 @@ bool CameraBackgroundSkyBoxBrush::init()
 
 void CameraBackgroundSkyBoxBrush::initBuffer()
 {
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if (_vertexBuffer)
-        glDeleteBuffers(1, &_vertexBuffer);
+        f->glDeleteBuffers(1, &_vertexBuffer);
     if (_indexBuffer)
-        glDeleteBuffers(1, &_indexBuffer);
+        f->glDeleteBuffers(1, &_indexBuffer);
     
     if (Configuration::getInstance()->supportsShareableVAO() && _vao)
     {
-        glDeleteVertexArrays(1, &_vao);
+        auto f2 = context->extraFunctions();
+        f2->glDeleteVertexArrays(1, &_vao);
         GL::bindVAO(0);
         _vao = 0;
     }
     
     if (Configuration::getInstance()->supportsShareableVAO())
     {
-        glGenVertexArrays(1, &_vao);
+        auto f2 = context->extraFunctions();
+        f2->glGenVertexArrays(1, &_vao);
         GL::bindVAO(_vao);
     }
     
@@ -442,9 +461,9 @@ void CameraBackgroundSkyBoxBrush::initBuffer()
         Vec3(1, -1, -1), Vec3(1, 1, -1), Vec3(-1, 1, -1), Vec3(-1, -1, -1)
     };
     
-    glGenBuffers(1, &_vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vexBuf), vexBuf, GL_STATIC_DRAW);
+    f->glGenBuffers(1, &_vertexBuffer);
+    f->glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    f->glBufferData(GL_ARRAY_BUFFER, sizeof(vexBuf), vexBuf, GL_STATIC_DRAW);
     
     // init index buffer object
     const unsigned char idxBuf[] = {  2, 1, 0, 3, 2, 0, // font
@@ -455,13 +474,13 @@ void CameraBackgroundSkyBoxBrush::initBuffer()
         3, 0, 4, 3, 4, 7  // down
     };
     
-    glGenBuffers(1, &_indexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(idxBuf), idxBuf, GL_STATIC_DRAW);
+    f->glGenBuffers(1, &_indexBuffer);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+    f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(idxBuf), idxBuf, GL_STATIC_DRAW);
     
     if (Configuration::getInstance()->supportsShareableVAO())
     {
-        glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
+        f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
         _glProgramState->applyAttributes(false);
         
         GL::bindVAO(0);

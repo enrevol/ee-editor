@@ -225,9 +225,13 @@ void GridBase::beforeDraw(void)
     // 2d projection
     //    [director setProjection:Director::Projection::_2D];
     set2DProjection();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
     
     Size    size = director->getWinSizeInPixels();
-    glViewport(0, 0, (GLsizei)(size.width), (GLsizei)(size.height) );
+    f->glViewport(0, 0, (GLsizei)(size.width), (GLsizei)(size.height) );
     _grabber->beforeRender(_texture);
 }
 
@@ -239,9 +243,13 @@ void GridBase::afterDraw(cocos2d::Node * /*target*/)
     Director *director = Director::getInstance();
     director->setProjection(_directorProjection);
 
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     director->setViewport();
     const auto& vp = Camera::getDefaultViewport();
-    glViewport(vp._left, vp._bottom, vp._width, vp._height);
+    f->glViewport(vp._left, vp._bottom, vp._width, vp._height);
 //    if (target->getCamera()->isDirty())
 //    {
 //        Vec2 offset = target->getAnchorPointInPoints();
@@ -384,16 +392,20 @@ void Grid3D::beforeBlit()
 {
     if(_needDepthTestForBlit)
     {
-        _oldDepthTestValue = glIsEnabled(GL_DEPTH_TEST) != GL_FALSE;
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
+        _oldDepthTestValue = f->glIsEnabled(GL_DEPTH_TEST) != GL_FALSE;
         GLboolean depthWriteMask;
-        glGetBooleanv(GL_DEPTH_WRITEMASK, &depthWriteMask);
+        f->glGetBooleanv(GL_DEPTH_WRITEMASK, &depthWriteMask);
 		_oldDepthWriteValue = depthWriteMask != GL_FALSE;
         CHECK_GL_ERROR_DEBUG();
 
-        glEnable(GL_DEPTH_TEST);
+        f->glEnable(GL_DEPTH_TEST);
         RenderState::StateBlock::_defaultState->setDepthTest(true);
 
-        glDepthMask(true);
+        f->glDepthMask(true);
         RenderState::StateBlock::_defaultState->setDepthWrite(true);
     }
 }
@@ -402,13 +414,17 @@ void Grid3D::afterBlit()
 {
     if(_needDepthTestForBlit)
     {
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         if(_oldDepthTestValue)
-            glEnable(GL_DEPTH_TEST);
+            f->glEnable(GL_DEPTH_TEST);
         else
-            glDisable(GL_DEPTH_TEST);
+            f->glDisable(GL_DEPTH_TEST);
         RenderState::StateBlock::_defaultState->setDepthTest(_oldDepthTestValue);
 
-        glDepthMask(_oldDepthWriteValue);
+        f->glDepthMask(_oldDepthWriteValue);
         RenderState::StateBlock::_defaultState->setDepthWrite(_oldDepthWriteValue);
     }
 }
@@ -421,17 +437,21 @@ void Grid3D::blit(void)
     _shaderProgram->use();
     _shaderProgram->setUniformsForBuiltins();
 
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     //
     // Attributes
     //
 
     // position
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 0, _vertices);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 0, _vertices);
 
     // texCoords
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, _texCoordinates);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, _texCoordinates);
 
-    glDrawElements(GL_TRIANGLES, (GLsizei) n*6, GL_UNSIGNED_SHORT, _indices);
+    f->glDrawElements(GL_TRIANGLES, (GLsizei) n*6, GL_UNSIGNED_SHORT, _indices);
 }
 
 void Grid3D::calculateVertexPoints(void)
@@ -660,18 +680,22 @@ void TiledGrid3D::blit(void)
     _shaderProgram->use();
     _shaderProgram->setUniformsForBuiltins();
 
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     //
     // Attributes
     //
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION | GL::VERTEX_ATTRIB_FLAG_TEX_COORD );
 
     // position
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 0, _vertices);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 0, _vertices);
 
     // texCoords
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, _texCoordinates);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, _texCoordinates);
 
-    glDrawElements(GL_TRIANGLES, (GLsizei)n*6, GL_UNSIGNED_SHORT, _indices);
+    f->glDrawElements(GL_TRIANGLES, (GLsizei)n*6, GL_UNSIGNED_SHORT, _indices);
 
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,n*6);
 }

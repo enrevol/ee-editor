@@ -543,6 +543,10 @@ static Texture2D* _getTexture(Label* label)
 
 void Label::updateShaderProgram()
 {
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     switch (_currLabelEffect)
     {
     case cocos2d::LabelEffect::NORMAL:
@@ -558,21 +562,21 @@ void Label::updateShaderProgram()
         break;
     case cocos2d::LabelEffect::OUTLINE: 
         setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_LABEL_OUTLINE));
-        _uniformEffectColor = glGetUniformLocation(getGLProgram()->getProgram(), "u_effectColor");
-        _uniformEffectType = glGetUniformLocation(getGLProgram()->getProgram(), "u_effectType");
+        _uniformEffectColor = f->glGetUniformLocation(getGLProgram()->getProgram(), "u_effectColor");
+        _uniformEffectType = f->glGetUniformLocation(getGLProgram()->getProgram(), "u_effectType");
         break;
     case cocos2d::LabelEffect::GLOW:
         if (_useDistanceField)
         {
             setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_LABEL_DISTANCEFIELD_GLOW));
-            _uniformEffectColor = glGetUniformLocation(getGLProgram()->getProgram(), "u_effectColor");
+            _uniformEffectColor = f->glGetUniformLocation(getGLProgram()->getProgram(), "u_effectColor");
         }
         break;
     default:
         return;
     }
     
-    _uniformTextColor = glGetUniformLocation(getGLProgram()->getProgram(), "u_textColor");
+    _uniformTextColor = f->glGetUniformLocation(getGLProgram()->getProgram(), "u_textColor");
 }
 
 void Label::setFontAtlas(FontAtlas* atlas,bool distanceFieldEnabled /* = false */, bool useA8Shader /* = false */)

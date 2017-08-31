@@ -514,26 +514,30 @@ void ProgressTimer::onDraw(const Mat4 &transform, uint32_t /*flags*/)
 
     GL::bindTexture2D( _sprite->getTexture() );
 
-    glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(_vertexData[0]) , &_vertexData[0].vertices);
-    glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(_vertexData[0]), &_vertexData[0].texCoords);
-    glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(_vertexData[0]), &_vertexData[0].colors);
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
+    f->glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(_vertexData[0]) , &_vertexData[0].vertices);
+    f->glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(_vertexData[0]), &_vertexData[0].texCoords);
+    f->glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(_vertexData[0]), &_vertexData[0].colors);
 
     if(_type == Type::RADIAL)
     {
-        glDrawArrays(GL_TRIANGLE_FAN, 0, _vertexDataCount);
+        f->glDrawArrays(GL_TRIANGLE_FAN, 0, _vertexDataCount);
         CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,_vertexDataCount);
     }
     else if (_type == Type::BAR)
     {
         if (!_reverseDirection) 
         {
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexDataCount);
+            f->glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexDataCount);
             CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,_vertexDataCount);
         }
         else 
         {
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexDataCount/2);
-            glDrawArrays(GL_TRIANGLE_STRIP, 4, _vertexDataCount/2);
+            f->glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexDataCount/2);
+            f->glDrawArrays(GL_TRIANGLE_STRIP, 4, _vertexDataCount/2);
             // 2 draw calls
             CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(2,_vertexDataCount);
         }

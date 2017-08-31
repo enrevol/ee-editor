@@ -59,10 +59,16 @@ ParticleSystemQuad::~ParticleSystemQuad()
     {
         CC_SAFE_FREE(_quads);
         CC_SAFE_FREE(_indices);
-        glDeleteBuffers(2, &_buffersVBO[0]);
+
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
+        f->glDeleteBuffers(2, &_buffersVBO[0]);
         if (Configuration::getInstance()->supportsShareableVAO())
         {
-            glDeleteVertexArrays(1, &_VAOname);
+            auto f2 = context->extraFunctions();
+            f2->glDeleteVertexArrays(1, &_VAOname);
             GL::bindVAO(0);
         }
     }
@@ -434,10 +440,14 @@ void ParticleSystemQuad::updateParticleQuads()
 
 void ParticleSystemQuad::postStep()
 {
-    glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
+    f->glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
     
     // Option 1: Sub Data
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_quads[0])*_totalParticles, _quads);
+    f->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_quads[0])*_totalParticles, _quads);
     
     // Option 2: Data
     //  glBufferData(GL_ARRAY_BUFFER, sizeof(quads_[0]) * particleCount, quads_, GL_DYNAMIC_DRAW);
@@ -448,7 +458,7 @@ void ParticleSystemQuad::postStep()
     // memcpy(buf, _quads, sizeof(_quads[0])*_totalParticles);
     // glUnmapBuffer(GL_ARRAY_BUFFER);
     
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     CHECK_GL_ERROR_DEBUG();
 }
@@ -544,57 +554,66 @@ void ParticleSystemQuad::setTotalParticles(int tp)
 
 void ParticleSystemQuad::setupVBOandVAO()
 {
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+    auto f2 = context->extraFunctions();
+
     // clean VAO
-    glDeleteBuffers(2, &_buffersVBO[0]);
-    glDeleteVertexArrays(1, &_VAOname);
+    f->glDeleteBuffers(2, &_buffersVBO[0]);
+    f2->glDeleteVertexArrays(1, &_VAOname);
     GL::bindVAO(0);
     
-    glGenVertexArrays(1, &_VAOname);
+    f2->glGenVertexArrays(1, &_VAOname);
     GL::bindVAO(_VAOname);
 
 #define kQuadSize sizeof(_quads[0].bl)
 
-    glGenBuffers(2, &_buffersVBO[0]);
+    f->glGenBuffers(2, &_buffersVBO[0]);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _totalParticles, _quads, GL_DYNAMIC_DRAW);
+    f->glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
+    f->glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _totalParticles, _quads, GL_DYNAMIC_DRAW);
 
     // vertices
-    glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof( V3F_C4B_T2F, vertices));
+    f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof( V3F_C4B_T2F, vertices));
 
     // colors
-    glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (GLvoid*) offsetof( V3F_C4B_T2F, colors));
+    f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (GLvoid*) offsetof( V3F_C4B_T2F, colors));
 
     // tex coords
-    glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof( V3F_C4B_T2F, texCoords));
+    f->glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
+    f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof( V3F_C4B_T2F, texCoords));
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _totalParticles * 6, _indices, GL_STATIC_DRAW);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
+    f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _totalParticles * 6, _indices, GL_STATIC_DRAW);
 
     // Must unbind the VAO before changing the element buffer.
     GL::bindVAO(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     CHECK_GL_ERROR_DEBUG();
 }
 
 void ParticleSystemQuad::setupVBO()
 {
-    glDeleteBuffers(2, &_buffersVBO[0]);
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
+    f->glDeleteBuffers(2, &_buffersVBO[0]);
     
-    glGenBuffers(2, &_buffersVBO[0]);
+    f->glGenBuffers(2, &_buffersVBO[0]);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _totalParticles, _quads, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
+    f->glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _totalParticles, _quads, GL_DYNAMIC_DRAW);
+    f->glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _totalParticles * 6, _indices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
+    f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _totalParticles * 6, _indices, GL_STATIC_DRAW);
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     CHECK_GL_ERROR_DEBUG();
 }
@@ -674,11 +693,16 @@ void ParticleSystemQuad::setBatchNode(ParticleBatchNode * batchNode)
             CC_SAFE_FREE(_quads);
             CC_SAFE_FREE(_indices);
 
-            glDeleteBuffers(2, &_buffersVBO[0]);
+            auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+            Q_ASSERT(context == QOpenGLContext::currentContext());
+            auto f = context->functions();
+
+            f->glDeleteBuffers(2, &_buffersVBO[0]);
             memset(_buffersVBO, 0, sizeof(_buffersVBO));
             if (Configuration::getInstance()->supportsShareableVAO())
             {
-                glDeleteVertexArrays(1, &_VAOname);
+                auto f2 = context->extraFunctions();
+                f2->glDeleteVertexArrays(1, &_VAOname);
                 GL::bindVAO(0);
                 _VAOname = 0;
             }
