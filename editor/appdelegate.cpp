@@ -12,9 +12,13 @@ using Self = AppDelegate;
 
 Self::AppDelegate(int argc, char* argv[])
     : Super(argc, argv)
-    , openGLView_(nullptr) {}
+    , openGLView_(nullptr) {
+    qDebug() << __PRETTY_FUNCTION__;
+}
 
-Self::~AppDelegate() {}
+Self::~AppDelegate() {
+    qDebug() << __PRETTY_FUNCTION__;
+}
 
 void Self::setOpenGLView(cocos2d::OpenGLWidget* view) {
     openGLView_ = view;
@@ -89,10 +93,12 @@ bool Self::applicationDidFinishLaunching() {
 }
 
 void Self::applicationDidEnterBackground() {
+    qDebug() << __PRETTY_FUNCTION__;
     cocos2d::Director::getInstance()->stopAnimation();
 }
 
 void Self::applicationWillEnterForeground() {
+    qDebug() << __PRETTY_FUNCTION__;
     cocos2d::Director::getInstance()->startAnimation();
 }
 } // namespace ee
