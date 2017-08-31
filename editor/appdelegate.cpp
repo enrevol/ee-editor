@@ -28,11 +28,13 @@ bool Self::applicationDidFinishLaunching() {
     qDebug() << __PRETTY_FUNCTION__;
 
     auto director = cocos2d::Director::getInstance();
+
     auto glView = cocos2d::GLViewImpl::create(openGLView_);
-    glView->setDesignResolutionSize(960, 640, ResolutionPolicy::NO_BORDER);
+    glView->setDesignResolutionSize(480, 320, ResolutionPolicy::NO_BORDER);
     director->setOpenGLView(glView);
+
     director->setDisplayStats(true);
-    director->setAnimationInterval(1.0f / 60);
+    director->setAnimationInterval(1.0f / 30);
 
     auto&& frameSize = director->getOpenGLView()->getFrameSize();
     qDebug() << "frameSize = " << frameSize.width << " " << frameSize.height;
