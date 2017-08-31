@@ -1,4 +1,5 @@
 #include "rootscene.hpp"
+#include "utils.hpp"
 
 #include <2d/CCLayer.h>
 #include <2d/CCSprite.h>
@@ -44,6 +45,8 @@ void Self::onExit() {
 
 bool Self::setTexturePath(const QString& path) {
     auto oldTexture = sprite_->getTexture();
+
+    makeCocosContext();
     sprite_->setTexture(path.toStdString());
     if (sprite_->getTexture() != nullptr) {
         sprite_->setTexture(oldTexture);

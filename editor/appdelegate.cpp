@@ -1,5 +1,6 @@
 #include "appdelegate.hpp"
 #include "rootscene.hpp"
+#include "utils.hpp"
 
 #include <2d/CCActionInterval.h>
 #include <2d/CCLabel.h>
@@ -33,8 +34,7 @@ bool Self::applicationDidFinishLaunching() {
     auto glView = cocos2d::GLViewImpl::create(openGLView_);
     glView->setDesignResolutionSize(480, 320, ResolutionPolicy::NO_BORDER);
 
-    auto context = glView->getOpenGLContext();
-    context->makeCurrent(context->surface());
+    makeCocosContext(glView);
 
     director->setOpenGLView(glView);
 

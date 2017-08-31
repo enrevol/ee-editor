@@ -40,7 +40,8 @@ SOURCES += \
     iserializable.cpp \
     appdelegate.cpp \
     openglwidget.cpp \
-    rootscene.cpp
+    rootscene.cpp \
+    utils.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -53,7 +54,8 @@ HEADERS += \
     iserializable.hpp \
     appdelegate.hpp \
     openglwidget.hpp \
-    rootscene.hpp
+    rootscene.hpp \
+    utils.hpp
 
 FORMS += \
     mainwindow.ui \
