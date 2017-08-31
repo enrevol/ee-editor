@@ -1,6 +1,7 @@
 #include "mainwindow.hpp"
 #include "config.hpp"
 #include "projectsettingsdialog.hpp"
+#include "rootscene.hpp"
 #include "settings.hpp"
 #include "ui_mainwindow.h"
 
@@ -55,6 +56,33 @@ Self::MainWindow(QWidget* parent)
             if (config.loadProject(filePath)) {
                 ui_->actionProject_Settings->setEnabled(true);
             }
+        }
+    });
+
+    connect(ui_->selectTextureButton, &QPushButton::clicked, [this] {
+        auto path = QFileDialog::getOpenFileName(
+            this, "Select image", "",
+            "Portable Network Graphics (*.png);;All Files (.*)");
+
+        if (not path.isEmpty()) {
+            qDebug() << "select image: " << path;
+            if (not RootScene::getInstance()->setTexturePath(path)) {
+                QMessageBox::critical(this, "Error", "Invalid image",
+                                      QMessageBox::StandardButton::Ok);
+            } else {
+                ui_->textureInput->setText(path);
+            }
+        }
+    });
+
+    connect(ui_->compileShaderButton, &QPushButton::clicked, [this] {
+        auto vertexShader = ui_->vertexShaderInput->toPlainText();
+        auto fragmentShader = ui_->fragmentShaderInput->toPlainText();
+        auto succeeded =
+            RootScene::getInstance()->setShader(vertexShader, fragmentShader);
+        if (not succeeded) {
+            QMessageBox::critical(this, "Error", "Failed to compile the shader",
+                                  QMessageBox::StandardButton::Ok);
         }
     });
 

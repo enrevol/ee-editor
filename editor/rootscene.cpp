@@ -44,11 +44,10 @@ void Self::onExit() {
 }
 
 bool Self::setTexturePath(const QString& path) {
-    auto oldTexture = sprite_->getTexture();
-
     makeCocosContext();
+    auto oldTexture = sprite_->getTexture();
     sprite_->setTexture(path.toStdString());
-    if (sprite_->getTexture() != nullptr) {
+    if (sprite_->getTexture() == nullptr) {
         sprite_->setTexture(oldTexture);
         return false;
     }
@@ -57,6 +56,7 @@ bool Self::setTexturePath(const QString& path) {
 
 bool Self::setShader(const QString& vertexShader,
                      const QString& fragmentShader) {
+    makeCocosContext();
     auto program = cocos2d::GLProgram::createWithByteArrays(
         vertexShader.toStdString().c_str(),
         fragmentShader.toStdString().c_str());
