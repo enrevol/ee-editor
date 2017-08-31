@@ -10,11 +10,9 @@
 #include <QSurfaceFormat>
 
 int main(int argc, char* argv[]) {
-    ee::AppDelegate app(argc, argv);
-
     QSurfaceFormat format;
-    format.setVersion(3, 1);
-    format.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
+    format.setVersion(2, 1);
+    format.setProfile(QSurfaceFormat::OpenGLContextProfile::CoreProfile);
     format.setRenderableType(QSurfaceFormat::RenderableType::OpenGL);
     format.setSwapBehavior(QSurfaceFormat::SwapBehavior::DoubleBuffer);
     format.setRedBufferSize(8);
@@ -25,15 +23,14 @@ int main(int argc, char* argv[]) {
     format.setStencilBufferSize(8);
     QSurfaceFormat::setDefaultFormat(format);
 
-    // QApplication a(argc, argv);
+    ee::AppDelegate app(argc, argv);
+    // QApplication app(argc, argv);
+
     ee::MainWindow window;
     window.show();
 
     app.setOpenGLView(window.getOpenGLView());
 
-    // QOpenGLFunctions gl(view->context());
-    // gl.initializeOpenGLFunctions();
-
     return cocos2d::Application::getInstance()->run();
-    return app.exec();
+    // return app.exec();
 }
