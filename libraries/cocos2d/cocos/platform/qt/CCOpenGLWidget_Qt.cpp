@@ -29,7 +29,8 @@ Self::~OpenGLWidget() {
 
 void Self::initializeGL() {
     qDebug() << __PRETTY_FUNCTION__;
-    initializeOpenGLFunctions();
+    auto f = context()->functions();
+    f->initializeOpenGLFunctions();
 }
 
 void Self::resizeGL(int width, int height) {

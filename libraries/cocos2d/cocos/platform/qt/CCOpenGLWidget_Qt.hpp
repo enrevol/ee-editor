@@ -14,7 +14,7 @@ using RepaintCallback = std::function<void()>;
 
 /// Inherits from QOpenGLWidget and provides callbacks for mouse and keyboard
 /// events.
-class CC_DLL OpenGLWidget : public QOpenGLWidget, QOpenGLFunctions {
+class CC_DLL OpenGLWidget : public QOpenGLWidget {
     Q_OBJECT
 
 private:
