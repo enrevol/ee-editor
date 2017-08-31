@@ -40,7 +40,10 @@ GLBufferedNode::GLBufferedNode()
 
 GLBufferedNode::~GLBufferedNode()
 {
-    auto f = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     for(int i = 0; i < BUFFER_SLOTS; i++)
     {
         if(_bufferSize[i])
@@ -56,8 +59,11 @@ GLBufferedNode::~GLBufferedNode()
 
 void GLBufferedNode::setGLBufferData(void *buf, GLuint bufSize, int slot)
 {
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     // WebGL doesn't support client-side arrays, so generate a buffer and load the data first.
-    auto f = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     if(_bufferSize[slot] < bufSize)
     {
         if(_bufferObject[slot])
@@ -79,7 +85,10 @@ void GLBufferedNode::setGLBufferData(void *buf, GLuint bufSize, int slot)
 
 void GLBufferedNode::setGLIndexData(void *buf, GLuint bufSize, int slot)
 {
-    auto f = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     // WebGL doesn't support client-side arrays, so generate a buffer and load the data first.
     if(_indexBufferSize[slot] < bufSize)
     {

@@ -36,14 +36,20 @@ Grabber::Grabber(void)
 {
     memset(_oldClearColor, 0, sizeof(_oldClearColor));
 
-    // generate FBO
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
+    // generate FBO    
     f->glGenFramebuffers(1, &_FBO);
 }
 
 void Grabber::grab(Texture2D *texture)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
 
     // bind
@@ -64,7 +70,10 @@ void Grabber::grab(Texture2D *texture)
 
 void Grabber::beforeRender(Texture2D* /*texture*/)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
     f->glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
     
@@ -85,7 +94,10 @@ void Grabber::beforeRender(Texture2D* /*texture*/)
 
 void Grabber::afterRender(cocos2d::Texture2D* /*texture*/)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glBindFramebuffer(GL_FRAMEBUFFER, _oldFBO);
 //  glColorMask(true, true, true, true);    // #631
     
@@ -96,7 +108,11 @@ void Grabber::afterRender(cocos2d::Texture2D* /*texture*/)
 Grabber::~Grabber()
 {
     CCLOGINFO("deallocing Grabber: %p", this);
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glDeleteFramebuffers(1, &_FBO);
 }
 

@@ -616,11 +616,14 @@ void LayerColor::onDraw(const Mat4& transform, uint32_t /*flags*/)
     getGLProgram()->setUniformsForBuiltins(transform);
     
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION | GL::VERTEX_ATTRIB_FLAG_COLOR );
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
     
     //
     // Attributes
-    //
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    //    
     f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 0, _noMVPVertices);
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, _squareColors);

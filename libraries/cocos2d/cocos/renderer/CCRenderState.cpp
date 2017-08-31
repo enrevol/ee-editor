@@ -234,7 +234,10 @@ void RenderState::StateBlock::bindNoRestore()
 {
     CC_ASSERT(_defaultState);
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     // Update any state that differs from _defaultState and flip _defaultState bits
     if ((_bits & RS_BLEND) && (_blendEnabled != _defaultState->_blendEnabled))
     {
@@ -325,7 +328,9 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
 {
     CC_ASSERT(_defaultState);
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
 
     // If there is no state to restore (i.e. no non-default state), do nothing.
 //    if (_defaultState->_bits == 0)
@@ -423,7 +428,10 @@ void RenderState::StateBlock::enableDepthWrite()
     // next frame leaves depth writing disabled.
     if (!_defaultState->_depthWriteEnabled)
     {
-        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glDepthMask(GL_TRUE);
         _defaultState->_bits &= ~RS_DEPTH_WRITE;
         _defaultState->_depthWriteEnabled = true;

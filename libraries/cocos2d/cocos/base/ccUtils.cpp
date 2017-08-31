@@ -99,7 +99,10 @@ void onCaptureScreen(const std::function<void(bool, const std::string&)>& afterC
             break;
         }
 
-        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glPixelStorei(GL_PACK_ALIGNMENT, 1);
         f->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer.get());
 

@@ -90,13 +90,19 @@ void deleteProgram( GLuint program )
     }
 #endif // CC_ENABLE_GL_STATE_CACHE
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glDeleteProgram( program );
 }
 
 void useProgram( GLuint program )
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
 #if CC_ENABLE_GL_STATE_CACHE
     if( program != s_currentShaderProgram ) {
         s_currentShaderProgram = program;
@@ -109,7 +115,10 @@ void useProgram( GLuint program )
 
 static void SetBlending(GLenum sfactor, GLenum dfactor)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
 	if (sfactor == GL_ONE && dfactor == GL_ZERO)
     {
         f->glDisable(GL_BLEND);
@@ -142,7 +151,10 @@ void blendFunc(GLenum sfactor, GLenum dfactor)
 
 void blendResetToCache(void)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glBlendEquation(GL_FUNC_ADD);
 #if CC_ENABLE_GL_STATE_CACHE
 	SetBlending(s_blendingSource, s_blendingDest);
@@ -167,7 +179,10 @@ void bindTexture2D(Texture2D* texture)
 
 void bindTexture2DN(GLuint textureUnit, GLuint textureId)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
 #if CC_ENABLE_GL_STATE_CACHE
 	CCASSERT(textureUnit < MAX_ACTIVE_TEXTURE, "textureUnit is too big");
 	if (s_currentBoundTexture[textureUnit] != textureId)
@@ -184,7 +199,10 @@ void bindTexture2DN(GLuint textureUnit, GLuint textureId)
 
 void bindTextureN(GLuint textureUnit, GLuint textureId, GLuint textureType/* = GL_TEXTURE_2D*/)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
 #if CC_ENABLE_GL_STATE_CACHE
     CCASSERT(textureUnit < MAX_ACTIVE_TEXTURE, "textureUnit is too big");
     if (s_currentBoundTexture[textureUnit] != textureId)
@@ -212,7 +230,10 @@ void deleteTexture(GLuint textureId)
     }
 #endif // CC_ENABLE_GL_STATE_CACHE
     
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glDeleteTextures(1, &textureId);
 }
 
@@ -223,7 +244,10 @@ void deleteTextureN(GLuint /*textureUnit*/, GLuint textureId)
 
 void activeTexture(GLenum texture)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
 #if CC_ENABLE_GL_STATE_CACHE
     if(s_activeTexture != texture) {
         s_activeTexture = texture;
@@ -238,7 +262,10 @@ void bindVAO(GLuint vaoId)
 {    
     if (Configuration::getInstance()->supportsShareableVAO())
     {
-        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->extraFunctions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->extraFunctions();
+
 #if CC_ENABLE_GL_STATE_CACHE
         if (s_VAO != vaoId)
         {
@@ -256,7 +283,10 @@ void bindVAO(GLuint vaoId)
 
 void enableVertexAttribs(uint32_t flags)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     bindVAO(0);
 
     // hardcoded!

@@ -34,8 +34,8 @@ void Self::initializeGL() {
 }
 
 void Self::resizeGL(int width, int height) {
-    qDebug() << __PRETTY_FUNCTION__ << ": width = " << width
-             << " height = " << height;
+    // qDebug() << __PRETTY_FUNCTION__ << ": width = " << width
+    //          << " height = " << height;
 }
 
 void Self::paintGL() {

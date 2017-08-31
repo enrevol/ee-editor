@@ -151,7 +151,10 @@ RenderTargetRenderBuffer::RenderTargetRenderBuffer()
 
 RenderTargetRenderBuffer::~RenderTargetRenderBuffer()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if(f->glIsRenderbuffer(_colorBuffer))
     {
         f->glDeleteRenderbuffers(1, &_colorBuffer);
@@ -165,8 +168,12 @@ RenderTargetRenderBuffer::~RenderTargetRenderBuffer()
 bool RenderTargetRenderBuffer::init(unsigned int width, unsigned int height)
 {
     if(!RenderTargetBase::init(width, height)) return false;
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     GLint oldRenderBuffer(0);
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
     f->glGetIntegerv(GL_RENDERBUFFER_BINDING, &oldRenderBuffer);
     
     //generate depthStencil
@@ -224,7 +231,10 @@ RenderTargetDepthStencil::RenderTargetDepthStencil()
 
 RenderTargetDepthStencil::~RenderTargetDepthStencil()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if(f->glIsRenderbuffer(_depthStencilBuffer))
     {
         f->glDeleteRenderbuffers(1, &_depthStencilBuffer);
@@ -238,8 +248,12 @@ RenderTargetDepthStencil::~RenderTargetDepthStencil()
 bool RenderTargetDepthStencil::init(unsigned int width, unsigned int height)
 {
     if(!RenderTargetBase::init(width, height)) return false;
-    GLint oldRenderBuffer(0);
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
+    GLint oldRenderBuffer(0);    
     f->glGetIntegerv(GL_RENDERBUFFER_BINDING, &oldRenderBuffer);
     
     //generate depthStencil
@@ -291,8 +305,12 @@ bool FrameBuffer::initWithGLView(GLView* view)
     {
         return false;
     }
-    GLint fbo;
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
+    GLint fbo;    
     f->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo);
     _fbo = fbo;
     return true;
@@ -358,8 +376,11 @@ bool FrameBuffer::init(uint8_t fid, unsigned int width, unsigned int height)
     _width = width;
     _height = height;
     
-    GLint oldfbo;
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
+    GLint oldfbo;    
     f->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldfbo);
 
     f->glGenFramebuffers(1, &_fbo);
@@ -410,7 +431,11 @@ FrameBuffer::~FrameBuffer()
     {
         CC_SAFE_RELEASE_NULL(_rt);
         CC_SAFE_RELEASE_NULL(_rtDepthStencil);
-        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glDeleteFramebuffers(1, &_fbo);
         _fbo = 0;
         _frameBuffers.erase(this);
@@ -425,7 +450,11 @@ FrameBuffer::~FrameBuffer()
 void FrameBuffer::clearFBO()
 {
     applyFBO();
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
     f->glClearDepthf(_clearDepth);
     f->glClearStencil(_clearStencil);
@@ -455,7 +484,11 @@ void FrameBuffer::attachRenderTarget(RenderTargetBase* rt)
 void FrameBuffer::applyFBO()
 {
     CHECK_GL_ERROR_DEBUG();
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGetIntegerv(GL_FRAMEBUFFER_BINDING, (GLint*)&_previousFBO);
     f->glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
 //    CCASSERT(_fbo==0 || _fbo != _previousFBO, "calling applyFBO without restoring the previous one");
@@ -484,7 +517,10 @@ void FrameBuffer::applyFBO()
 
 void FrameBuffer::restoreFBO()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glBindFramebuffer(GL_FRAMEBUFFER, _previousFBO);
 }
 

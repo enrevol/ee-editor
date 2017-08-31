@@ -250,7 +250,10 @@ bool GLProgram::initWithByteArrays(const GLchar* vShaderByteArray, const GLchar*
 
 bool GLProgram::initWithByteArrays(const GLchar* vShaderByteArray, const GLchar* fShaderByteArray, const std::string& compileTimeHeaders, const std::string& compileTimeDefines)
 {
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     _program = f->glCreateProgram();
     CHECK_GL_ERROR_DEBUG();
 
@@ -335,7 +338,10 @@ void GLProgram::bindPredefinedVertexAttribs()
 
     const int size = sizeof(attribute_locations) / sizeof(attribute_locations[0]);
 
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     for(int i=0; i<size;i++) {
         f->glBindAttribLocation(_program, attribute_locations[i].location, attribute_locations[i].attributeName);
     }
@@ -345,10 +351,13 @@ void GLProgram::parseVertexAttribs()
 {
     //_vertexAttribs.clear();
 
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     // Query and store vertex attribute meta-data from the program.
     GLint activeAttributes;
-    GLint length;
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    GLint length;    
     f->glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &activeAttributes);
     if(activeAttributes > 0)
     {
@@ -384,9 +393,12 @@ void GLProgram::parseUniforms()
 {
     //_userUniforms.clear();
 
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     // Query and store uniforms from the program.
-    GLint activeUniforms;
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    GLint activeUniforms;    
     f->glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &activeUniforms);
     if(activeUniforms > 0)
     {
@@ -501,7 +513,10 @@ bool GLProgram::compileShader(GLuint * shader, GLenum type, const GLchar* source
         convertedDefines.c_str(),
         source};
 
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     *shader = f->glCreateShader(type);
     f->glShaderSource(*shader, sizeof(sources)/sizeof(*sources), sources, nullptr);
     f->glCompileShader(*shader);
@@ -535,25 +550,37 @@ bool GLProgram::compileShader(GLuint * shader, GLenum type, const GLchar* source
 
 GLint GLProgram::getAttribLocation(const std::string &attributeName) const
 {
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     return f->glGetAttribLocation(_program, attributeName.c_str());
 }
 
 GLint GLProgram::getUniformLocation(const std::string &attributeName) const
 {
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     return f->glGetUniformLocation(_program, attributeName.c_str());
 }
 
 void GLProgram::bindAttribLocation(const std::string &attributeName, GLuint index) const
 {
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glBindAttribLocation(_program, index, attributeName.c_str());
 }
 
 void GLProgram::updateUniforms()
 {
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     _builtInUniforms[UNIFORM_AMBIENT_COLOR] = f->glGetUniformLocation(_program, UNIFORM_NAME_AMBIENT_COLOR);
     _builtInUniforms[UNIFORM_P_MATRIX] = f->glGetUniformLocation(_program, UNIFORM_NAME_P_MATRIX);
     _builtInUniforms[UNIFORM_MULTIVIEW_P_MATRIX] = f->glGetUniformLocation(_program, UNIFORM_NAME_MULTIVIEW_P_MATRIX);
@@ -610,7 +637,10 @@ bool GLProgram::link()
 
     bindPredefinedVertexAttribs();
 
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glLinkProgram(_program);
 
     // Calling glGetProgramiv(...GL_LINK_STATUS...) will force linking of the program at this moment.
@@ -646,7 +676,10 @@ static std::string logForOpenGLShader(GLuint shader)
 {
     GLint logLength = 0;
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength < 1)
         return "";
@@ -663,7 +696,10 @@ static std::string logForOpenGLProgram(GLuint program)
 {
     GLint logLength = 0;
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength < 1)
         return "";
@@ -736,7 +772,10 @@ GLint GLProgram::getUniformLocationForName(const char* name) const
     CCASSERT(name != nullptr, "Invalid uniform name" );
     CCASSERT(_program != 0, "Invalid operation. Cannot get uniform location when program is not initialized");
 
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     return f->glGetUniformLocation(_program, name);
 }
 
@@ -746,7 +785,10 @@ void GLProgram::setUniformLocationWith1i(GLint location, GLint i1)
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform1i( (GLint)location, i1);
     }
 }
@@ -758,7 +800,10 @@ void GLProgram::setUniformLocationWith2i(GLint location, GLint i1, GLint i2)
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform2i( (GLint)location, i1, i2);
     }
 }
@@ -770,7 +815,10 @@ void GLProgram::setUniformLocationWith3i(GLint location, GLint i1, GLint i2, GLi
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform3i( (GLint)location, i1, i2, i3);
     }
 }
@@ -782,7 +830,10 @@ void GLProgram::setUniformLocationWith4i(GLint location, GLint i1, GLint i2, GLi
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform4i( (GLint)location, i1, i2, i3, i4);
     }
 }
@@ -793,7 +844,10 @@ void GLProgram::setUniformLocationWith2iv(GLint location, GLint* ints, unsigned 
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform2iv( (GLint)location, (GLsizei)numberOfArrays, ints );
     }
 }
@@ -804,7 +858,10 @@ void GLProgram::setUniformLocationWith3iv(GLint location, GLint* ints, unsigned 
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform3iv( (GLint)location, (GLsizei)numberOfArrays, ints );
     }
 }
@@ -815,7 +872,10 @@ void GLProgram::setUniformLocationWith4iv(GLint location, GLint* ints, unsigned 
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform4iv( (GLint)location, (GLsizei)numberOfArrays, ints );
     }
 }
@@ -826,7 +886,10 @@ void GLProgram::setUniformLocationWith1f(GLint location, GLfloat f1)
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform1f( (GLint)location, f1);
     }
 }
@@ -838,7 +901,10 @@ void GLProgram::setUniformLocationWith2f(GLint location, GLfloat f1, GLfloat f2)
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform2f( (GLint)location, f1, f2);
     }
 }
@@ -850,7 +916,10 @@ void GLProgram::setUniformLocationWith3f(GLint location, GLfloat f1, GLfloat f2,
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform3f( (GLint)location, f1, f2, f3);
     }
 }
@@ -862,7 +931,10 @@ void GLProgram::setUniformLocationWith4f(GLint location, GLfloat f1, GLfloat f2,
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform4f( (GLint)location, f1, f2, f3,f4);
     }
 }
@@ -874,7 +946,10 @@ void GLProgram::setUniformLocationWith1fv( GLint location, const GLfloat* floats
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform1fv( (GLint)location, (GLsizei)numberOfArrays, floats );
     }
 }
@@ -885,7 +960,10 @@ void GLProgram::setUniformLocationWith2fv(GLint location, const GLfloat* floats,
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform2fv( (GLint)location, (GLsizei)numberOfArrays, floats );
     }
 }
@@ -896,7 +974,10 @@ void GLProgram::setUniformLocationWith3fv(GLint location, const GLfloat* floats,
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform3fv( (GLint)location, (GLsizei)numberOfArrays, floats );
     }
 }
@@ -907,7 +988,10 @@ void GLProgram::setUniformLocationWith4fv(GLint location, const GLfloat* floats,
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniform4fv( (GLint)location, (GLsizei)numberOfArrays, floats );
     }
 }
@@ -917,7 +1001,10 @@ void GLProgram::setUniformLocationWithMatrix2fv(GLint location, const GLfloat* m
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniformMatrix2fv( (GLint)location, (GLsizei)numberOfMatrices, GL_FALSE, matrixArray);
     }
 }
@@ -927,7 +1014,10 @@ void GLProgram::setUniformLocationWithMatrix3fv(GLint location, const GLfloat* m
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniformMatrix3fv( (GLint)location, (GLsizei)numberOfMatrices, GL_FALSE, matrixArray);
     }
 }
@@ -939,7 +1029,10 @@ void GLProgram::setUniformLocationWithMatrix4fv(GLint location, const GLfloat* m
 
     if (updated)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glUniformMatrix4fv( (GLint)location, (GLsizei)numberOfMatrices, GL_FALSE, matrixArray);
     }
 }
@@ -1028,7 +1121,10 @@ void GLProgram::reset()
 
 inline void GLProgram::clearShader()
 {
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if (_vertShader)
     {
         f->glDeleteShader(_vertShader);

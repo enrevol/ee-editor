@@ -107,7 +107,9 @@ std::string Configuration::getInfo() const
 
 void Configuration::gatherGPUInfo()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
 
     _valueDict["gl.vendor"] = Value((const char*)f->glGetString(GL_VENDOR));
     _valueDict["gl.renderer"] = Value((const char*)f->glGetString(GL_RENDERER));

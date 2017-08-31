@@ -117,7 +117,10 @@ void drawPoint(const Vec2& point)
     s_shader->setUniformLocationWith4fv(s_colorLocation, (GLfloat*) &s_color.r, 1);
     s_shader->setUniformLocationWith1f(s_pointSizeLocation, s_pointSize);
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, &p);
 
     f->glDrawArrays(GL_POINTS, 0, 1);
@@ -135,7 +138,10 @@ void drawPoints( const Vec2 *points, unsigned int numberOfPoints )
     s_shader->setUniformLocationWith4fv(s_colorLocation, (GLfloat*) &s_color.r, 1);
     s_shader->setUniformLocationWith1f(s_pointSizeLocation, s_pointSize);
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, points);
     f->glDrawArrays(GL_POINTS, 0, (GLsizei) numberOfPoints);
 
@@ -157,7 +163,11 @@ void drawLine(const Vec2& origin, const Vec2& destination)
     s_shader->setUniformLocationWith4fv(s_colorLocation, (GLfloat*) &s_color.r, 1);
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
     f->glDrawArrays(GL_LINES, 0, 2);
 
@@ -194,7 +204,10 @@ void drawPoly(const Vec2 *poli, unsigned int numberOfPoints, bool closePolygon)
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, poli);
 
     if( closePolygon )
@@ -215,7 +228,10 @@ void drawSolidPoly(const Vec2 *poli, unsigned int numberOfPoints, Color4F color)
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, poli);
     f->glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) numberOfPoints);
 
@@ -253,7 +269,10 @@ void drawCircle( const Vec2& center, float radius, float angle, unsigned int seg
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
     f->glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments+additionalSegment);
 
@@ -294,7 +313,10 @@ void drawSolidCircle( const Vec2& center, float radius, float angle, unsigned in
     
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
     
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
 
     f->glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) segments+1);
@@ -331,7 +353,10 @@ void drawQuadBezier(const Vec2& origin, const Vec2& control, const Vec2& destina
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
     f->glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments + 1);
     CC_SAFE_DELETE_ARRAY(vertices);
@@ -384,7 +409,10 @@ void drawCardinalSpline( PointArray *config, float tension,  unsigned int segmen
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
     f->glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments + 1);
 
@@ -414,7 +442,10 @@ void drawCubicBezier(const Vec2& origin, const Vec2& control1, const Vec2& contr
 
     GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
     f->glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segments + 1);
     CC_SAFE_DELETE_ARRAY(vertices);

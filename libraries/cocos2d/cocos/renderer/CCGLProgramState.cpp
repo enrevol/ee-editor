@@ -318,7 +318,10 @@ void VertexAttribValue::apply()
         }
         else
         {
-            auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+            auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+            Q_ASSERT(context == QOpenGLContext::currentContext());
+            auto f = context->functions();
+
             f->glVertexAttribPointer(_vertexAttrib->index,
                                      _value.pointer.size,
                                      _value.pointer.type,

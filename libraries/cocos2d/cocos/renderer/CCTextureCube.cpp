@@ -189,8 +189,11 @@ bool TextureCube::init(const std::string& positive_x, const std::string& negativ
     images[4] = createImage(positive_z);
     images[5] = createImage(negative_z);
 
-    GLuint handle;
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
+    GLuint handle;    
     f->glGenTextures(1, &handle);
 
     GL::bindTextureN(0, handle, GL_TEXTURE_CUBE_MAP);
@@ -253,7 +256,10 @@ void TextureCube::setTexParameters(const TexParams& texParams)
 
     GL::bindTextureN(0, _name, GL_TEXTURE_CUBE_MAP);
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, texParams.minFilter);
     f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, texParams.magFilter);
     f->glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, texParams.wrapS);

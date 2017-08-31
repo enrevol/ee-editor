@@ -123,7 +123,10 @@ void VertexData::use()
     }
     
     GL::enableVertexAttribs(flags);
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
 
     int lastVBO = -1;
     for(auto& element : _vertexStreams)

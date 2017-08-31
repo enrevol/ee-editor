@@ -191,7 +191,11 @@ void TMXLayer::onDraw(Primitive *primitive)
     
     GL::bindVAO(0);
     primitive->draw();
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, primitive->getCount() * 4);

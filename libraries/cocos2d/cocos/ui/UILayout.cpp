@@ -337,7 +337,9 @@ void Layout::onBeforeVisitScissor()
     _scissorOldState = glview->isScissorEnabled();
     if (false == _scissorOldState)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = _director->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
         f->glEnable(GL_SCISSOR_TEST);
     }
 
@@ -370,7 +372,9 @@ void Layout::onAfterVisitScissor()
     else
     {
         // revert scissor test
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = _director->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
         f->glDisable(GL_SCISSOR_TEST);
     }
 }

@@ -149,7 +149,10 @@ void RenderQueue::realloc(size_t reserveSize)
 
 void RenderQueue::saveRenderState()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     _isDepthEnabled = f->glIsEnabled(GL_DEPTH_TEST) != GL_FALSE;
     _isCullEnabled = f->glIsEnabled(GL_CULL_FACE) != GL_FALSE;
     f->glGetBooleanv(GL_DEPTH_WRITEMASK, &_isDepthWrite);
@@ -159,7 +162,10 @@ void RenderQueue::saveRenderState()
 
 void RenderQueue::restoreRenderState()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if (_isCullEnabled)
     {
         f->glEnable(GL_CULL_FACE);
@@ -229,8 +235,10 @@ Renderer::~Renderer()
     _renderGroups.clear();
     _groupCommandManager->release();
     
-    auto context = Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
     auto f = context->functions();
+
     f->glDeleteBuffers(2, _buffersVBO);
 
     free(_triBatchesToDraw);
@@ -276,7 +284,8 @@ void Renderer::setupBuffer()
 
 void Renderer::setupVBOAndVAO()
 {
-    auto context = Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
     auto f = context->extraFunctions();
 
     //generate vbo and vao for trianglesCommand
@@ -316,7 +325,10 @@ void Renderer::setupVBOAndVAO()
 
 void Renderer::setupVBO()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGenBuffers(2, &_buffersVBO[0]);
     // Issue #15652
     // Should not initialize VBO with a large size (VBO_SIZE=65536),
@@ -333,7 +345,10 @@ void Renderer::mapBuffers()
     // Avoid changing the element buffer for whatever VAO might be bound.
     GL::bindVAO(0);
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
     f->glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * VBO_SIZE, _verts, GL_DYNAMIC_DRAW);
     
@@ -440,7 +455,10 @@ void Renderer::processRenderCommand(RenderCommand* command)
 void Renderer::visitRenderQueue(RenderQueue& queue)
 {
     queue.saveRenderState();
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
     
     //
     //Process Global-Z < 0 Objects
@@ -641,7 +659,10 @@ void Renderer::clean()
 
 void Renderer::clear()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     //Enable Depth mask to make sure glClear clear the depth buffer correctly
     f->glDepthMask(true);
     f->glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
@@ -653,7 +674,10 @@ void Renderer::clear()
 
 void Renderer::setDepthTest(bool enable)
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if (enable)
     {
         f->glClearDepthf(1.0f);
@@ -760,7 +784,8 @@ void Renderer::drawBatchedTriangles()
     batchesTotal++;
 
     /************** 2: Copy vertices/indices to GL objects *************/
-    auto context = Director::getInstance()->getOpenGLView()->getOpenGLContext();    
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
 
     auto conf = Configuration::getInstance();
     if (conf->supportsShareableVAO() && conf->supportsMapBuffer())

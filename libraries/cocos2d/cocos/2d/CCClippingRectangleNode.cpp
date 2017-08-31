@@ -40,7 +40,10 @@ void ClippingRectangleNode::setClippingRegion(const Rect &clippingRegion)
 void ClippingRectangleNode::onBeforeVisitScissor()
 {
     if (_clippingEnabled) {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glEnable(GL_SCISSOR_TEST);
 
         float scaleX = _scaleX;
@@ -65,7 +68,10 @@ void ClippingRectangleNode::onAfterVisitScissor()
 {
     if (_clippingEnabled)
     {
-        auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glDisable(GL_SCISSOR_TEST);
     }
 }

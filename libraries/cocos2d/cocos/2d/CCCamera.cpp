@@ -449,7 +449,10 @@ void Camera::applyFrameBufferObject()
 
 void Camera::applyViewport()
 {
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGetIntegerv(GL_VIEWPORT, _oldViewport);
 
     if(nullptr == _fbo)
@@ -490,7 +493,10 @@ void Camera::restoreFrameBufferObject()
 
 void Camera::restoreViewport()
 {
-    auto f = _director->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glViewport(_oldViewport[0], _oldViewport[1], _oldViewport[2], _oldViewport[3]);
 }
 

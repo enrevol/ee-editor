@@ -92,7 +92,10 @@ void Primitive::draw()
 {
     if(_verts)
     {
-        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         _verts->use();
         if(_indices!= nullptr)
         {

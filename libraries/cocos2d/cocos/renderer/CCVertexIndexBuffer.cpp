@@ -75,7 +75,10 @@ VertexBuffer::VertexBuffer()
 
 VertexBuffer::~VertexBuffer()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if(f->glIsBuffer(_vbo))
     {
         f->glDeleteBuffers(1, &_vbo);
@@ -99,7 +102,10 @@ bool VertexBuffer::init(int sizePerVertex, int vertexNumber, GLenum usage/* = GL
         _shadowCopy.resize(sizePerVertex * _vertexNumber);
     }
     
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGenBuffers(1, &_vbo);
     f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     f->glBufferData(GL_ARRAY_BUFFER, getSize(), nullptr, _usage);
@@ -138,7 +144,10 @@ bool VertexBuffer::updateVertices(const void* verts, int count, int begin)
         memcpy(&_shadowCopy[begin * _sizePerVertex], verts, count * _sizePerVertex);
     }
     
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     f->glBufferSubData(GL_ARRAY_BUFFER, begin * _sizePerVertex, count * _sizePerVertex, verts);
     f->glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -155,7 +164,10 @@ void VertexBuffer::recreateVBO() const
 {
     CCLOG("come to foreground of VertexBuffer");
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGenBuffers(1, &_vbo);
     f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     const void* buffer = nullptr;
@@ -207,7 +219,10 @@ IndexBuffer::IndexBuffer()
 
 IndexBuffer::~IndexBuffer()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if(f->glIsBuffer(_vbo))
     {
         f->glDeleteBuffers(1, &_vbo);
@@ -226,7 +241,10 @@ bool IndexBuffer::init(IndexBuffer::IndexType type, int number, GLenum usage/* =
     _indexNumber = number;
     _usage = usage;
     
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGenBuffers(1, &_vbo);
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo);
     f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, getSize(), nullptr, _usage);
@@ -271,7 +289,10 @@ bool IndexBuffer::updateIndices(const void* indices, int count, int begin)
         count = _indexNumber - begin;
     }
     
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo);
     f->glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, begin * getSizePerIndex(), count * getSizePerIndex(), indices);
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -296,7 +317,10 @@ GLuint IndexBuffer::getVBO() const
 
 void IndexBuffer::recreateVBO() const
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     CCLOG("come to foreground of IndexBuffer");
     f->glGenBuffers(1, &_vbo);
     f->glBindBuffer(GL_ARRAY_BUFFER, _vbo);

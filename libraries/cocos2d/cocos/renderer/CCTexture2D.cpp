@@ -596,7 +596,9 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
         return false;
     }
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
 
     //Set the row align only when mipmapsNum == 1 and the data is uncompressed
     if (mipmapsNum == 1 && !info.compressed)
@@ -720,7 +722,11 @@ bool Texture2D::updateWithData(const void *data,int offsetX,int offsetY,int widt
     {
         GL::bindTexture2D(_name);
         const PixelFormatInfo& info = _pixelFormatInfoTables.at(_pixelFormat);
-        auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+        auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+        Q_ASSERT(context == QOpenGLContext::currentContext());
+        auto f = context->functions();
+
         f->glTexSubImage2D(GL_TEXTURE_2D,0,offsetX,offsetY,width,height,info.format, info.type,data);
 
         return true;
@@ -1196,7 +1202,10 @@ void Texture2D::drawAtPoint(const Vec2& point)
 
     GL::bindTexture2D( _name );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, coordinates);
 
@@ -1222,7 +1231,10 @@ void Texture2D::drawInRect(const Rect& rect)
 
     GL::bindTexture2D( _name );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, 0, vertices);
     f->glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, 0, coordinates);
     f->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -1243,7 +1255,11 @@ void Texture2D::generateMipmap()
 {
     CCASSERT(_pixelsWide == ccNextPOT(_pixelsWide) && _pixelsHigh == ccNextPOT(_pixelsHigh), "Mipmap texture only works in POT textures");
     GL::bindTexture2D( _name );
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGenerateMipmap(GL_TEXTURE_2D);
     _hasMipmaps = true;
 #if CC_ENABLE_CACHE_TEXTURE_DATA
@@ -1263,7 +1279,11 @@ void Texture2D::setTexParameters(const TexParams &texParams)
         "GL_CLAMP_TO_EDGE should be used in NPOT dimensions");
 
     GL::bindTexture2D( _name );
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texParams.minFilter );
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texParams.magFilter );
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texParams.wrapS );
@@ -1290,7 +1310,10 @@ void Texture2D::setAliasTexParameters()
 
     GL::bindTexture2D( _name );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if( ! _hasMipmaps )
     {
         f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
@@ -1323,7 +1346,10 @@ void Texture2D::setAntiAliasTexParameters()
 
     GL::bindTexture2D( _name );
 
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     if( ! _hasMipmaps )
     {
         f->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );

@@ -259,7 +259,10 @@ void TextureAtlas::setupIndices()
 
 void TextureAtlas::setupVBOandVAO()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->extraFunctions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->extraFunctions();
+
     f->glGenVertexArrays(1, &_VAOname);
     GL::bindVAO(_VAOname);
 
@@ -295,7 +298,10 @@ void TextureAtlas::setupVBOandVAO()
 
 void TextureAtlas::setupVBO()
 {
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glGenBuffers(2, &_buffersVBO[0]);
 
     mapBuffers();
@@ -306,7 +312,10 @@ void TextureAtlas::mapBuffers()
     // Avoid changing the element buffer for whatever VAO might be bound.
 	GL::bindVAO(0);
     
-    auto f = Director::getInstance()->getOpenGLView()->getOpenGLContext()->functions();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
+    auto f = context->functions();
+
     f->glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
     f->glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _capacity, _quads, GL_DYNAMIC_DRAW);
     f->glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -622,7 +631,8 @@ void TextureAtlas::drawNumberOfQuads(ssize_t numberOfQuads, ssize_t start)
     
     GL::bindTexture2D(_texture);
 
-    auto context = Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    auto context = cocos2d::Director::getInstance()->getOpenGLView()->getOpenGLContext();
+    Q_ASSERT(context == QOpenGLContext::currentContext());
 
     auto conf = Configuration::getInstance();
     if (conf->supportsShareableVAO() && conf->supportsMapBuffer())
