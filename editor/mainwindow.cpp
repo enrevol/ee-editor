@@ -87,6 +87,8 @@ Self::MainWindow(QWidget* parent)
     });
 
     ui_->actionProject_Settings->setEnabled(false);
+    ui_->fragmentShaderInput->setLineNumbersVisible(true);
+    ui_->vertexShaderInput->setLineNumbersVisible(true);
 }
 
 Self::~MainWindow() {

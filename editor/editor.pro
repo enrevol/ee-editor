@@ -41,7 +41,10 @@ SOURCES += \
     appdelegate.cpp \
     openglwidget.cpp \
     rootscene.cpp \
-    utils.cpp
+    utils.cpp \
+    glsledit.cpp \
+    glslhighlighter.cpp \
+    glsleditsidebar.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -55,7 +58,11 @@ HEADERS += \
     appdelegate.hpp \
     openglwidget.hpp \
     rootscene.hpp \
-    utils.hpp
+    utils.hpp \
+    glsledit.hpp \
+    glslhighlighter.hpp \
+    glslcomponent.hpp \
+    glsleditsidebar.hpp
 
 FORMS += \
     mainwindow.ui \

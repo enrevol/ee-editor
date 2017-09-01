@@ -46,11 +46,13 @@ void Self::onExit() {
 bool Self::setTexturePath(const QString& path) {
     makeCocosContext();
     auto oldTexture = sprite_->getTexture();
+    auto state = sprite_->getGLProgramState();
     sprite_->setTexture(path.toStdString());
     if (sprite_->getTexture() == nullptr) {
         sprite_->setTexture(oldTexture);
         return false;
     }
+    sprite_->setGLProgramState(state);
     return true;
 }
 

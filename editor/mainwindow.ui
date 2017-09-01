@@ -297,7 +297,11 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPlainTextEdit" name="vertexShaderInput"/>
+                <widget class="ee::GLSLEdit" name="vertexShaderInput">
+                 <property name="backgroundVisible">
+                  <bool>false</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -328,7 +332,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPlainTextEdit" name="fragmentShaderInput"/>
+                <widget class="ee::GLSLEdit" name="fragmentShaderInput"/>
                </item>
               </layout>
              </widget>
@@ -661,6 +665,11 @@
    <class>ee::OpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>openglwidget.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>ee::GLSLEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>glsledit.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>
