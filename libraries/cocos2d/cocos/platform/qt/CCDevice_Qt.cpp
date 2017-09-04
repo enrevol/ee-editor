@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "base/ccTypes.h"
 #include "platform/CCDevice.h"
 

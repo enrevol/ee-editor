@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <ciso646>
 
 #include "base/CCDirector.h"
 #include "math/CCGeometry.h"

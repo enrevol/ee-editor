@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "platform/qt/CCGLView_Qt.hpp"
 #include "base/CCDirector.h"
 #include "base/CCTouch.h"
