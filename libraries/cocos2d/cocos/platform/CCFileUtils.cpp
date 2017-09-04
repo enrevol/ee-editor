@@ -46,7 +46,7 @@ NS_CC_BEGIN
 
 // Implement DictMaker
 
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_IOS) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC)
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_IOS) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) && (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32)
 
 typedef enum
 {
@@ -1293,6 +1293,9 @@ void FileUtils::listFilesRecursively(const std::string& dirPath, std::vector<std
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
 // windows os implement should override in platform specific FileUtiles class
+
+// Use QT
+/*
 bool FileUtils::isDirectoryExistInternal(const std::string& dirPath) const
 {
     CCASSERT(false, "FileUtils not support isDirectoryExistInternal");
@@ -1335,11 +1338,12 @@ std::string FileUtils::getSuitableFOpen(const std::string& filenameUtf8) const
     return filenameUtf8;
 }
 
-long FileUtils::getFileSize(const std::string &filepath)
+long FileUtils::getFileSize(const std::string& filepath)
 {
     CCASSERT(false, "getFileSize should be override by platform FileUtils");
     return 0;
 }
+*/
 
 #else
 // default implements for unix like os

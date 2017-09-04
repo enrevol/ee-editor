@@ -18,7 +18,8 @@ enum class Property {
 
 class EditorReader {
 public:
-    Reader();
+    EditorReader();
+    ~EditorReader();
 
     cocos2d::Node* readNodeGraph(const cocos2d::ValueMap& graph);
 };

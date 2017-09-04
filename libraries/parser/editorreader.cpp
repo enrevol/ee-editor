@@ -16,5 +16,6 @@ cocos2d::Node* Self::readNodeGraph(const cocos2d::ValueMap& graph) {
         auto child = readNodeGraph(v.asValueMap());
         node->addChild(child);
     }
+    return node;
 }
 } // namespace ee
