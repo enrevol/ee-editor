@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "contentprotectionkey.hpp"
 
 namespace ee {

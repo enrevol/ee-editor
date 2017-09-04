@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "glsledit.hpp"
 #include "glslcomponent.hpp"
 #include "glsleditsidebar.hpp"

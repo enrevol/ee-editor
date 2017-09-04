@@ -7,10 +7,10 @@ using Self = OpenGLWidget;
 
 Self::OpenGLWidget(QWidget* parent)
     : Super(parent) {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
 }
 
 Self::~OpenGLWidget() {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
 }
 } // namespace ee

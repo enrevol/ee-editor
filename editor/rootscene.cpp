@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "rootscene.hpp"
 #include "utils.hpp"
 

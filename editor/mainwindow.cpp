@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "mainwindow.hpp"
 #include "config.hpp"
 #include "projectsettingsdialog.hpp"
@@ -100,7 +102,7 @@ OpenGLWidget* Self::getOpenGLView() {
 }
 
 void Self::onProjectSettingsButtonPressed() {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
 
     auto&& config = Config::getInstance();
     auto&& settings = config.getProjectSettings();
