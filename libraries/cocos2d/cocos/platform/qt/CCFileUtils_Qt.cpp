@@ -19,13 +19,15 @@ FileUtils* FileUtils::getInstance() {
 
 bool FileUtils::writeValueMapToFile(const ValueMap& dict,
                                     const std::string& fullPath) {
-    // FIXME.
+    Q_UNUSED(dict);
+    Q_UNUSED(fullPath);
     return false;
 }
 
 bool FileUtils::writeValueVectorToFile(const ValueVector& vecData,
                                        const std::string& fullPath) {
-    // FIXME.
+    Q_UNUSED(vecData);
+    Q_UNUSED(fullPath);
     return false;
 }
 

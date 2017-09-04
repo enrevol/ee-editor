@@ -15,6 +15,7 @@ bool Self::getBoolForKey(const char* key) {
 }
 
 bool Self::getBoolForKey(const char* key, bool defaultValue) {
+    Q_UNUSED(key);
     return defaultValue;
 }
 
@@ -23,6 +24,7 @@ int Self::getIntegerForKey(const char* key) {
 }
 
 int Self::getIntegerForKey(const char* key, int defaultValue) {
+    Q_UNUSED(key);
     return defaultValue;
 }
 
@@ -31,6 +33,7 @@ float Self::getFloatForKey(const char* key) {
 }
 
 float Self::getFloatForKey(const char* key, float defaultValue) {
+    Q_UNUSED(key);
     return defaultValue;
 }
 
@@ -39,6 +42,7 @@ double Self::getDoubleForKey(const char* key) {
 }
 
 double Self::getDoubleForKey(const char* key, double defaultValue) {
+    Q_UNUSED(key);
     return defaultValue;
 }
 
@@ -48,6 +52,7 @@ std::string Self::getStringForKey(const char* key) {
 
 std::string Self::getStringForKey(const char* key,
                                   const std::string& defaultValue) {
+    Q_UNUSED(key);
     return defaultValue;
 }
 
@@ -56,21 +61,38 @@ Data Self::getDataForKey(const char* key) {
 }
 
 Data Self::getDataForKey(const char* key, const Data& defaultValue) {
+    Q_UNUSED(key);
     return Data::Null;
 }
 
-void Self::setBoolForKey(const char* key, bool value) {}
+void Self::setBoolForKey(const char* key, bool value) {
+    Q_UNUSED(key);
+    Q_UNUSED(value);
+}
 
-void Self::setIntegerForKey(const char* key, int value) {}
+void Self::setIntegerForKey(const char* key, int value) {
+    Q_UNUSED(key);
+    Q_UNUSED(value);
+}
 
-void Self::setFloatForKey(const char* key, float value) {}
+void Self::setFloatForKey(const char* key, float value) {
+    Q_UNUSED(key);
+    Q_UNUSED(value);
+}
 
-void Self::setDoubleForKey(const char* key, double value) {}
+void Self::setDoubleForKey(const char* key, double value) {
+    Q_UNUSED(key);
+    Q_UNUSED(value);
+}
 
-void Self::setStringForKey(const char* key, const std::string& value) {}
+void Self::setStringForKey(const char* key, const std::string& value) {
+    Q_UNUSED(key);
+    Q_UNUSED(value);
+}
 
 void Self::setDataForKey(const char* key, const Data& value) {
-    //
+    Q_UNUSED(key);
+    Q_UNUSED(value);
 }
 
 Self* Self::getInstance() {
@@ -105,6 +127,6 @@ const std::string& Self::getXMLFilePath() {
 void Self::flush() {}
 
 void Self::deleteValueForKey(const char* key) {
-    //
+    Q_UNUSED(key);
 }
 NS_CC_END

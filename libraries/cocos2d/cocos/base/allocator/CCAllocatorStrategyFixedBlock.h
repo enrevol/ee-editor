@@ -70,7 +70,7 @@ public:
 	static const size_t block_size = _block_size;
 	static const size_t alignment = _alignment;
     
-    AllocatorStrategyFixedBlock(const char* tag = nullptr, size_t pageSize = 100)
+    AllocatorStrategyFixedBlock(const char* /* tag */ = nullptr, size_t pageSize = 100)
         : _list(nullptr)
         , _pages(nullptr)
         , _pageSize(pageSize)

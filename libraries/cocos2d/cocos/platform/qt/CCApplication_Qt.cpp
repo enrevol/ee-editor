@@ -120,6 +120,7 @@ LanguageType Self::getCurrentLanguage() {
 }
 
 bool Self::openURL(const std::string& url) {
+    Q_UNUSED(url);
     // FIXME.
     // NSString* msg =
     //     [NSString stringWithCString:url.c_str()

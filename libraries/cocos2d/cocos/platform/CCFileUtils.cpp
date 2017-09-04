@@ -130,7 +130,7 @@ public:
         return _rootArray;
     }
 
-    void startElement(void *ctx, const char *name, const char **atts)
+    void startElement(void* /* ctx */, const char *name, const char** /* atts */)
     {
         const std::string sName(name);
         if( sName == "dict" )
@@ -219,7 +219,7 @@ public:
         }
     }
 
-    void endElement(void *ctx, const char *name)
+    void endElement(void* /* ctx */, const char *name)
     {
         SAXState curState = _stateStack.empty() ? SAX_DICT : _stateStack.top();
         const std::string sName((char*)name);
@@ -290,7 +290,7 @@ public:
         _state = SAX_NONE;
     }
 
-    void textHandler(void *ctx, const char *ch, size_t len) override
+    void textHandler(void* /* ctx */, const char *ch, size_t len) override
     {
         if (_state == SAX_NONE)
         {

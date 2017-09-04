@@ -130,6 +130,7 @@ Data Device::getTextureDataForText(const char* text,
                                    const FontDefinition& textDefinition,
                                    TextAlign align, int& width, int& height,
                                    bool& hasPremultipliedAlpha) {
+    Q_UNUSED(align);
     if (text == nullptr) {
         return Data::Null;
     }

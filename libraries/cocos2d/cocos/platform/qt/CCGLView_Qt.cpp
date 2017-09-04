@@ -196,10 +196,12 @@ void Self::mouseRelease(QMouseEvent* event) {
 }
 
 void Self::keyPress(QKeyEvent* event) {
+    Q_UNUSED(event);
     //
 }
 
 void Self::keyRelease(QKeyEvent* event) {
+    Q_UNUSED(event);
     //
 }
 NS_CC_END
