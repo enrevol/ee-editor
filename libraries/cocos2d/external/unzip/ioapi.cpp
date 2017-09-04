@@ -150,7 +150,11 @@ static ZPOS64_T ZCALLBACK ftell64_file_func (voidpf /* opaque */, voidpf stream)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_MARMALADE || CC_TARGET_PLATFORM == CC_PLATFORM_BADA || CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY || CC_TARGET_PLATFORM == CC_PLATFORM_NACL || CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
     ret = 0;
 #else
+#if CC_TARGET_PLATFORM == CC_PLATFORM_MAC
     ret = ftello((FILE *)stream);
+#else
+    ret = ftello64((FILE *)stream);
+#endif
 #endif
     return ret;
 }
@@ -197,7 +201,11 @@ static long ZCALLBACK fseek64_file_func (voidpf /* opaque */, voidpf stream, ZPO
         break;
     default: return -1;
     }
+#if CC_TARGET_PLATFORM == CC_PLATFORM_MAC
     if(fseeko((FILE *)stream, offset, fseek_origin) != 0)
+#else
+    if(fseeko64((FILE *)stream, offset, fseek_origin) != 0)
+#endif
         return -1;
     return 0;
 #endif
