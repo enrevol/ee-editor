@@ -16,19 +16,19 @@ Self* Self::sharedApplication_ = nullptr;
 Self::Application(int argc, char* argv[])
     : Super(argc, argv)
     , animationInterval_(1.0f / 60.0f * 1000.0f) {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     CC_ASSERT(sharedApplication_ == nullptr);
     sharedApplication_ = this;
 }
 
 Self::~Application() {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     CC_ASSERT(this == sharedApplication_);
     sharedApplication_ = nullptr;
 }
 
 int Self::run() {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     if (not applicationDidFinishLaunching()) {
         return 0;
     }

@@ -14,7 +14,7 @@ Self::OpenGLWidget(QWidget* parent)
     , keyPressCallback_(nullptr)
     , keyReleaseCallback_(nullptr)
     , resizeCallback_(nullptr) {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     timer_ = new QTimer(this);
     connect(timer_, &QTimer::timeout, [this] { update(); });
 
@@ -24,11 +24,11 @@ Self::OpenGLWidget(QWidget* parent)
 }
 
 Self::~OpenGLWidget() {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
 }
 
 void Self::initializeGL() {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     auto f = context()->functions();
     f->initializeOpenGLFunctions();
 }
@@ -114,7 +114,7 @@ void Self::keyReleaseEvent(QKeyEvent* event) {
 }
 
 void Self::resizeEvent(QResizeEvent* event) {
-    qDebug() << __PRETTY_FUNCTION__ << ": width = " << event->size().width()
+    qDebug() << Q_FUNC_INFO << ": width = " << event->size().width()
              << " height = " << event->size().height();
     if (resizeCallback_) {
         resizeCallback_(event);

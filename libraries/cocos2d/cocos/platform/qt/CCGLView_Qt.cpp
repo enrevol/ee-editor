@@ -26,11 +26,11 @@ Self::GLViewImpl()
     , screenScaleFactor_(1.f)
     , touch_(nullptr)
     , view_(nullptr) {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
 }
 
 Self::~GLViewImpl() {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     CC_SAFE_DELETE(touch_);
 }
 
@@ -76,7 +76,7 @@ bool Self::isOpenGLReady() {
 }
 
 void Self::end() {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     CC_SAFE_DELETE(touch_);
     CC_SAFE_DELETE(view_);
     delete this;
