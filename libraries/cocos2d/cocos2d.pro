@@ -153,7 +153,6 @@ SOURCES += \
     cocos/base/CCStencilStateManager.cpp \
     cocos/base/CCTouch.cpp \
     cocos/base/ccTypes.cpp \
-    cocos/base/CCUserDefault.cpp \
     cocos/base/ccUTF8.cpp \
     cocos/base/ccUtils.cpp \
     cocos/base/CCValue.cpp \
