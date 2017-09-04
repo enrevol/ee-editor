@@ -1,3 +1,5 @@
+include(../libraries/cocos2d/cocos2d.pri)
+
 QT += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -5,23 +7,22 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = editor
 TEMPLATE = app
 
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+
 CONFIG += c++1z
 CONFIG += staticlib
 
 DEFINES += QT_DEPRECATED_WARNINGS
-DEFINES += COCOS2D_DEBUG=1
-DEFINES += DEBUG
 
-QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
-
-LIBS += /usr/local/lib/libjpeg.a
-LIBS += /usr/local/lib/libpng.a
-LIBS += /usr/local/lib/libwebp.a
-LIBS += /usr/local/lib/libtiff.a
-LIBS += /usr/local/lib/libfreetype.a
-LIBS += /usr/local/opt/zlib/lib/libz.a
-LIBS += /usr/lib/libiconv.dylib
-LIBS += /usr/lib/libbz2.dylib
+macx:LIBS += \
+    /usr/local/lib/libjpeg.a \
+    /usr/local/lib/libpng.a \
+    /usr/local/lib/libwebp.a \
+    /usr/local/lib/libtiff.a \
+    /usr/local/lib/libfreetype.a \
+    /usr/local/opt/zlib/lib/libz.a \
+    /usr/lib/libiconv.dylib \
+    /usr/lib/libbz2.dylib
 
 INCLUDEPATH += \
     ../libraries \
@@ -70,7 +71,7 @@ FORMS += \
 
 COCOS2DX_ROOT=$$PWD/../libraries/cocos2d
 
-LIBS += -L$$OUT_PWD/../libraries/cocos2d/ -lcocos2d
-INCLUDEPATH += $$PWD/../libraries/cocos2d
-DEPENDPATH += $$PWD/../libraries/cocos2d
-PRE_TARGETDEPS += $$OUT_PWD/../libraries/cocos2d/libcocos2d.a
+#LIBS += -L$$OUT_PWD/../libraries/cocos2d/ -lcocos2d
+#INCLUDEPATH += $$PWD/../libraries/cocos2d
+#DEPENDPATH += $$PWD/../libraries/cocos2d
+#PRE_TARGETDEPS += $$OUT_PWD/../libraries/cocos2d/libcocos2d.a

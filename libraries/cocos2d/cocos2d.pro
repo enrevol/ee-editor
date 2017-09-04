@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+include(cocos2d.pri)
+
 QT += core gui widgets opengl
 
 TARGET = cocos2d
@@ -15,8 +17,6 @@ CONFIG += staticlib
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-DEFINES += COCOS2D_DEBUG=1
-DEFINES += DEBUG
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -24,19 +24,32 @@ DEFINES += DEBUG
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 INCLUDEPATH += \
-cocos \
-cocos/editor-support \
-external \
-external/ConvertUTF \
-external/edtaa3func \
-external/tinydir \
-external/tinyxml2 \
-external/unzip \
-external/xxhash
+    external/ConvertUTF \
+    external/edtaa3func \
+    external/tinydir \
+    external/tinyxml2 \
+    external/unzip \
+    external/xxhash
 
-INCLUDEPATH += /usr/local/include
-INCLUDEPATH += /usr/local/include/freetype2
-INCLUDEPATH += /usr/local/include/webp
+macx:INCLUDEPATH += \
+    /usr/local/include \
+    /usr/local/include/freetype2 \
+    /usr/local/include/webp
+
+win32:INCLUDEPATH += \
+    external/freetype2/include/win32/freetype2 \
+    external/jpeg/include/win32 \
+    external/png/include/win32 \
+    external/tiff/include/win32 \
+    external/webp/include/win32 \
+    external/win32-specific/zlib/include
+
+# win32:LIBS += \
+#    -Lexternal/freetype2/prebuilt/win32 -lfreetype \
+#    -Lexternal/win32-specific/prebuilt -zlib
+
+# win32:!win32-g++: PRE_TARGETDEPS += $$PWD/external/freetype2/prebuilt/win10/x64/freetype.lib
+# else:macx|win32-g++: PRE_TARGETDEPS += $$PWD/external/freetype2/prebuilt/win10/x64/libfreetype.a
 
 SOURCES += \
     cocos/2d/CCAction.cpp \
@@ -527,6 +540,7 @@ HEADERS += \
     cocos/platform/qt/CCGLView_Qt.hpp \
     cocos/platform/qt/CCOpenGLWidget_Qt.hpp \
     cocos/platform/qt/CCUserDefault_Qt.hpp \
+    cocos/platform/win32/CCStdC-win32.h \
     cocos/renderer/CCBatchCommand.h \
     cocos/renderer/CCCustomCommand.h \
     cocos/renderer/CCFrameBuffer.h \
@@ -620,11 +634,6 @@ HEADERS += \
     external/xxhash/xxhash.h \
     external/xxtea/xxtea.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 DISTFILES += \
     cocos/renderer/ccShader_3D_Color.frag \
     cocos/renderer/ccShader_3D_ColorNormal.frag \
@@ -665,4 +674,5 @@ DISTFILES += \
     cocos/renderer/ccShader_PositionTexture_uColor.vert \
     cocos/renderer/ccShader_PositionTextureA8Color.vert \
     cocos/renderer/ccShader_PositionTextureColor.vert \
-    cocos/renderer/ccShader_PositionTextureColor_noMVP.vert
+    cocos/renderer/ccShader_PositionTextureColor_noMVP.vert \
+    cocos2d.pri
