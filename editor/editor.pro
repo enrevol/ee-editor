@@ -14,21 +14,8 @@ CONFIG += staticlib
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-macx:LIBS += \
-    /usr/local/lib/libjpeg.a \
-    /usr/local/lib/libpng.a \
-    /usr/local/lib/libwebp.a \
-    /usr/local/lib/libtiff.a \
-    /usr/local/lib/libfreetype.a \
-    /usr/local/opt/zlib/lib/libz.a \
-    /usr/lib/libiconv.dylib \
-    /usr/lib/libbz2.dylib
-
 INCLUDEPATH += \
-    ../libraries \
-    ../libraries/cocos2d/cocos \
-    ../libraries/cocos2d/cocos/editor-support \
-    ../libraries/cocos2d/external
+    ../libraries
 
 SOURCES += \
     main.cpp \

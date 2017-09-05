@@ -30,6 +30,23 @@ INCLUDEPATH += \
     $$PWD/cocos/editor-support \
     $$PWD/external
 
+macx:LIBS += \
+    -L$$PWD/external/freetype2/prebuilt/mac -lfreetype \
+    -L$$PWD/external/jpeg/prebuilt/mac -ljpeg \
+    -L$$PWD/external/png/prebuilt/mac -lpng \
+    -L$$PWD/external/tiff/prebuilt/mac -ltiff \
+    -L$$PWD/external/webp/prebuilt/mac -lwebp \
+    -L$$PWD/external/zlib/prebuilt/mac -lz \
+    /usr/lib/libiconv.dylib \
+
+win32:LIBS += \
+    -L$$PWD/external/freetype2/prebuilt/win32 -lfreetype \
+    -L$$PWD/external/jpeg/prebuilt/win32 -ljpeg \
+    -L$$PWD/external/png/prebuilt/win32 -lpng \
+    -L$$PWD/external/tiff/prebuilt/win32 -ltiff \
+    -L$$PWD/external/webp/prebuilt/win32 -lwebp \
+    -L$$PWD/external/win32-specific/zlib/prebuilt/win32 -lzlib
+
 #LIBS += -L$$OUT_PWD/../libraries/cocos2d/ -lcocos2d
 #INCLUDEPATH += $$PWD/../libraries/cocos2d
 #DEPENDPATH += $$PWD/../libraries/cocos2d
