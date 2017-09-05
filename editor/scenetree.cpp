@@ -5,7 +5,9 @@
 namespace ee {
 using Self = SceneTree;
 
-Self::SceneTree(QWidget* parent) : Super(parent), rootNode_(nullptr) {
+Self::SceneTree(QWidget* parent)
+    : Super(parent)
+    , rootNode_(nullptr) {
     //
 }
 
