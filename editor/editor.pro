@@ -34,7 +34,9 @@ SOURCES += \
     utils.cpp \
     glsledit.cpp \
     glslhighlighter.cpp \
-    glsleditsidebar.cpp
+    glsleditsidebar.cpp \
+    inspectortexture.cpp \
+    inspectorfloat.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -52,8 +54,12 @@ HEADERS += \
     glsledit.hpp \
     glslhighlighter.hpp \
     glslcomponent.hpp \
-    glsleditsidebar.hpp
+    glsleditsidebar.hpp \
+    inspectortexture.hpp \
+    inspectorfloat.hpp
 
 FORMS += \
     mainwindow.ui \
-    projectsettingsdialog.ui
+    projectsettingsdialog.ui \
+    inspectortexture.ui \
+    inspectorfloat.ui

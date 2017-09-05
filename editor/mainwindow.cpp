@@ -1,7 +1,7 @@
 #include <ciso646>
 
-#include "mainwindow.hpp"
 #include "config.hpp"
+#include "mainwindow.hpp"
 #include "projectsettingsdialog.hpp"
 #include "rootscene.hpp"
 #include "settings.hpp"
@@ -86,6 +86,11 @@ Self::MainWindow(QWidget* parent)
             QMessageBox::critical(this, "Error", "Failed to compile the shader",
                                   QMessageBox::StandardButton::Ok);
         }
+    });
+
+    connect(ui_->addNodeButton, &QPushButton::clicked, [this] {
+        auto scene = RootScene::getInstance();
+        //
     });
 
     ui_->actionProject_Settings->setEnabled(false);
