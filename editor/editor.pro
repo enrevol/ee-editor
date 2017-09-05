@@ -17,6 +17,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += \
     ../libraries
 
+LIBS += -L$$OUT_PWD/../libraries/cocos2d/ -lcocos2d
+
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
@@ -55,10 +57,3 @@ HEADERS += \
 FORMS += \
     mainwindow.ui \
     projectsettingsdialog.ui
-
-COCOS2DX_ROOT=$$PWD/../libraries/cocos2d
-
-#LIBS += -L$$OUT_PWD/../libraries/cocos2d/ -lcocos2d
-#INCLUDEPATH += $$PWD/../libraries/cocos2d
-#DEPENDPATH += $$PWD/../libraries/cocos2d
-#PRE_TARGETDEPS += $$OUT_PWD/../libraries/cocos2d/libcocos2d.a
