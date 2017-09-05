@@ -181,6 +181,7 @@ void _spAnimationState_disposeTrackEntry (spTrackEntry* entry) {
 }
 
 void _spAnimationState_disposeTrackEntries (spAnimationState* state, spTrackEntry* entry) {
+    (void)(state);
 	while (entry) {
 		spTrackEntry* next = entry->next;
 		spTrackEntry* from = entry->mixingFrom;
@@ -424,6 +425,7 @@ float _spAnimationState_applyMixingFrom (spAnimationState* self, spTrackEntry* e
 }
 
 void _spAnimationState_applyRotateTimeline (spAnimationState* self, spTimeline* timeline, spSkeleton* skeleton, float time, float alpha, int /*boolean*/ setupPose, float* timelinesRotation, int i, int /*boolean*/ firstFrame) {
+    (void)(self);
 	spRotateTimeline *rotateTimeline;
 	float *frames;
 	spBone* bone;

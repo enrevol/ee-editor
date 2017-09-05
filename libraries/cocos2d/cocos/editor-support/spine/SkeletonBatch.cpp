@@ -74,6 +74,7 @@ namespace spine {
     }
 
     void SkeletonBatch::update (float delta) {
+        CC_UNUSED_PARAM(delta);
         _command = _firstCommand;
     }
 

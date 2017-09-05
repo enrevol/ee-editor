@@ -240,6 +240,7 @@ struct spBaseTimeline* _spBaseTimeline_create (int framesCount, spTimelineType t
 
 void _spRotateTimeline_apply (const spTimeline* timeline, spSkeleton* skeleton, float lastTime, float time, spEvent** firedEvents,
 		int* eventsCount, float alpha, int setupPose, int mixingOut) {
+    (void)(mixingOut);
 	spBone *bone;
 	int frame;
 	float prevRotation, frameTime, percent, r;
@@ -307,6 +308,7 @@ static const int TRANSLATE_X = 1, TRANSLATE_Y = 2;
 
 void _spTranslateTimeline_apply (const spTimeline* timeline, spSkeleton* skeleton, float lastTime, float time,
 		spEvent** firedEvents, int* eventsCount, float alpha, int setupPose, int mixingOut) {
+    (void)(mixingOut);
 	spBone *bone;
 	int frame;
 	float frameTime, percent;
@@ -453,6 +455,7 @@ void spScaleTimeline_setFrame (spScaleTimeline* self, int frameIndex, float time
 
 void _spShearTimeline_apply (const spTimeline* timeline, spSkeleton* skeleton, float lastTime, float time, spEvent** firedEvents,
 							 int* eventsCount, float alpha, int setupPose, int mixingOut) {
+    (void)(mixingOut);
 	spBone *bone;
 	int frame;
 	float frameTime, percent, x, y;
@@ -519,6 +522,7 @@ static const int COLOR_R = 1, COLOR_G = 2, COLOR_B = 3, COLOR_A = 4;
 
 void _spColorTimeline_apply (const spTimeline* timeline, spSkeleton* skeleton, float lastTime, float time, spEvent** firedEvents,
 		int* eventsCount, float alpha, int setupPose, int mixingOut) {
+    (void)(mixingOut);
 	spSlot *slot;
 	int frame;
 	float percent, frameTime;
@@ -681,6 +685,7 @@ void spAttachmentTimeline_setFrame (spAttachmentTimeline* self, int frameIndex, 
 
 void _spDeformTimeline_apply (const spTimeline* timeline, spSkeleton* skeleton, float lastTime, float time, spEvent** firedEvents,
 							  int* eventsCount, float alpha, int setupPose, int mixingOut) {
+    (void)(mixingOut);
 	int frame, i, vertexCount;
 	float percent, frameTime;
 	const float* prevVertices;
@@ -870,6 +875,7 @@ void _spEventTimeline_apply (const spTimeline* timeline, spSkeleton* skeleton, f
 }
 
 int _spEventTimeline_getPropertyId (const spTimeline* timeline) {
+    (void)(timeline);
 	return SP_TIMELINE_EVENT << 24;
 }
 
@@ -943,6 +949,7 @@ void _spDrawOrderTimeline_apply (const spTimeline* timeline, spSkeleton* skeleto
 }
 
 int _spDrawOrderTimeline_getPropertyId (const spTimeline* timeline) {
+    (void)(timeline);
 	return SP_TIMELINE_DRAWORDER << 24;
 }
 
@@ -1068,6 +1075,7 @@ static const int TRANSFORMCONSTRAINT_SHEAR = 4;
 
 void _spTransformConstraintTimeline_apply (const spTimeline* timeline, spSkeleton* skeleton, float lastTime, float time,
 									spEvent** firedEvents, int* eventsCount, float alpha, int setupPose, int mixingOut) {
+    (void)(mixingOut);
 	int frame;
 	float frameTime, percent, rotate, translate, scale, shear;
 	spTransformConstraint* constraint;
@@ -1154,6 +1162,7 @@ static const int PATHCONSTRAINTPOSITION_VALUE = 1;
 
 void _spPathConstraintPositionTimeline_apply(const spTimeline* timeline, spSkeleton* skeleton, float lastTime, float time,
 		spEvent** firedEvents, int* eventsCount, float alpha, int setupPose, int mixingOut) {
+    (void)(mixingOut);
 	int frame;
 	float frameTime, percent, position;
 	spPathConstraint* constraint;
@@ -1214,6 +1223,7 @@ static const int PATHCONSTRAINTSPACING_VALUE = 1;
 
 void _spPathConstraintSpacingTimeline_apply(const spTimeline* timeline, spSkeleton* skeleton, float lastTime, float time,
 		spEvent** firedEvents, int* eventsCount, float alpha, int setupPose, int mixingOut) {
+    (void)(mixingOut);
 	int frame;
 	float frameTime, percent, spacing;
 	spPathConstraint* constraint;
@@ -1278,6 +1288,7 @@ static const int PATHCONSTRAINTMIX_TRANSLATE = 2;
 
 void _spPathConstraintMixTimeline_apply(const spTimeline* timeline, spSkeleton* skeleton, float lastTime, float time,
 											spEvent** firedEvents, int* eventsCount, float alpha, int setupPose, int mixingOut) {
+    (void)(mixingOut);
 	int frame;
 	float frameTime, percent, rotate, translate;
 	spPathConstraint* constraint;
