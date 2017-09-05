@@ -17,9 +17,11 @@ HEADERS += \
     nodeloader.hpp \
     nodeloaderlibrary.hpp \
     parserfwd.hpp \
-    editorreader.hpp
+    editorreader.hpp \
+    propertyhandler.hpp
 
 SOURCES += \
     nodeloader.cpp \
     nodeloaderlibrary.cpp \
-    editorreader.cpp
+    editorreader.cpp \
+    propertyhandler.cpp
