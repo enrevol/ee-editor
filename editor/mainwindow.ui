@@ -206,7 +206,7 @@
                 </size>
                </property>
               </widget>
-              <widget class="QTreeWidget" name="sceneGraphView">
+              <widget class="ee::SceneTree" name="sceneGraphView">
                <column>
                 <property name="text">
                  <string notr="true">1</string>
@@ -670,6 +670,11 @@
    <class>ee::GLSLEdit</class>
    <extends>QPlainTextEdit</extends>
    <header>glsledit.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>ee::SceneTree</class>
+   <extends>QTreeWidget</extends>
+   <header>scenetree.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

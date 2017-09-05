@@ -36,7 +36,8 @@ SOURCES += \
     glslhighlighter.cpp \
     glsleditsidebar.cpp \
     inspectortexture.cpp \
-    inspectorfloat.cpp
+    inspectorfloat.cpp \
+    scenetree.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -56,7 +57,8 @@ HEADERS += \
     glslcomponent.hpp \
     glsleditsidebar.hpp \
     inspectortexture.hpp \
-    inspectorfloat.hpp
+    inspectorfloat.hpp \
+    scenetree.hpp
 
 FORMS += \
     mainwindow.ui \
