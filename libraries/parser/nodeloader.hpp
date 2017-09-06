@@ -10,12 +10,16 @@ class Node;
 namespace ee {
 class NodeLoader {
 public:
+    /// Constructs a node loader.
+    /// @param node The wrapped node.
     explicit NodeLoader(cocos2d::Node* node);
 
     virtual ~NodeLoader();
 
+    /// Gets the property handler.
     const PropertyHandlerPtr& getPropertyHandler() const;
 
+    /// Gets the wrapped node.
     virtual cocos2d::Node* getNode();
 
 private:

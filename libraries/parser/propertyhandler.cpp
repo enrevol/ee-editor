@@ -5,10 +5,10 @@
 namespace ee {
 using Self = PropertyHandler;
 
-bool Self::readBoolProperty(const std::string& name) const {
+bool Self::readBoolProperty(const std::string& name, bool defaultValue) const {
     if (readHandlers_.count(name) == 0) {
         CC_ASSERT(false);
-        return false;
+        return defaultValue;
     }
     auto&& handler = readHandlers_.at(name);
     auto value = handler();
@@ -16,10 +16,10 @@ bool Self::readBoolProperty(const std::string& name) const {
     return value.asBool();
 }
 
-int Self::readIntProperty(const std::string& name) const {
+int Self::readIntProperty(const std::string& name, int defaultValue) const {
     if (readHandlers_.count(name) == 0) {
         CC_ASSERT(false);
-        return 0;
+        return defaultValue;
     }
     auto&& handler = readHandlers_.at(name);
     auto value = handler();
@@ -27,10 +27,11 @@ int Self::readIntProperty(const std::string& name) const {
     return value.asInt();
 }
 
-float Self::readFloatProperty(const std::string& name) const {
+float Self::readFloatProperty(const std::string& name,
+                              float defaultValue) const {
     if (readHandlers_.count(name) == 0) {
         CC_ASSERT(false);
-        return 0.0f;
+        return defaultValue;
     }
     auto&& handler = readHandlers_.at(name);
     auto value = handler();
@@ -38,10 +39,11 @@ float Self::readFloatProperty(const std::string& name) const {
     return value.asFloat();
 }
 
-std::string Self::readStringProperty(const std::string& name) const {
+std::string Self::readStringProperty(const std::string& name,
+                                     std::string defaultValue) const {
     if (readHandlers_.count(name) == 0) {
         CC_ASSERT(false);
-        return "";
+        return defaultValue;
     }
     auto&& handler = readHandlers_.at(name);
     auto value = handler();

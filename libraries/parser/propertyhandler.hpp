@@ -23,11 +23,38 @@ public:
     PropertyHandler() = default;
     virtual ~PropertyHandler() = default;
 
-    bool readBoolProperty(const std::string& name) const;
-    int readIntProperty(const std::string& name) const;
-    float readFloatProperty(const std::string& name) const;
-    std::string readStringProperty(const std::string& name) const;
+    /// Reads a bool property.
+    /// @param name The name of the property
+    /// @param defaultValue The default value if the property doesn't exist.
+    /// @return The property value.
+    bool readBoolProperty(const std::string& name,
+                          bool defaultValue = false) const;
 
+    /// Reads an int property.
+    /// @param name The name of the property
+    /// @param defaultValue The default value if the property doesn't exist.
+    /// @return The property value.
+    int readIntProperty(const std::string& name, int defaultValue = 0) const;
+
+    /// Reads a float property.
+    /// @param name The name of the property
+    /// @param defaultValue The default value if the property doesn't exist.
+    /// @return The property value.
+    float readFloatProperty(const std::string& name,
+                            float defaultValue = 0.0f) const;
+
+    /// Reads a string property.
+    /// @param name The name of the property
+    /// @param defaultValue The default value if the property doesn't exist.
+    /// @return The property value.
+    std::string
+    readStringProperty(const std::string& name,
+                       std::string defaultValue = std::string()) const;
+
+    /// Attempts to write a property.
+    /// @param name The name of the property.
+    /// @param value The value to write.
+    /// @return True if the property was written, false otherwise.
     bool writeProperty(const std::string& name,
                        const cocos2d::Value& value) const;
 
