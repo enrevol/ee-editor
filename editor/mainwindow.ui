@@ -206,7 +206,7 @@
                 </size>
                </property>
               </widget>
-              <widget class="ee::SceneTree" name="sceneGraphView">
+              <widget class="ee::SceneTree" name="sceneTree">
                <column>
                 <property name="text">
                  <string notr="true">1</string>

@@ -37,7 +37,8 @@ SOURCES += \
     glsleditsidebar.cpp \
     inspectortexture.cpp \
     inspectorfloat.cpp \
-    scenetree.cpp
+    scenetree.cpp \
+    inspectorpoint.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -58,10 +59,12 @@ HEADERS += \
     glsleditsidebar.hpp \
     inspectortexture.hpp \
     inspectorfloat.hpp \
-    scenetree.hpp
+    scenetree.hpp \
+    inspectorpoint.hpp
 
 FORMS += \
     mainwindow.ui \
     projectsettingsdialog.ui \
     inspectortexture.ui \
-    inspectorfloat.ui
+    inspectorfloat.ui \
+    inspectorpoint.ui

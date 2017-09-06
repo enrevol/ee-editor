@@ -1,22 +1,27 @@
-#ifndef INSPECTORFLOAT_HPP
-#define INSPECTORFLOAT_HPP
+#ifndef EE_EDITOR_INSPECTOR_FLOAT_HPP
+#define EE_EDITOR_INSPECTOR_FLOAT_HPP
 
 #include <QWidget>
 
 namespace Ui {
 class InspectorFloat;
-}
+} // namespace Ui
 
-class InspectorFloat : public QWidget
-{
+namespace ee {
+class InspectorFloat : public QWidget {
     Q_OBJECT
 
+private:
+    using Self = InspectorFloat;
+    using Super = QWidget;
+
 public:
-    explicit InspectorFloat(QWidget *parent = 0);
-    ~InspectorFloat();
+    explicit InspectorFloat(QWidget* parent = nullptr);
+    virtual ~InspectorFloat() override;
 
 private:
-    Ui::InspectorFloat *ui;
+    Ui::InspectorFloat* ui;
 };
+} // namespace ee
 
-#endif // INSPECTORFLOAT_HPP
+#endif // EE_EDITOR_INSPECTOR_FLOAT_HPP

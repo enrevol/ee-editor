@@ -18,10 +18,12 @@ HEADERS += \
     nodeloaderlibrary.hpp \
     parserfwd.hpp \
     editorreader.hpp \
-    propertyhandler.hpp
+    propertyhandler.hpp \
+    nodegraph.hpp
 
 SOURCES += \
     nodeloader.cpp \
     nodeloaderlibrary.cpp \
     editorreader.cpp \
-    propertyhandler.cpp
+    propertyhandler.cpp \
+    nodegraph.cpp

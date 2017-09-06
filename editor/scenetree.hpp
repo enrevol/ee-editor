@@ -3,11 +3,15 @@
 
 #include <QTreeWidget>
 
+#include <base/CCValue.h>
+
 namespace cocos2d {
 class Node;
 } // namespace cocos2d
 
 namespace ee {
+class NodeGraph;
+
 class SceneTree : public QTreeWidget {
     Q_OBJECT
 
@@ -18,11 +22,13 @@ private:
 public:
     explicit SceneTree(QWidget* parent);
 
-    void setRootNode(cocos2d::Node* node);
+    void setNodeGraph(const NodeGraph& graph);
 
 protected:
+    void updateNode(QTreeWidgetItem* item, const NodeGraph& graph);
+
 private:
-    cocos2d::Node* rootNode_;
+    QTreeWidgetItem* rootItem_;
 };
 } // namespace ee
 

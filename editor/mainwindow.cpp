@@ -90,7 +90,7 @@ Self::MainWindow(QWidget* parent)
 
     connect(ui_->addNodeButton, &QPushButton::clicked, [this] {
         auto scene = RootScene::getInstance();
-        //
+        // ui_->sceneTree->setRootNode(scene);
     });
 
     ui_->actionProject_Settings->setEnabled(false);
