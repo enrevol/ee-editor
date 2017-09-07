@@ -2,6 +2,7 @@
 #define EE_PARSER_NODE_LOADER_HPP
 
 #include "parserfwd.hpp"
+#include "propertyhandler.hpp"
 
 namespace cocos2d {
 class Node;
@@ -11,20 +12,19 @@ namespace ee {
 class NodeLoader {
 public:
     /// Constructs a node loader.
-    /// @param node The wrapped node.
-    explicit NodeLoader(cocos2d::Node* node);
+    NodeLoader();
 
     virtual ~NodeLoader();
 
-    /// Gets the property handler.
-    const PropertyHandlerPtr& getPropertyHandler() const;
+    virtual cocos2d::Node* createNode() const;
 
-    /// Gets the wrapped node.
-    virtual cocos2d::Node* getNode();
+    PropertyHandler& getPropertyHandler();
+
+    /// Gets the property handler.
+    const PropertyHandler& getPropertyHandler() const;
 
 private:
-    PropertyHandlerPtr propertyHandler_;
-    cocos2d::Node* node_;
+    PropertyHandler propertyHandler_;
 };
 } // namespace ee
 
