@@ -46,17 +46,28 @@ public:
     std::string getStringProperty(const std::string& name,
                                   const std::string& defaultValue) const;
 
+    void setProperty(const std::string& name, const cocos2d::Value& value);
+    void setProperty(const std::string& name, bool value);
+    void setProperty(const std::string& name, int value);
+    void setProperty(const std::string& name, float value);
+    void setProperty(const std::string& name, const std::string& value);
+
     std::string getBaseClass() const;
     std::string getCustomClass() const;
     std::string getDisplayName() const;
 
-    const std::vector<NodeGraph>& getChildren() const;
+    Self& getChild(std::size_t index);
+    const Self& getChild(std::size_t index) const;
+
+    const std::vector<Self>& getChildren() const;
+
+    void addChild(const Self& child);
 
     cocos2d::ValueMap toDict() const;
 
 private:
     cocos2d::ValueMap properties_;
-    std::vector<NodeGraph> children_;
+    std::vector<Self> children_;
 };
 } // namespace ee
 

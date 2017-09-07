@@ -128,7 +128,31 @@ std::string Self::getDisplayName() const {
     return getBaseClass();
 }
 
-const std::vector<NodeGraph>& Self::getChildren() const {
+Self& Self::getChild(std::size_t index) {
+    return children_.at(index);
+}
+
+const Self& Self::getChild(std::size_t index) const {
+    return children_.at(index);
+}
+
+const std::vector<Self>& Self::getChildren() const {
     return children_;
+}
+
+void Self::addChild(const Self& child) {
+    children_.push_back(child);
+}
+
+cocos2d::ValueMap Self::toDict() const {
+    cocos2d::ValueMap dict;
+    dict[key::properties] = properties_;
+
+    cocos2d::ValueVector children;
+    for (auto&& child : getChildren()) {
+        children.emplace_back(child.toDict());
+    }
+    dict[key::children] = children;
+    return dict;
 }
 } // namespace ee
