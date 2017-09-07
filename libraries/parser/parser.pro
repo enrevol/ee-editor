@@ -5,6 +5,7 @@ QT += core gui widgets opengl
 TARGET = parser
 TEMPLATE = lib
 CONFIG += staticlib
+CONFIG += c++1z
 
 DEFINES += QT_DEPRECATED_WARNINGS
 

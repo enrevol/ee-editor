@@ -19,6 +19,7 @@ QT += core gui widgets opengl
 TARGET = cocos2d
 TEMPLATE = lib
 CONFIG += staticlib
+CONFIG += c++1z
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
