@@ -28,31 +28,61 @@ Self::NodeGraph(const cocos2d::ValueMap& dict) {
 
 Self::~NodeGraph() {}
 
+cocos2d::Value Self::getProperty(const std::string& name) const {
+    auto value = getProperty(name, cocos2d::Value::Null);
+    CC_ASSERT(not value.isNull());
+    return value;
+}
+
 cocos2d::Value Self::getProperty(const std::string& name,
                                  const cocos2d::Value& defaultValue) const {
     if (not properties_.count(name)) {
-        CC_ASSERT(false);
         return defaultValue;
     }
     return properties_.at(name);
 }
 
+bool Self::getBoolProperty(const std::string& name) const {
+    auto value = getProperty(name);
+    if (value.getType() != cocos2d::Value::Type::BOOLEAN) {
+        CC_ASSERT(false);
+        return false;
+    }
+    return value.asBool();
+}
+
 bool Self::getBoolProperty(const std::string& name, bool defaultValue) const {
     auto value = getProperty(name, cocos2d::Value(defaultValue));
     if (value.getType() != cocos2d::Value::Type::BOOLEAN) {
-        CC_ASSERT(false);
         return defaultValue;
     }
     return value.asBool();
 }
 
+int Self::getIntProperty(const std::string& name) const {
+    auto value = getProperty(name);
+    if (value.getType() != cocos2d::Value::Type::INTEGER) {
+        CC_ASSERT(false);
+        return 0;
+    }
+    return value.asInt();
+}
+
 int Self::getIntProperty(const std::string& name, int defaultValue) const {
     auto value = getProperty(name, cocos2d::Value(defaultValue));
     if (value.getType() != cocos2d::Value::Type::INTEGER) {
-        CC_ASSERT(false);
         return defaultValue;
     }
     return value.asInt();
+}
+
+float Self::getFloatProperty(const std::string& name) const {
+    auto value = getProperty(name);
+    if (value.getType() != cocos2d::Value::Type::FLOAT) {
+        CC_ASSERT(false);
+        return 0.0f;
+    }
+    return value.asFloat();
 }
 
 float Self::getFloatProperty(const std::string& name,
@@ -65,11 +95,18 @@ float Self::getFloatProperty(const std::string& name,
     return value.asFloat();
 }
 
+std::string Self::getStringProperty(const std::string& name) const {
+    auto value = getProperty(name);
+    if (value.getType() != cocos2d::Value::Type::STRING) {
+        return std::string();
+    }
+    return value.asString();
+}
+
 std::string Self::getStringProperty(const std::string& name,
                                     const std::string& defaultValue) const {
     auto value = getProperty(name, cocos2d::Value(defaultValue));
     if (value.getType() != cocos2d::Value::Type::STRING) {
-        CC_ASSERT(false);
         return defaultValue;
     }
     return value.asString();

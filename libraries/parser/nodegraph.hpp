@@ -9,24 +9,42 @@ private:
     using Self = NodeGraph;
 
 public:
-    NodeGraph(const cocos2d::ValueMap& dict);
+    /// Constructs an empty node graph.
+    NodeGraph();
+
+    /// Constructs a node graph with the specified dictionary.
+    /// @param dict Node graph's dictionary.
+    explicit NodeGraph(const cocos2d::ValueMap& dict);
+
     ~NodeGraph();
 
-    cocos2d::Value getProperty(
-        const std::string& name,
-        const cocos2d::Value& defaultValue = cocos2d::Value::Null) const;
+    /// Sets the node graph's dictionary.
+    /// @param dict The desired dictionary.
+    void setDictionary(const cocos2d::ValueMap& dict);
 
-    bool getBoolProperty(const std::string& name,
-                         bool defaultValue = false) const;
+    /// Gets a generic property.
+    /// @param name The property's name.
+    cocos2d::Value getProperty(const std::string& name) const;
 
-    int getIntProperty(const std::string& name, int defaultValue = 0) const;
+    /// Gets a generic property.
+    /// @param name The property's name.
+    /// @param defaultValue The default value of the property if it doesn't
+    /// exist.
+    cocos2d::Value getProperty(const std::string& name,
+                               const cocos2d::Value& defaultValue) const;
 
-    float getFloatProperty(const std::string& name,
-                           float defaultValue = 0.0f) const;
+    bool getBoolProperty(const std::string& name) const;
+    bool getBoolProperty(const std::string& name, bool defaultValue) const;
 
-    std::string
-    getStringProperty(const std::string& name,
-                      const std::string& defaultValue = std::string()) const;
+    int getIntProperty(const std::string& name) const;
+    int getIntProperty(const std::string& name, int defaultValue) const;
+
+    float getFloatProperty(const std::string& name) const;
+    float getFloatProperty(const std::string& name, float defaultValue) const;
+
+    std::string getStringProperty(const std::string& name) const;
+    std::string getStringProperty(const std::string& name,
+                                  const std::string& defaultValue) const;
 
     std::string getBaseClass() const;
     std::string getCustomClass() const;
