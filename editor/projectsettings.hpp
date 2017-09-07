@@ -16,8 +16,9 @@ private:
 public:
     /// Constructs a project settings.
     /// @param projectPath The project's path.
-    ProjectSettings(const QFileInfo& projectPath);
-    ~ProjectSettings();
+    explicit ProjectSettings(const QFileInfo& projectPath);
+
+    virtual ~ProjectSettings() override;
 
     /// Gets the project's path.
     const QFileInfo& getProjectPath() const;

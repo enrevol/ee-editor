@@ -1,6 +1,7 @@
 #ifndef EE_EDITOR_CONFIG_HPP
 #define EE_EDITOR_CONFIG_HPP
 
+#include "interfacesettings.hpp"
 #include "optional.hpp"
 #include "projectsettings.hpp"
 
@@ -31,6 +32,21 @@ public:
     /// @param path The project's path.
     bool createProject(const QFileInfo& path);
 
+    const std::optional<InterfaceSettings>& getInterfaceSettings() const;
+
+    void setInterfaceSettings(const InterfaceSettings& settings);
+
+    /// Attempts to load an interface whose the specified path.
+    /// @param path The interface file's path.
+    bool loadInterface(const QFileInfo& path);
+
+    /// Attempts to save the current interface file.
+    bool saveInterface() const;
+
+    /// Attempts to create an interface at the specified path.
+    /// @param path The interface file's path.
+    bool createInterface(const QFileInfo& path);
+
 protected:
     Config();
     ~Config();
@@ -40,6 +56,7 @@ protected:
 
 private:
     std::optional<ProjectSettings> projectSettings_;
+    std::optional<InterfaceSettings> interfaceSettings_;
 };
 } // namespace ee
 

@@ -5,24 +5,26 @@
 #include <QDebug>
 
 namespace ee {
-Config& Config::getInstance() {
+using Self = Config;
+
+Self& Self::getInstance() {
     static Self sharedInstance;
     return sharedInstance;
 }
 
-Config::Config() {}
+Self::Config() {}
 
-Config::~Config() {}
+Self::~Config() {}
 
-const std::optional<ProjectSettings>& Config::getProjectSettings() const {
+const std::optional<ProjectSettings>& Self::getProjectSettings() const {
     return projectSettings_;
 }
 
-void Config::setProjectSettings(const ProjectSettings& settings) {
+void Self::setProjectSettings(const ProjectSettings& settings) {
     projectSettings_ = settings;
 }
 
-bool Config::loadProject(const QFileInfo& path) {
+bool Self::loadProject(const QFileInfo& path) {
     ProjectSettings settings(path);
     if (not settings.read()) {
         return false;
@@ -31,7 +33,7 @@ bool Config::loadProject(const QFileInfo& path) {
     return true;
 }
 
-bool Config::saveProject() const {
+bool Self::saveProject() const {
     auto&& settings = getProjectSettings();
     if (not settings.has_value()) {
         return false;
@@ -39,17 +41,50 @@ bool Config::saveProject() const {
     return settings->write();
 }
 
-bool Config::createProject(const QFileInfo& path) {
+bool Self::createProject(const QFileInfo& path) {
     QFile file(path.absoluteFilePath());
     if (not file.open(QIODevice::OpenModeFlag::WriteOnly)) {
         qWarning() << "Couldn't create a new project at "
                    << path.absoluteFilePath();
         return false;
     }
-
     ProjectSettings settings(path);
-    settings.write();
+    return settings.write();
+}
 
+const std::optional<InterfaceSettings>& Self::getInterfaceSettings() const {
+    return interfaceSettings_;
+}
+
+void Self::setInterfaceSettings(const InterfaceSettings& settings) {
+    interfaceSettings_ = settings;
+}
+
+bool Self::loadInterface(const QFileInfo& path) {
+    InterfaceSettings settings(path);
+    if (not settings.read()) {
+        return false;
+    }
+    setInterfaceSettings(settings);
     return true;
+}
+
+bool Self::saveInterface() const {
+    auto&& settings = getInterfaceSettings();
+    if (not settings.has_value()) {
+        return false;
+    }
+    return settings->write();
+}
+
+bool Self::createInterface(const QFileInfo& path) {
+    QFile file(path.absoluteFilePath());
+    if (not file.open(QIODevice::OpenModeFlag::WriteOnly)) {
+        qWarning() << "Couldn't create a new interface at "
+                   << path.absoluteFilePath();
+        return false;
+    }
+    InterfaceSettings settings(path);
+    return settings.write();
 }
 } // namespace ee

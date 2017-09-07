@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 #include "mainwindow.hpp"
+#include "projectsettings.hpp"
 #include "projectsettingsdialog.hpp"
 #include "rootscene.hpp"
 #include "settings.hpp"
@@ -13,9 +14,10 @@
 namespace ee {
 using Self = MainWindow;
 
-namespace {
-constexpr auto filter = "CocosBuilder Project File (*.ccbproj);;All Files (.*)";
-} // namespace
+namespace filter {
+constexpr auto project = "eeEditor Project File (*.eeeproj);;All Files (.*)";
+constexpr auto interface = "eeInterface File (*.eeei);All Files (.*)";
+} // namespace filter
 
 Self::MainWindow(QWidget* parent)
     : Super(parent)
@@ -38,7 +40,7 @@ Self::MainWindow(QWidget* parent)
         Settings settings;
         auto path = QFileDialog::getSaveFileName(
             this, "New Project", settings.getLastBrowsingPath().absolutePath(),
-            filter);
+            filter::project);
 
         if (path.isEmpty()) {
             return;
@@ -58,7 +60,7 @@ Self::MainWindow(QWidget* parent)
         Settings settings;
         auto path = QFileDialog::getOpenFileName(
             this, "Open Project", settings.getLastBrowsingPath().absolutePath(),
-            filter);
+            filter::project);
 
         if (path.isEmpty()) {
             return;
@@ -67,8 +69,9 @@ Self::MainWindow(QWidget* parent)
         QFileInfo filePath(path);
         settings.setLastBrowsingPath(QDir(filePath.absolutePath()));
         auto&& config = Config::getInstance();
-        if (config.loadProject(filePath)) {
-            ui_->actionProject_Settings->setEnabled(true);
+        if (not config.loadProject(filePath)) {
+            return;
+        }
         ui_->actionProject_Settings->setEnabled(true);
         ui_->actionInterface_File->setEnabled(true);
         ui_->actionClose->setEnabled(true);
@@ -78,6 +81,16 @@ Self::MainWindow(QWidget* parent)
         ui_->actionSave_All->setEnabled(true);
         ui_->actionPublish->setEnabled(true);
         ui_->actionPublish_Settings->setEnabled(true);
+    });
+
+    connect(ui_->actionInterface_File, &QAction::triggered, [this] {
+        auto&& config = Config::getInstance();
+        auto path = QFileDialog::getSaveFileName(
+            this, "New Interface",
+            config.getProjectSettings()->getProjectDirectory().absolutePath(),
+            filter::interface);
+        if (path.isEmpty()) {
+            return;
         }
     });
 

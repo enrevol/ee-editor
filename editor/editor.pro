@@ -40,7 +40,8 @@ SOURCES += \
     inspectortexture.cpp \
     inspectorfloat.cpp \
     scenetree.cpp \
-    inspectorpoint.cpp
+    inspectorpoint.cpp \
+    interfacesettings.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -62,7 +63,8 @@ HEADERS += \
     inspectortexture.hpp \
     inspectorfloat.hpp \
     scenetree.hpp \
-    inspectorpoint.hpp
+    inspectorpoint.hpp \
+    interfacesettings.hpp
 
 FORMS += \
     mainwindow.ui \
