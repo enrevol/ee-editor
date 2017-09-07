@@ -136,6 +136,7 @@ Self::MainWindow(QWidget* parent)
     ui_->actionSave_All->setEnabled(false);
     ui_->actionPublish->setEnabled(false);
     ui_->actionPublish_Settings->setEnabled(false);
+    ui_->resourceTree->setListenToFileChangeEvents(false);
 
     ui_->fragmentShaderInput->setLineNumbersVisible(true);
     ui_->vertexShaderInput->setLineNumbersVisible(true);

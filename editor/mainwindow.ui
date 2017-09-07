@@ -162,7 +162,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QTreeView" name="resourcesView">
+             <widget class="ee::ResourceTree" name="resourceTree">
               <property name="minimumSize">
                <size>
                 <width>200</width>
@@ -675,6 +675,11 @@
    <class>ee::SceneTree</class>
    <extends>QTreeWidget</extends>
    <header>scenetree.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>ee::ResourceTree</class>
+   <extends>QTreeView</extends>
+   <header>resourcetree.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

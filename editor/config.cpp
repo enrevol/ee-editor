@@ -1,6 +1,7 @@
 #include <ciso646>
 
 #include "config.hpp"
+#include "filesystemwatcher.hpp"
 
 #include <QDebug>
 
@@ -30,6 +31,8 @@ bool Self::loadProject(const QFileInfo& path) {
         return false;
     }
     setProjectSettings(settings);
+    auto&& watcher = FileSystemWatcher::getInstance();
+    watcher.setDirectories(settings.getResourceDirectories());
     return true;
 }
 

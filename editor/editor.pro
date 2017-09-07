@@ -41,7 +41,9 @@ SOURCES += \
     inspectorfloat.cpp \
     scenetree.cpp \
     inspectorpoint.cpp \
-    interfacesettings.cpp
+    interfacesettings.cpp \
+    filesystemwatcher.cpp \
+    resourcetree.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -64,7 +66,9 @@ HEADERS += \
     inspectorfloat.hpp \
     scenetree.hpp \
     inspectorpoint.hpp \
-    interfacesettings.hpp
+    interfacesettings.hpp \
+    filesystemwatcher.hpp \
+    resourcetree.hpp
 
 FORMS += \
     mainwindow.ui \
