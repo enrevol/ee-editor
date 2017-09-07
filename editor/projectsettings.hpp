@@ -32,7 +32,13 @@ public:
     /// Gets the resource directories.
     const QVector<QDir>& getResourceDirectories() const;
 
+    /// Attempts to add a resource directory.
+    /// @param directory The directory to be added.
     bool addResourceDirectory(const QDir& directory);
+
+    /// Attempts to remove a resource directory.
+    /// @param directory The directory to be removed.
+    bool removeResourceDirectory(const QDir& directory);
 
     /// Sets the resource directories.
     /// @param directories The desired directories.
@@ -60,6 +66,8 @@ public:
     bool write() const;
 
 private:
+    void sortResourceDirectories();
+
     QFileInfo projectPath_;
     QDir projectDirectory_;
     QVector<QDir> resourcesDirectories_;

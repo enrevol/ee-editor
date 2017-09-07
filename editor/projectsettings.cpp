@@ -17,6 +17,12 @@ namespace defaults {
 constexpr auto publish_directory = "generated";
 } // namespace defaults
 
+namespace {
+bool compareQDir(const QDir& lhs, const QDir& rhs) {
+    return std::less<QString>()(lhs.absolutePath(), rhs.absolutePath());
+}
+} // namespace
+
 using Self = ProjectSettings;
 
 Self::ProjectSettings(const QFileInfo& projectPath)
@@ -50,15 +56,26 @@ bool Self::addResourceDirectory(const QDir& directory) {
         return false;
     }
     resourcesDirectories_.push_back(directory);
-    std::sort(resourcesDirectories_.begin(), resourcesDirectories_.end(),
-              [](const QDir& lhs, const QDir& rhs) {
-                  return lhs.absolutePath() < rhs.absolutePath();
-              });
+    sortResourceDirectories();
+    return true;
+}
+
+bool Self::removeResourceDirectory(const QDir& directory) {
+    if (not resourcesDirectories_.removeOne(directory)) {
+        // Doesn't exist.
+        return false;
+    }
+    sortResourceDirectories();
     return true;
 }
 
 void Self::setResourceDirectories(const QVector<QDir>& directories) {
     resourcesDirectories_ = directories;
+}
+
+void Self::sortResourceDirectories() {
+    std::sort(resourcesDirectories_.begin(), resourcesDirectories_.end(),
+              compareQDir);
 }
 
 const ContentProtectionKey& Self::getContentProtectionKey() const {

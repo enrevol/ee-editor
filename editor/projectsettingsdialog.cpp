@@ -57,6 +57,17 @@ ProjectSettingsDialog::ProjectSettingsDialog(QWidget* parent,
         }
         updateResourcesDirectories();
     });
+
+    connect(ui_->removeResourceDirButton, &QPushButton::clicked, [this] {
+        auto currentIndex = ui_->resoucesDirList->currentIndex();
+        auto text = currentIndex.data(Qt::ItemDataRole::DisplayRole).toString();
+        auto directory = settings_.getProjectDirectory().filePath(text);
+        qDebug() << "select: " << directory;
+        if (not settings_.removeResourceDirectory(directory)) {
+            return;
+        }
+        updateResourcesDirectories();
+    });
 }
 
 ProjectSettingsDialog::~ProjectSettingsDialog() {
