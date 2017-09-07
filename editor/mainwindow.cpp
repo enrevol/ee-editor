@@ -102,6 +102,10 @@ Self::MainWindow(QWidget* parent)
         }
     });
 
+    connect(
+        ui_->resourceTree, &ResourceTree::fileSelected,
+        [this](const QString& path) { ui_->imageView->setImagePath(path); });
+
     connect(ui_->selectTextureButton, &QPushButton::clicked, [this] {
         auto path = QFileDialog::getOpenFileName(
             this, "Select image", "",
@@ -166,9 +170,10 @@ void Self::onProjectSettingsButtonPressed() {
     Q_ASSERT(settings.has_value());
 
     auto dialog = new ProjectSettingsDialog(this, settings.value());
-    connect(dialog, &ProjectSettingsDialog::accepted, [dialog, &config] {
+    connect(dialog, &ProjectSettingsDialog::accepted, [this, dialog, &config] {
         config.setProjectSettings(dialog->getProjectSettings());
         config.saveProject();
+        ui_->resourceTree->updateResourceDirectories();
     });
     dialog->exec();
 }

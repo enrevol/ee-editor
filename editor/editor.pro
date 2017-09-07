@@ -43,7 +43,8 @@ SOURCES += \
     inspectorpoint.cpp \
     interfacesettings.cpp \
     filesystemwatcher.cpp \
-    resourcetree.cpp
+    resourcetree.cpp \
+    imageview.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -68,7 +69,8 @@ HEADERS += \
     inspectorpoint.hpp \
     interfacesettings.hpp \
     filesystemwatcher.hpp \
-    resourcetree.hpp
+    resourcetree.hpp \
+    imageview.hpp
 
 FORMS += \
     mainwindow.ui \

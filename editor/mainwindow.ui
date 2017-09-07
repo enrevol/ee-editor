@@ -140,24 +140,15 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QFrame" name="imageVIew">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+             <widget class="ee::ImageView" name="imageView">
               <property name="minimumSize">
                <size>
-                <width>200</width>
+                <width>0</width>
                 <height>200</height>
                </size>
               </property>
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>
@@ -680,6 +671,11 @@
    <class>ee::ResourceTree</class>
    <extends>QTreeView</extends>
    <header>resourcetree.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>ee::ImageView</class>
+   <extends>QLabel</extends>
+   <header>imageview.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>
