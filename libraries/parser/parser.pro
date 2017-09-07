@@ -20,11 +20,19 @@ HEADERS += \
     parserfwd.hpp \
     editorreader.hpp \
     propertyhandler.hpp \
-    nodegraph.hpp
+    nodegraph.hpp \
+    spriteloader.hpp \
+    nodeinfo.hpp \
+    nodeinforeader.hpp \
+    nodeinfowriter.hpp
 
 SOURCES += \
     nodeloader.cpp \
     nodeloaderlibrary.cpp \
     editorreader.cpp \
     propertyhandler.cpp \
-    nodegraph.cpp
+    nodegraph.cpp \
+    spriteloader.cpp \
+    nodeinfo.cpp \
+    nodeinforeader.cpp \
+    nodeinfowriter.cpp
