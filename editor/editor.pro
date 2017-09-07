@@ -17,7 +17,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += \
     ../libraries
 
-LIBS += -L$$OUT_PWD/../libraries/cocos2d/ -lcocos2d
+LIBS += \
+    -L$$OUT_PWD/../libraries/cocos2d -lcocos2d \
+    -L$$OUT_PWD/../libraries/parser -lparser
 
 SOURCES += \
     main.cpp \

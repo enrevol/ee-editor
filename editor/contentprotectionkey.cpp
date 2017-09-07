@@ -4,7 +4,7 @@
 
 namespace ee {
 namespace key {
-constexpr auto v = "contentProtectionKey";
+constexpr auto v = "content_protection_key";
 } // namespace key
 
 ContentProtectionKey::ContentProtectionKey() {}

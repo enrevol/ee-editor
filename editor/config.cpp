@@ -2,6 +2,8 @@
 
 #include "config.hpp"
 
+#include <QDebug>
+
 namespace ee {
 Config& Config::getInstance() {
     static Self sharedInstance;
@@ -20,8 +22,12 @@ void Config::setProjectSettings(const ProjectSettings& settings) {
     projectSettings_ = settings;
 }
 
-bool Config::loadProject(const QDir& path) {
-    setProjectSettings(ProjectSettings(path));
+bool Config::loadProject(const QFileInfo& path) {
+    ProjectSettings settings(path);
+    if (not settings.read()) {
+        return false;
+    }
+    setProjectSettings(settings);
     return true;
 }
 
@@ -33,9 +39,11 @@ bool Config::saveProject() const {
     return settings->write();
 }
 
-bool Config::createProject(const QDir& path) {
-    QFile file(path.absolutePath());
+bool Config::createProject(const QFileInfo& path) {
+    QFile file(path.absoluteFilePath());
     if (not file.open(QIODevice::OpenModeFlag::WriteOnly)) {
+        qWarning() << "Couldn't create a new project at "
+                   << path.absoluteFilePath();
         return false;
     }
 

@@ -1,7 +1,10 @@
-#include "projectsettingsdialog.hpp"
+#include <ciso646>
+
 #include "config.hpp"
+#include "projectsettingsdialog.hpp"
 #include "ui_projectsettingsdialog.h"
 
+#include <QDebug>
 #include <QFileDialog>
 #include <QStringListModel>
 
@@ -28,19 +31,32 @@ ProjectSettingsDialog::ProjectSettingsDialog(QWidget* parent,
 
     connect(ui_->selectPublishDirectoryButton, &QPushButton::clicked,
             [this](bool) {
-                QFileDialog dialog;
-                dialog.setFileMode(QFileDialog::FileMode::Directory);
-                dialog.setOption(QFileDialog::Option::ShowDirsOnly);
-
-                auto&& currentDir = settings_.getPublishDirectory();
-                dialog.setDirectory(currentDir);
-
-                dialog.exec();
-
-                auto&& directory = dialog.directory();
+                auto directory = QFileDialog::getExistingDirectory(
+                    this, "Select publish directory",
+                    settings_.getPublishDirectory().absolutePath(),
+                    QFileDialog::Option::ShowDirsOnly);
+                if (directory.isEmpty()) {
+                    return;
+                }
+                qDebug() << "select: " << directory;
                 settings_.setPublishDirectory(directory);
                 updatePublishDirectory(directory);
             });
+
+    connect(ui_->addResourceDirButton, &QPushButton::clicked, [this] {
+        auto directory = QFileDialog::getExistingDirectory(
+            this, "Add resource directory",
+            settings_.getProjectDirectory().absolutePath(),
+            QFileDialog::Option::ShowDirsOnly);
+        if (directory.isEmpty()) {
+            return;
+        }
+        qDebug() << "select: " << directory;
+        if (not settings_.addResourceDirectory(directory)) {
+            return;
+        }
+        updateResourcesDirectories();
+    });
 }
 
 ProjectSettingsDialog::~ProjectSettingsDialog() {
@@ -60,11 +76,11 @@ void ProjectSettingsDialog::updateResourcesDirectories(
     auto list = QStringList();
 
     for (const QDir& directory : directories) {
-        list.append(directory.absolutePath());
+        list.append(settings_.getRelativePath(directory));
     }
 
     auto model = new QStringListModel(list);
-    ui_->resoucesPathList->setModel(model);
+    ui_->resoucesDirList->setModel(model);
 }
 
 void ProjectSettingsDialog::updateContentProtectionKey() {

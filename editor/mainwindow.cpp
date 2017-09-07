@@ -31,15 +31,16 @@ Self::MainWindow(QWidget* parent)
             this, "New Project", settings.getLastBrowsingPath().absolutePath(),
             filter);
 
-        if (not path.isEmpty()) {
-            qDebug() << "Create new project: " << path;
-            auto&& filePath = QDir(path);
-            settings.setLastBrowsingPath(filePath);
-            auto&& config = Config::getInstance();
-            if (config.createProject(filePath)) {
-                if (config.loadProject(filePath)) {
-                    ui_->actionProject_Settings->setEnabled(true);
-                }
+        if (path.isEmpty()) {
+            return;
+        }
+        qDebug() << "Create new project: " << path;
+        QFileInfo filePath(path);
+        settings.setLastBrowsingPath(QDir(filePath.absolutePath()));
+        auto&& config = Config::getInstance();
+        if (config.createProject(filePath)) {
+            if (config.loadProject(filePath)) {
+                ui_->actionProject_Settings->setEnabled(true);
             }
         }
     });
@@ -50,14 +51,15 @@ Self::MainWindow(QWidget* parent)
             this, "Open Project", settings.getLastBrowsingPath().absolutePath(),
             filter);
 
-        if (not path.isEmpty()) {
-            qDebug() << "select: " << path;
-            auto&& filePath = QDir(path);
-            settings.setLastBrowsingPath(filePath);
-            auto&& config = Config::getInstance();
-            if (config.loadProject(filePath)) {
-                ui_->actionProject_Settings->setEnabled(true);
-            }
+        if (path.isEmpty()) {
+            return;
+        }
+        qDebug() << "select: " << path;
+        QFileInfo filePath(path);
+        settings.setLastBrowsingPath(QDir(filePath.absolutePath()));
+        auto&& config = Config::getInstance();
+        if (config.loadProject(filePath)) {
+            ui_->actionProject_Settings->setEnabled(true);
         }
     });
 
@@ -66,14 +68,15 @@ Self::MainWindow(QWidget* parent)
             this, "Select image", "",
             "Portable Network Graphics (*.png);;All Files (.*)");
 
-        if (not path.isEmpty()) {
-            qDebug() << "select image: " << path;
-            if (not RootScene::getInstance()->setTexturePath(path)) {
-                QMessageBox::critical(this, "Error", "Invalid image",
-                                      QMessageBox::StandardButton::Ok);
-            } else {
-                ui_->textureInput->setText(path);
-            }
+        if (path.isEmpty()) {
+            return;
+        }
+        qDebug() << "select image: " << path;
+        if (not RootScene::getInstance()->setTexturePath(path)) {
+            QMessageBox::critical(this, "Error", "Invalid image",
+                                  QMessageBox::StandardButton::Ok);
+        } else {
+            ui_->textureInput->setText(path);
         }
     });
 
@@ -96,7 +99,7 @@ Self::MainWindow(QWidget* parent)
     ui_->actionProject_Settings->setEnabled(false);
     ui_->fragmentShaderInput->setLineNumbersVisible(true);
     ui_->vertexShaderInput->setLineNumbersVisible(true);
-}
+} // namespace ee
 
 Self::~MainWindow() {
     delete ui_;

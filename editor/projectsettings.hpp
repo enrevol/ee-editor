@@ -16,17 +16,23 @@ private:
 public:
     /// Constructs a project settings.
     /// @param projectPath The project's path.
-    ProjectSettings(const QDir& projectPath);
+    ProjectSettings(const QFileInfo& projectPath);
     ~ProjectSettings();
 
     /// Gets the project's path.
-    const QDir& getProjectPath() const;
+    const QFileInfo& getProjectPath() const;
+
+    const QDir& getProjectDirectory() const;
 
     /// Gets the relative path to the project path.
+    QString getRelativePath(const QFileInfo& path) const;
+
     QString getRelativePath(const QDir& path) const;
 
     /// Gets the resource directories.
     const QVector<QDir>& getResourceDirectories() const;
+
+    bool addResourceDirectory(const QDir& directory);
 
     /// Sets the resource directories.
     /// @param directories The desired directories.
@@ -54,7 +60,8 @@ public:
     bool write() const;
 
 private:
-    QDir projectPath_;
+    QFileInfo projectPath_;
+    QDir projectDirectory_;
     QVector<QDir> resourcesDirectories_;
     ContentProtectionKey contentProtectionKey_;
     QDir publishDirectory_;

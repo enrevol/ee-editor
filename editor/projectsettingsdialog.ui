@@ -21,12 +21,12 @@
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>Resource paths</string>
+          <string>Resource directories</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="addPathButton">
+        <widget class="QPushButton" name="addResourceDirButton">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -42,7 +42,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="removePathButton">
+        <widget class="QPushButton" name="removeResourceDirButton">
          <property name="text">
           <string>-</string>
          </property>
@@ -51,7 +51,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QListView" name="resoucesPathList"/>
+      <widget class="QListView" name="resoucesDirList"/>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">

@@ -9,51 +9,76 @@
 
 namespace ee {
 namespace key {
-constexpr auto resource_paths = "resourcePaths";
-constexpr auto publish_directory = "publishDirectory";
+constexpr auto resource_paths = "resource_paths";
+constexpr auto publish_directory = "publish_directory";
 } // namespace key
 
-ProjectSettings::ProjectSettings(const QDir& projectPath)
-    : projectPath_(projectPath) {
-    setPublishDirectory(getProjectPath().filePath("generated"));
+namespace defaults {
+constexpr auto publish_directory = "generated";
+} // namespace defaults
+
+using Self = ProjectSettings;
+
+Self::ProjectSettings(const QFileInfo& projectPath)
+    : projectPath_(projectPath)
+    , projectDirectory_(projectPath.absolutePath()) {
+    setPublishDirectory(
+        getProjectDirectory().filePath(defaults::publish_directory));
 }
 
-ProjectSettings::~ProjectSettings() {}
+Self::~ProjectSettings() {}
 
-const QDir& ProjectSettings::getProjectPath() const {
+const QFileInfo& Self::getProjectPath() const {
     return projectPath_;
 }
 
-QString ProjectSettings::getRelativePath(const QDir& path) const {
-    return getProjectPath().relativeFilePath(path.absolutePath());
+const QDir& Self::getProjectDirectory() const {
+    return projectDirectory_;
 }
 
-const QVector<QDir>& ProjectSettings::getResourceDirectories() const {
+QString Self::getRelativePath(const QDir& path) const {
+    return getProjectDirectory().relativeFilePath(path.absolutePath());
+}
+
+const QVector<QDir>& Self::getResourceDirectories() const {
     return resourcesDirectories_;
 }
 
-void ProjectSettings::setResourceDirectories(const QVector<QDir>& directories) {
+bool Self::addResourceDirectory(const QDir& directory) {
+    if (resourcesDirectories_.contains(directory)) {
+        // Exist.
+        return false;
+    }
+    resourcesDirectories_.push_back(directory);
+    std::sort(resourcesDirectories_.begin(), resourcesDirectories_.end(),
+              [](const QDir& lhs, const QDir& rhs) {
+                  return lhs.absolutePath() < rhs.absolutePath();
+              });
+    return true;
+}
+
+void Self::setResourceDirectories(const QVector<QDir>& directories) {
     resourcesDirectories_ = directories;
 }
 
-const ContentProtectionKey& ProjectSettings::getContentProtectionKey() const {
+const ContentProtectionKey& Self::getContentProtectionKey() const {
     return contentProtectionKey_;
 }
 
-void ProjectSettings::setContentProtectionKey(const ContentProtectionKey& key) {
+void Self::setContentProtectionKey(const ContentProtectionKey& key) {
     contentProtectionKey_ = key;
 }
 
-const QDir& ProjectSettings::getPublishDirectory() const {
+const QDir& Self::getPublishDirectory() const {
     return publishDirectory_;
 }
 
-void ProjectSettings::setPublishDirectory(const QDir& directory) {
+void Self::setPublishDirectory(const QDir& directory) {
     publishDirectory_ = directory;
 }
 
-bool ProjectSettings::read() {
-    QFile file(getProjectPath().absolutePath());
+bool Self::read() {
+    QFile file(getProjectPath().absoluteFilePath());
     if (not file.open(QIODevice::OpenModeFlag::ReadOnly)) {
         qWarning() << "Could't open project file to read";
         return false;
@@ -63,8 +88,8 @@ bool ProjectSettings::read() {
     return deserialize(obj);
 }
 
-bool ProjectSettings::write() const {
-    QFile file(getProjectPath().absolutePath());
+bool Self::write() const {
+    QFile file(getProjectPath().absoluteFilePath());
     if (not file.open(QIODevice::OpenModeFlag::WriteOnly)) {
         qWarning() << "Could't open project file to write";
         return false;
@@ -77,24 +102,30 @@ bool ProjectSettings::write() const {
     return true;
 }
 
-bool ProjectSettings::deserialize(const QJsonObject& json) {
+bool Self::deserialize(const QJsonObject& json) {
     if (not contentProtectionKey_.deserialize(json)) {
         return false;
     }
 
-    auto&& v = json.value(key::publish_directory);
-    if (v.isUndefined()) {
-        setPublishDirectory(getProjectPath().filePath("generated"));
-    } else if (v.isString()) {
-        setPublishDirectory(v.toString());
-    } else {
-        return false;
+    {
+        auto&& v = json.value(key::publish_directory)
+                       .toString(defaults::publish_directory);
+        setPublishDirectory(getProjectDirectory().filePath(v));
+    }
+    {
+        auto&& v = json.value(key::resource_paths).toArray();
+        QVector<QDir> dirs;
+        for (auto&& x : v) {
+            dirs.append(getProjectDirectory().filePath(
+                x.toObject()["path"].toString()));
+        }
+        setResourceDirectories(dirs);
     }
 
     return true;
 }
 
-void ProjectSettings::serialize(QJsonObject& json) const {
+void Self::serialize(QJsonObject& json) const {
     QJsonArray dirs;
     for (const QDir& dir : getResourceDirectories()) {
         QJsonObject obj;
