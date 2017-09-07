@@ -1,7 +1,7 @@
 #include <ciso646>
 
-#include "glsledit.hpp"
 #include "glslcomponent.hpp"
+#include "glsledit.hpp"
 #include "glsleditsidebar.hpp"
 #include "glslhighlighter.hpp"
 
@@ -23,6 +23,7 @@ Self::GLSLEdit(QWidget* parent)
             [this](const QRect& rect, int dy) { updateSidebar(rect, dy); });
 
     setFont(QFont("Consolas"));
+    setTabStopWidth(fontMetrics().width(' ') * 4);
 }
 
 Self::~GLSLEdit() {}
