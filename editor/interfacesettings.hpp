@@ -2,6 +2,9 @@
 #define EE_EDITOR_INTERFACE_SETTINGS_HPP
 
 #include "iserializable.hpp"
+#include "optional.hpp"
+
+#include <parser/nodegraph.hpp>
 
 #include <QFileInfo>
 
@@ -18,6 +21,10 @@ public:
     /// Gets the project's path.
     const QFileInfo& getInterfacePath() const;
 
+    const std::optional<NodeGraph>& getNodeGraph() const;
+
+    void setNodeGraph(const NodeGraph& graph);
+
     virtual bool deserialize(const QJsonObject& json) override;
     virtual void serialize(QJsonObject& json) const override;
 
@@ -29,6 +36,7 @@ public:
 
 private:
     QFileInfo interfacePath_;
+    std::optional<NodeGraph> graph_;
 };
 } // namespace ee
 

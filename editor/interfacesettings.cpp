@@ -28,6 +28,14 @@ const QFileInfo& Self::getInterfacePath() const {
     return interfacePath_;
 }
 
+const std::optional<NodeGraph>& Self::getNodeGraph() const {
+    return graph_;
+}
+
+void Self::setNodeGraph(const NodeGraph& graph) {
+    graph_ = graph;
+}
+
 bool Self::read() {
     QFile file(getInterfacePath().absoluteFilePath());
     if (not file.open(QIODevice::OpenModeFlag::ReadOnly)) {

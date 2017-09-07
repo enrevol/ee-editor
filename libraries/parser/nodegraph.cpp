@@ -112,6 +112,26 @@ std::string Self::getStringProperty(const std::string& name,
     return value.asString();
 }
 
+void Self::setProperty(const std::string& name, const cocos2d::Value& value) {
+    properties_[name] = value;
+}
+
+void Self::setProperty(const std::string& name, bool value) {
+    setProperty(name, cocos2d::Value(value));
+}
+
+void Self::setProperty(const std::string& name, int value) {
+    setProperty(name, cocos2d::Value(value));
+}
+
+void Self::setProperty(const std::string& name, float value) {
+    setProperty(name, cocos2d::Value(value));
+}
+
+void Self::setProperty(const std::string& name, const std::string& value) {
+    setProperty(name, cocos2d::Value(value));
+}
+
 std::string Self::getBaseClass() const {
     return getStringProperty(key::base_class);
 }
@@ -126,6 +146,18 @@ std::string Self::getDisplayName() const {
         return value;
     }
     return getBaseClass();
+}
+
+void Self::setBaseClass(const std::string& name) {
+    setProperty(key::base_class, name);
+}
+
+void Self::setCustomClass(const std::string& name) {
+    setProperty(key::custom_class, name);
+}
+
+void Self::setDisplayName(const std::string& name) {
+    setProperty(key::display_name, name);
 }
 
 Self& Self::getChild(std::size_t index) {

@@ -16,7 +16,7 @@ using Self = MainWindow;
 
 namespace filter {
 constexpr auto project = "eeEditor Project File (*.eeeproj);;All Files (.*)";
-constexpr auto interface = "eeInterface File (*.eeei);All Files (.*)";
+constexpr auto interface = "eeInterface File (*.eeei);;All Files (.*)";
 } // namespace filter
 
 Self::MainWindow(QWidget* parent)
@@ -81,6 +81,7 @@ Self::MainWindow(QWidget* parent)
         ui_->actionSave_All->setEnabled(true);
         ui_->actionPublish->setEnabled(true);
         ui_->actionPublish_Settings->setEnabled(true);
+        ui_->resourceTree->setListenToFileChangeEvents(true);
     });
 
     connect(ui_->actionInterface_File, &QAction::triggered, [this] {
@@ -91,6 +92,13 @@ Self::MainWindow(QWidget* parent)
             filter::interface);
         if (path.isEmpty()) {
             return;
+        }
+        qDebug() << "Create new interface: " << path;
+        QFileInfo info(path);
+        if (config.createInterface(info)) {
+            if (config.loadInterface(info)) {
+                // Nothing.
+            }
         }
     });
 

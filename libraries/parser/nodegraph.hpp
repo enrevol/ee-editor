@@ -56,6 +56,10 @@ public:
     std::string getCustomClass() const;
     std::string getDisplayName() const;
 
+    void setBaseClass(const std::string& name);
+    void setCustomClass(const std::string& name);
+    void setDisplayName(const std::string& name);
+
     Self& getChild(std::size_t index);
     const Self& getChild(std::size_t index) const;
 
