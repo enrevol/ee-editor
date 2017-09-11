@@ -25,6 +25,12 @@ protected:
     void updateResourcePath(QTreeWidgetItem* item, const QFileInfo& info);
 
 private:
+    QSet<QString> saveExpandedItems();
+    void restoreExpandedItems(const QSet<QString>& expandedItems);
+    void reloadResources();
+    QStack<QString> saveSelectedItem();
+    void restoreSelectedItem(QStack<QString> names);
+
     bool listened_;
 };
 } // namespace ee
