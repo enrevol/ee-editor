@@ -1,7 +1,7 @@
 #ifndef EE_EDITOR_SCENE_TREE_HPP
 #define EE_EDITOR_SCENE_TREE_HPP
 
-#include <QTreeWidget>
+#include <QTreeView>
 
 #include <base/CCValue.h>
 
@@ -11,13 +11,14 @@ class Node;
 
 namespace ee {
 class NodeGraph;
+class SceneTreeModel;
 
-class SceneTree : public QTreeWidget {
+class SceneTree : public QTreeView {
     Q_OBJECT
 
 private:
     using Self = SceneTree;
-    using Super = QTreeWidget;
+    using Super = QTreeView;
 
 public:
     explicit SceneTree(QWidget* parent);
@@ -25,10 +26,8 @@ public:
     void setNodeGraph(const NodeGraph& graph);
 
 protected:
-    void updateNode(QTreeWidgetItem* item, const NodeGraph& graph);
-
 private:
-    QTreeWidgetItem* rootItem_;
+    SceneTreeModel* treeModel_;
 };
 } // namespace ee
 

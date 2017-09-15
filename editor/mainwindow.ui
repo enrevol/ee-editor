@@ -197,13 +197,7 @@
                 </size>
                </property>
               </widget>
-              <widget class="ee::SceneTree" name="sceneTree">
-               <column>
-                <property name="text">
-                 <string notr="true">1</string>
-                </property>
-               </column>
-              </widget>
+              <widget class="ee::SceneTree" name="sceneTree"/>
              </widget>
             </item>
            </layout>
@@ -663,11 +657,6 @@
    <header>glsledit.hpp</header>
   </customwidget>
   <customwidget>
-   <class>ee::SceneTree</class>
-   <extends>QTreeWidget</extends>
-   <header>scenetree.hpp</header>
-  </customwidget>
-  <customwidget>
    <class>ee::ResourceTree</class>
    <extends>QTreeView</extends>
    <header>resourcetree.hpp</header>
@@ -676,6 +665,11 @@
    <class>ee::ImageView</class>
    <extends>QLabel</extends>
    <header>imageview.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>ee::SceneTree</class>
+   <extends>QTreeView</extends>
+   <header>scenetree.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

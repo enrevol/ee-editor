@@ -1,4 +1,5 @@
 #include "scenetree.hpp"
+#include "scenetreemodel.hpp"
 
 #include <parser/nodegraph.hpp>
 
@@ -8,23 +9,11 @@ namespace ee {
 using Self = SceneTree;
 
 Self::SceneTree(QWidget* parent)
-    : Super(parent) {
-    header()->close();
-}
+    : Super(parent) {}
 
 void Self::setNodeGraph(const NodeGraph& graph) {
-    clear();
-
-    rootItem_ = new QTreeWidgetItem(this);
-    updateNode(rootItem_, graph);
-}
-
-void Self::updateNode(QTreeWidgetItem* item, const NodeGraph& graph) {
-    auto name = graph.getDisplayName();
-    item->setText(0, QString::fromStdString(name));
-    for (auto&& child : graph.getChildren()) {
-        auto childItem = new QTreeWidgetItem(item);
-        updateNode(childItem, child);
-    }
+    treeModel_ = new SceneTreeModel();
+    treeModel_->setNodeGraph(graph);
+    setModel(treeModel_);
 }
 } // namespace ee
