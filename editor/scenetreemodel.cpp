@@ -31,7 +31,7 @@ QModelIndex Self::index(int row, int column, const QModelIndex& parent) const {
     return QModelIndex();
 }
 
-QModelIndex parent(const QModelIndex& index) const {
+QModelIndex Self::parent(const QModelIndex& index) const {
     return QModelIndex();
 }
 
