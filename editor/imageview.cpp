@@ -19,6 +19,9 @@ void Self::resizeEvent(QResizeEvent* event) {
     if (pixmap() == nullptr) {
         return;
     }
+    if (pixmap()->isNull()) {
+        return;
+    }
     setPixmapKeepAspect(*pixmap());
 }
 

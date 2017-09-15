@@ -9,6 +9,8 @@ class Sprite;
 } // namespace cocos2d
 
 namespace ee {
+class NodeGraph;
+
 class RootScene : public cocos2d::Scene {
 private:
     using Self = RootScene;
@@ -16,6 +18,8 @@ private:
 
 public:
     static Self* getInstance();
+
+    void setNodeGraph(const NodeGraph& graph);
 
     bool setTexturePath(const QString& path);
 
