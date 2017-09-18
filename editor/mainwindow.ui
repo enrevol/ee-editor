@@ -225,113 +225,6 @@
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item>
-             <widget class="QWidget" name="texturePanel" native="true">
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
-               <property name="spacing">
-                <number>3</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QLineEdit" name="textureInput"/>
-               </item>
-               <item>
-                <widget class="QPushButton" name="selectTextureButton">
-                 <property name="text">
-                  <string>Select</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QWidget" name="vertexShaderPanel" native="true">
-              <layout class="QVBoxLayout" name="verticalLayout_6">
-               <property name="spacing">
-                <number>3</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>Vertex shader</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="ee::GLSLEdit" name="vertexShaderInput">
-                 <property name="backgroundVisible">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QWidget" name="fragmentShaderPanel" native="true">
-              <layout class="QVBoxLayout" name="verticalLayout_7">
-               <property name="spacing">
-                <number>3</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>Fragment shader</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="ee::GLSLEdit" name="fragmentShaderInput"/>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="compileShaderButton">
-              <property name="text">
-               <string>Compile shader</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QListWidget" name="propertiesView"/>
-            </item>
            </layout>
           </widget>
          </widget>
@@ -650,11 +543,6 @@
    <class>ee::OpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>openglwidget.hpp</header>
-  </customwidget>
-  <customwidget>
-   <class>ee::GLSLEdit</class>
-   <extends>QPlainTextEdit</extends>
-   <header>glsledit.hpp</header>
   </customwidget>
   <customwidget>
    <class>ee::ResourceTree</class>

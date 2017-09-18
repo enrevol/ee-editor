@@ -106,34 +106,6 @@ Self::MainWindow(QWidget* parent)
         ui_->resourceTree, &ResourceTree::fileSelected,
         [this](const QString& path) { ui_->imageView->setImagePath(path); });
 
-    connect(ui_->selectTextureButton, &QPushButton::clicked, [this] {
-        auto path = QFileDialog::getOpenFileName(
-            this, "Select image", "",
-            "Portable Network Graphics (*.png);;All Files (.*)");
-
-        if (path.isEmpty()) {
-            return;
-        }
-        qDebug() << "select image: " << path;
-        if (not RootScene::getInstance()->setTexturePath(path)) {
-            QMessageBox::critical(this, "Error", "Invalid image",
-                                  QMessageBox::StandardButton::Ok);
-        } else {
-            ui_->textureInput->setText(path);
-        }
-    });
-
-    connect(ui_->compileShaderButton, &QPushButton::clicked, [this] {
-        auto vertexShader = ui_->vertexShaderInput->toPlainText();
-        auto fragmentShader = ui_->fragmentShaderInput->toPlainText();
-        auto succeeded =
-            RootScene::getInstance()->setShader(vertexShader, fragmentShader);
-        if (not succeeded) {
-            QMessageBox::critical(this, "Error", "Failed to compile the shader",
-                                  QMessageBox::StandardButton::Ok);
-        }
-    });
-
     connect(ui_->addNodeButton, &QPushButton::clicked, [this] {
         auto scene = RootScene::getInstance();
         // ui_->sceneTree->setRootNode(scene);
@@ -149,9 +121,6 @@ Self::MainWindow(QWidget* parent)
     ui_->actionPublish->setEnabled(false);
     ui_->actionPublish_Settings->setEnabled(false);
     ui_->resourceTree->setListenToFileChangeEvents(false);
-
-    ui_->fragmentShaderInput->setLineNumbersVisible(true);
-    ui_->vertexShaderInput->setLineNumbersVisible(true);
 }
 
 Self::~MainWindow() {
