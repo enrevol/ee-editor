@@ -16,7 +16,7 @@ Self* Self::sharedApplication_ = nullptr;
 
 Self::Application(int argc, char* argv[])
     : Super(argc, argv)
-    , animationInterval_(1.0f / 60.0f * 1000.0f) {
+    , animationInterval_(static_cast<int>(1.0f / 60.0f * 1000.0f)) {
     qDebug() << Q_FUNC_INFO;
     CC_ASSERT(sharedApplication_ == nullptr);
     sharedApplication_ = this;
@@ -42,7 +42,7 @@ int Self::run() {
 }
 
 void Self::setAnimationInterval(float interval) {
-    animationInterval_ = interval * 1000.0f;
+    animationInterval_ = static_cast<int>(interval * 1000.0f);
     auto director = Director::getInstance();
     auto glView = director->getOpenGLView();
     glView->setRepaintInterval(animationInterval_);

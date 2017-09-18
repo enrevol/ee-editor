@@ -19,7 +19,7 @@ Self::OpenGLWidget(QWidget* parent)
     connect(timer_, &QTimer::timeout, [this] { update(); });
 
     setUpdatesEnabled(true);
-    setRepaintInterval(1.0f / 60);
+    setRepaintInterval(static_cast<int>(1.0f / 60 * 1000));
     timer_->start();
 }
 

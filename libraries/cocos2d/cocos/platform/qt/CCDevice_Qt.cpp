@@ -136,8 +136,8 @@ Data Device::getTextureDataForText(const char* text,
     }
     auto&& dc = BitmapDC::getInstance();
     QSize size;
-    size.setWidth(textDefinition._dimensions.width);
-    size.setHeight(textDefinition._dimensions.height);
+    size.setWidth(static_cast<int>(textDefinition._dimensions.width));
+    size.setHeight(static_cast<int>(textDefinition._dimensions.height));
 
     // Draw the text on the Bitmap DC.
     auto result =
