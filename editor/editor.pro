@@ -45,7 +45,8 @@ SOURCES += \
     filesystemwatcher.cpp \
     resourcetree.cpp \
     imageview.cpp \
-    scenetreemodel.cpp
+    scenetreemodel.cpp \
+    scenetreeitem.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -72,7 +73,8 @@ HEADERS += \
     filesystemwatcher.hpp \
     resourcetree.hpp \
     imageview.hpp \
-    scenetreemodel.hpp
+    scenetreemodel.hpp \
+    scenetreeitem.hpp
 
 FORMS += \
     mainwindow.ui \

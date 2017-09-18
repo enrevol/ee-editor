@@ -2,9 +2,11 @@
 #define EE_EDITOR_SCENE_TREE_MODEL_HPP
 
 #include <QAbstractItemModel>
+#include <QPointer>
 
 namespace ee {
 class NodeGraph;
+class SceneTreeItem;
 
 class SceneTreeModel : public QAbstractItemModel {
     Q_OBJECT
@@ -42,8 +44,12 @@ public:
 
     virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
 
+protected:
+    void setupTree(SceneTreeItem* item, const NodeGraph& graph);
+
 private:
     std::unique_ptr<NodeGraph> nodeGraph_;
+    std::unique_ptr<SceneTreeItem> rootItem_;
 };
 } // namespace ee
 
