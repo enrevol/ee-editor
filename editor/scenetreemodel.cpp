@@ -22,8 +22,8 @@ void Self::setNodeGraph(const NodeGraph& graph) {
 void Self::setupTree(SceneTreeItem* item, const NodeGraph& graph) {
     for (auto&& child : graph.getChildren()) {
         auto childItem = std::make_unique<SceneTreeItem>(item);
-        item->appendChild(std::move(childItem));
         setupTree(childItem.get(), child);
+        item->appendChild(std::move(childItem));
     }
 }
 
