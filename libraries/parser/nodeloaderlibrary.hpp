@@ -8,7 +8,7 @@
 
 namespace ee {
 /// A collection of node loaders.
-class NodeLoaderLibrary {
+class NodeLoaderLibrary final {
 public:
     NodeLoaderLibrary();
     ~NodeLoaderLibrary();

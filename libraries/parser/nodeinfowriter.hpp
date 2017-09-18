@@ -10,13 +10,29 @@ class Node;
 namespace ee {
 class NodeInfo;
 
-class NodeInfoWriter {
+/// Writes user object in nodes.
+class NodeInfoWriter final {
 public:
     explicit NodeInfoWriter(cocos2d::Node* node);
 
+    /// Writes a bool.
+    /// @param name The property name.
+    /// @param value The value to write.
     void writeBool(const std::string& name, bool value);
+
+    /// Writes a integer.
+    /// @param name The property name.
+    /// @param value The value to write.
     void writeInt(const std::string& name, int value);
+
+    /// Writes a float.
+    /// @param name The property name.
+    /// @param value The value to write.
     void writeFloat(const std::string& name, float value);
+
+    /// Writes a string.
+    /// @param name The property name.
+    /// @param value The value to write.
     void writeString(const std::string& name, const std::string& value);
 
 private:

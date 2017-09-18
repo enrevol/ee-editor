@@ -7,7 +7,7 @@
 #include <base/CCValue.h>
 
 namespace ee {
-class PropertyHandler {
+class PropertyHandler final {
 public:
     using ReadHandler =
         std::function<cocos2d::Value(const cocos2d::Node* node)>;
@@ -36,7 +36,7 @@ public:
         std::function<void(cocos2d::Node* node, const std::string& value)>;
 
     PropertyHandler() = default;
-    virtual ~PropertyHandler() = default;
+    ~PropertyHandler() = default;
 
     /// Reads a bool property.
     /// @param name The name of the property

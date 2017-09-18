@@ -16,8 +16,10 @@ public:
 
     virtual ~NodeLoader();
 
+    /// Creates a node.
     virtual cocos2d::Node* createNode() const;
 
+    /// Gets the property handler.
     PropertyHandler& getPropertyHandler();
 
     /// Gets the property handler.

@@ -4,7 +4,7 @@
 #include <base/CCValue.h>
 
 namespace ee {
-class NodeGraph {
+class NodeGraph final {
 private:
     using Self = NodeGraph;
 
