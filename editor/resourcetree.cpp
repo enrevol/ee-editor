@@ -40,10 +40,12 @@ Self::ResourceTree(QWidget* parent)
     connect(this, &Self::itemDoubleClicked,
             [this](QTreeWidgetItem* item, int column) {
                 auto filePath = item->data(0, role::full_file_path).toString();
-                if (filePath.endsWith("eeei")) {
+                QFileInfo fileInfo(filePath);
+                if (fileInfo.suffix() == "eeei" ||
+                    fileInfo.suffix() == "json") {
                     // Interface files.
                     qDebug() << "open interface: " << filePath;
-                    Config::getInstance().loadInterface(QFileInfo(filePath));
+                    Config::getInstance().loadInterface(fileInfo);
                 }
             });
 }
