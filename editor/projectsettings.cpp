@@ -132,7 +132,7 @@ bool Self::deserialize(const QJsonObject& json) {
     {
         auto&& v = json.value(key::resource_paths).toArray();
         QVector<QDir> dirs;
-        for (auto&& x : v) {
+        for (auto x : v) {
             dirs.append(getProjectDirectory().filePath(
                 x.toObject()["path"].toString()));
         }

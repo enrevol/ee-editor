@@ -1,6 +1,7 @@
 #include <ciso646>
 
 #include "interfacesettings.hpp"
+#include "utils.hpp"
 
 #include <QDebug>
 #include <QJsonArray>
@@ -9,8 +10,7 @@
 
 namespace ee {
 namespace key {
-constexpr auto resource_paths = "resource_paths";
-constexpr auto publish_directory = "publish_directory";
+constexpr auto node_graph = "node_graph";
 } // namespace key
 
 namespace defaults {
@@ -62,11 +62,16 @@ bool Self::write() const {
 }
 
 bool Self::deserialize(const QJsonObject& json) {
-    // FIXME.
+    auto obj = json.value(key::node_graph).toObject();
+    auto dict = convertToValue(obj).asValueMap();
+    NodeGraph graph(dict);
+    setNodeGraph(graph);
     return true;
 }
 
 void Self::serialize(QJsonObject& json) const {
-    // FIXME.
+    auto dict = getNodeGraph()->toDict();
+    auto obj = convertToJson(cocos2d::Value(dict)).toObject();
+    json[key::node_graph] = obj;
 }
 } // namespace ee

@@ -3,6 +3,8 @@
 #include "config.hpp"
 #include "filesystemwatcher.hpp"
 
+#include <parser/nodegraph.hpp>
+
 #include <QDebug>
 
 namespace ee {
@@ -88,6 +90,11 @@ bool Self::createInterface(const QFileInfo& path) {
         return false;
     }
     InterfaceSettings settings(path);
+
+    NodeGraph graph;
+    graph.setBaseClass("_Node");
+    settings.setNodeGraph(graph);
+
     return settings.write();
 }
 } // namespace ee

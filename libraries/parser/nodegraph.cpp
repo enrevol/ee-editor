@@ -13,7 +13,17 @@ constexpr auto properties = "properties";
 
 using Self = NodeGraph;
 
+Self::NodeGraph() {}
+
 Self::NodeGraph(const cocos2d::ValueMap& dict) {
+    setDictionary(dict);
+}
+
+Self::~NodeGraph() {}
+
+void Self::setDictionary(const cocos2d::ValueMap& dict) {
+    children_.clear();
+    properties_.clear();
     if (dict.count(key::children)) {
         auto&& children = dict.at(key::children).asValueVector();
         for (auto&& child : children) {
@@ -25,8 +35,6 @@ Self::NodeGraph(const cocos2d::ValueMap& dict) {
         properties_ = properties;
     }
 }
-
-Self::~NodeGraph() {}
 
 cocos2d::Value Self::getProperty(const std::string& name) const {
     auto value = getProperty(name, cocos2d::Value::Null);

@@ -13,6 +13,8 @@ public:
     NodeLoaderLibrary();
     ~NodeLoaderLibrary();
 
+    void addDefaultLoaders();
+
     /// Adds a node loader with the specified name.
     /// @param name The name of the node loader.
     /// @param loader The desired loader.

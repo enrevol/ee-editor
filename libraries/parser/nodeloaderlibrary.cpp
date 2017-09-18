@@ -2,6 +2,7 @@
 
 #include "nodeloader.hpp"
 #include "nodeloaderlibrary.hpp"
+#include "spriteloader.hpp"
 
 namespace ee {
 using Self = NodeLoaderLibrary;
@@ -9,6 +10,11 @@ using Self = NodeLoaderLibrary;
 Self::NodeLoaderLibrary() {}
 
 Self::~NodeLoaderLibrary() {}
+
+void Self::addDefaultLoaders() {
+    addLoader("_Node", std::make_unique<NodeLoader>());
+    addLoader("_Sprite", std::make_unique<SpriteLoader>());
+}
 
 bool Self::addLoader(const std::string& name, NodeLoaderPtr loader) {
     if (loaders_.count(name) != 0) {
