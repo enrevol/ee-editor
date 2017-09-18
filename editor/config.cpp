@@ -71,6 +71,7 @@ bool Self::loadInterface(const QFileInfo& path) {
         return false;
     }
     setInterfaceSettings(settings);
+    Q_EMIT interfaceLoaded(path);
     return true;
 }
 

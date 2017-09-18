@@ -5,8 +5,12 @@
 #include "optional.hpp"
 #include "projectsettings.hpp"
 
+#include <QObject>
+
 namespace ee {
-class Config {
+class Config : public QObject {
+    Q_OBJECT
+
 private:
     using Self = Config;
 
@@ -46,6 +50,9 @@ public:
     /// Attempts to create an interface at the specified path.
     /// @param path The interface file's path.
     bool createInterface(const QFileInfo& path);
+
+Q_SIGNALS:
+    void interfaceLoaded(const QFileInfo& path);
 
 protected:
     Config();

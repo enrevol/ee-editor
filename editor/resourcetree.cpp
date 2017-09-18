@@ -36,6 +36,16 @@ Self::ResourceTree(QWidget* parent)
         qDebug() << "select item: " << filePath;
         fileSelected(filePath);
     });
+
+    connect(this, &Self::itemDoubleClicked,
+            [this](QTreeWidgetItem* item, int column) {
+                auto filePath = item->data(0, role::full_file_path).toString();
+                if (filePath.endsWith("eeei")) {
+                    // Interface files.
+                    qDebug() << "open interface: " << filePath;
+                    Config::getInstance().loadInterface(QFileInfo(filePath));
+                }
+            });
 }
 
 void Self::setListenToFileChangeEvents(bool enabled) {
