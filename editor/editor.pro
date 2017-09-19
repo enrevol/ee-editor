@@ -46,7 +46,8 @@ SOURCES += \
     resourcetree.cpp \
     imageview.cpp \
     scenetreemodel.cpp \
-    scenetreeitem.cpp
+    scenetreeitem.cpp \
+    inspectorvalue.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -74,7 +75,8 @@ HEADERS += \
     resourcetree.hpp \
     imageview.hpp \
     scenetreemodel.hpp \
-    scenetreeitem.hpp
+    scenetreeitem.hpp \
+    inspectorvalue.hpp
 
 FORMS += \
     mainwindow.ui \
