@@ -1,6 +1,8 @@
 #ifndef EE_EDITOR_INSPECTOR_FLOAT_HPP
 #define EE_EDITOR_INSPECTOR_FLOAT_HPP
 
+#include "inspectorvalue.hpp"
+
 #include <QWidget>
 
 namespace Ui {
@@ -8,19 +10,33 @@ class InspectorFloat;
 } // namespace Ui
 
 namespace ee {
-class InspectorFloat : public QWidget {
+class InspectorFloat : public InspectorValue {
     Q_OBJECT
 
 private:
     using Self = InspectorFloat;
-    using Super = QWidget;
+    using Super = InspectorValue;
 
 public:
-    explicit InspectorFloat(QWidget* parent = nullptr);
+    explicit InspectorFloat(const QString& propertyName,
+                            QWidget* parent = nullptr);
+
     virtual ~InspectorFloat() override;
 
+    Self* setPropertyDisplayName(const QString& name);
+    Self* setValuePrecision(int precision);
+    Self* setMinimumValue(float value);
+    Self* setMaximumValue(float value);
+    Self* setValueRange(float minimum, float maximum);
+
+    virtual void refreshPropertyValue(const NodeGraph& graph) override;
+
+Q_SIGNALS:
+    void valueChanged(float value);
+
 private:
-    Ui::InspectorFloat* ui;
+    QString propertyName_;
+    Ui::InspectorFloat* ui_;
 };
 } // namespace ee
 
