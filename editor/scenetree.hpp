@@ -12,6 +12,7 @@ class Node;
 namespace ee {
 class NodeGraph;
 class SceneTreeModel;
+class SceneSelection;
 
 class SceneTree : public QTreeView {
     Q_OBJECT
@@ -24,6 +25,11 @@ public:
     explicit SceneTree(QWidget* parent);
 
     void setNodeGraph(const NodeGraph& graph);
+
+    SceneSelection currentSelection() const;
+
+Q_SIGNALS:
+    void selectionChanged(const SceneSelection& selection);
 
 protected:
     virtual void selectionChanged(const QItemSelection& selected,

@@ -1,5 +1,6 @@
 #include "scenetree.hpp"
 #include "config.hpp"
+#include "sceneselection.hpp"
 #include "scenetreemodel.hpp"
 
 #include <parser/nodegraph.hpp>
@@ -37,6 +38,38 @@ void Self::setNodeGraph(const NodeGraph& graph) {
     treeModel_ = new SceneTreeModel(this);
     treeModel_->setNodeGraph(graph);
     setModel(treeModel_);
+}
+
+SceneSelection Self::currentSelection() const {
+    auto modelIndices = selectedIndexes();
+    if (modelIndices.isEmpty()) {
+        return SceneSelection::emptySelection();
+    }
+
+    QVector<QVector<int>> treeIndices;
+    treeIndices.reserve(modelIndices.size());
+
+    for (auto&& modelIndex : modelIndices) {
+        treeIndices.append(findTreeIndices(modelIndex));
+    }
+
+    for (int i = 1; i < treeIndices.size(); ++i) {
+        auto&& previous = treeIndices.at(i - 1);
+        auto&& current = treeIndices.at(i);
+        Q_ASSERT(previous.size() == current.size());
+        Q_ASSERT(std::equal(previous.cbegin(), std::prev(previous.cend()),
+                            current.cbegin()));
+    }
+
+    QVector<int> childrenIndices;
+    childrenIndices.reserve(treeIndices.size());
+    for (auto&& elt : treeIndices) {
+        childrenIndices.append(elt.last());
+    }
+
+    auto ancestorIndices = treeIndices.first();
+    ancestorIndices.pop_back();
+    return SceneSelection::multipleSelection(ancestorIndices, childrenIndices);
 }
 
 void Self::selectionChanged(const QItemSelection& selected,
