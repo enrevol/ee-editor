@@ -48,6 +48,9 @@ bool Self::init() {
     selection_ =
         std::make_unique<SceneSelection>(SceneSelection::emptySelection());
 
+    background_ = cocos2d::LayerColor::create(cocos2d::Color4B::BLACK);
+    addChild(background_);
+
     scheduleUpdate();
 
     return true;
@@ -142,7 +145,7 @@ void Self::unhighlightNode(cocos2d::LayerColor* highlighter) {
 void Self::ensureHighlighters(std::size_t size) {
     for (std::size_t i = highlighters_.size(); i < size; ++i) {
         auto layer = cocos2d::LayerColor::create(cocos2d::Color4B::BLACK);
-        layer->setGlobalZOrder(+999);
+        layer->setLocalZOrder(+999);
         layer->setOpacity(200);
         addChild(layer);
         highlighters_.push_back(layer);

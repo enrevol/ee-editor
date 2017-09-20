@@ -16,7 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SUBDIRS = \
     cocos2d \
     parser \
-    editor \
+    editor
 
 editor.subdir = editor
 cocos2d.subdir = libraries/cocos2d

@@ -40,9 +40,9 @@ Self::~SceneTree() {}
 
 void Self::setNodeGraph(const NodeGraph& graph) {
     nodeGraph_ = std::make_unique<NodeGraph>(graph);
-    treeModel_ = new SceneTreeModel(this);
+    treeModel_ = std::make_unique<SceneTreeModel>(this);
     treeModel_->setNodeGraph(nodeGraph_.get());
-    setModel(treeModel_);
+    setModel(treeModel_.get());
 }
 
 SceneSelection Self::currentSelection() const {

@@ -119,8 +119,8 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>206</width>
-             <height>300</height>
+             <width>200</width>
+             <height>0</height>
             </size>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
@@ -156,7 +156,7 @@
              <widget class="ee::ResourceTree" name="resourceTree">
               <property name="minimumSize">
                <size>
-                <width>200</width>
+                <width>0</width>
                 <height>0</height>
                </size>
               </property>
@@ -202,16 +202,22 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="rightPanel" native="true">
+          <widget class="ee::InspectorListWidget" name="inspectorList" native="true">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_6">
             <property name="spacing">
-             <number>3</number>
+             <number>0</number>
             </property>
             <property name="leftMargin">
              <number>0</number>
@@ -225,6 +231,33 @@
             <property name="bottomMargin">
              <number>0</number>
             </property>
+            <item>
+             <widget class="QScrollArea" name="scrollArea">
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>198</width>
+                 <height>507</height>
+                </rect>
+               </property>
+               <widget class="QWidget" name="widget" native="true">
+                <property name="geometry">
+                 <rect>
+                  <x>150</x>
+                  <y>200</y>
+                  <width>120</width>
+                  <height>80</height>
+                 </rect>
+                </property>
+               </widget>
+              </widget>
+             </widget>
+            </item>
            </layout>
           </widget>
          </widget>
@@ -558,6 +591,12 @@
    <class>ee::SceneTree</class>
    <extends>QTreeView</extends>
    <header>scenetree.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>ee::InspectorListWidget</class>
+   <extends>QWidget</extends>
+   <header>inspectorlistwidget.hpp</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

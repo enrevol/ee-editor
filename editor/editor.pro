@@ -47,7 +47,12 @@ SOURCES += \
     imageview.cpp \
     scenetreemodel.cpp \
     scenetreeitem.cpp \
-    inspectorvalue.cpp
+    sceneselection.cpp \
+    nodehighlighter.cpp \
+    nodeinspector.cpp \
+    inspectorcontainer.cpp \
+    inspector.cpp \
+    inspectorlistwidget.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -76,7 +81,12 @@ HEADERS += \
     imageview.hpp \
     scenetreemodel.hpp \
     scenetreeitem.hpp \
-    inspectorvalue.hpp
+    sceneselection.hpp \
+    nodehighlighter.hpp \
+    nodeinspector.hpp \
+    inspectorcontainer.hpp \
+    inspector.hpp \
+    inspectorlistwidget.hpp
 
 FORMS += \
     mainwindow.ui \

@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 #include "mainwindow.hpp"
+#include "nodeinspector.hpp"
 #include "projectsettings.hpp"
 #include "projectsettingsdialog.hpp"
 #include "rootscene.hpp"
@@ -117,6 +118,12 @@ Self::MainWindow(QWidget* parent)
             [this](const SceneSelection& selection) {
                 auto rootScene = RootScene::getInstance();
                 rootScene->setSelection(selection);
+
+                ui_->inspectorList->clearInspectors();
+                auto inspector = new NodeInspector();
+                inspector->initialize();
+                inspector->refreshPropertyValue()
+                ui_->inspectorList->addInspector(inspector);
             });
 
     ui_->actionProject_Settings->setEnabled(false);

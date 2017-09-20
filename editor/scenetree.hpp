@@ -39,7 +39,7 @@ protected:
 
 private:
     std::unique_ptr<NodeGraph> nodeGraph_;
-    SceneTreeModel* treeModel_;
+    std::unique_ptr<SceneTreeModel> treeModel_;
 };
 } // namespace ee
 

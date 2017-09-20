@@ -1,5 +1,5 @@
-#ifndef EE_EDITOR_INSPECTOR_VALUE_HPP
-#define EE_EDITOR_INSPECTOR_VALUE_HPP
+#ifndef EE_EDITOR_INSPECTOR_HPP
+#define EE_EDITOR_INSPECTOR_HPP
 
 #include <base/CCValue.h>
 
@@ -8,17 +8,17 @@
 namespace ee {
 class NodeGraph;
 
-class InspectorValue : public QWidget {
+class Inspector : public QWidget {
     Q_OBJECT
 
 private:
-    using Self = InspectorValue;
+    using Self = Inspector;
     using Super = QWidget;
 
 public:
-    explicit InspectorValue(QWidget* parent = nullptr);
+    explicit Inspector(QWidget* parent = nullptr);
 
-    virtual ~InspectorValue() override;
+    virtual ~Inspector() override;
 
     virtual void refreshPropertyValue(const NodeGraph& graph) = 0;
 

@@ -59,9 +59,10 @@ private:
 
     std::unique_ptr<NodeGraph> nodeGraph_;
     std::unique_ptr<SceneSelection> selection_;
-    cocos2d::Node* rootNode_;
-
     std::vector<cocos2d::RefPtr<cocos2d::LayerColor>> highlighters_;
+
+    cocos2d::Node* rootNode_;
+    cocos2d::LayerColor* background_;
 };
 } // namespace ee
 

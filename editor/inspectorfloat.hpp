@@ -1,7 +1,7 @@
 #ifndef EE_EDITOR_INSPECTOR_FLOAT_HPP
 #define EE_EDITOR_INSPECTOR_FLOAT_HPP
 
-#include "inspectorvalue.hpp"
+#include "inspector.hpp"
 
 #include <QWidget>
 
@@ -10,12 +10,12 @@ class InspectorFloat;
 } // namespace Ui
 
 namespace ee {
-class InspectorFloat : public InspectorValue {
+class InspectorFloat : public Inspector {
     Q_OBJECT
 
 private:
     using Self = InspectorFloat;
-    using Super = InspectorValue;
+    using Super = Inspector;
 
 public:
     explicit InspectorFloat(const QString& propertyName,
