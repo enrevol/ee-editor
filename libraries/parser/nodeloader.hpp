@@ -14,6 +14,13 @@ private:
     using Self = NodeLoader;
 
 public:
+    struct Property {
+        static const std::string PositionX;
+        static const std::string PositionY;
+        static const std::string ContentSizeWidth;
+        static const std::string ContentSizeHeight;
+    };
+
     /// Constructs a node loader.
     NodeLoader();
 

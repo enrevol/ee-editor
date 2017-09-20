@@ -3,32 +3,32 @@
 #include <2d/CCNode.h>
 
 namespace ee {
-namespace property {
-constexpr auto position_x = "position_x";
-constexpr auto position_y = "position_y";
-constexpr auto content_size_width = "content_size_width";
-constexpr auto content_size_height = "content_size_height";
-} // namespace property
-
 using Self = NodeLoader;
+
+const std::string Self::Property::PositionX = "position_x";
+const std::string Self::Property::PositionY = "position_y";
+const std::string Self::Property::ContentSizeWidth = "content_size_width";
+const std::string Self::Property::ContentSizeHeight = "content_size_height";
 
 Self::NodeLoader() {
     auto&& handler = getPropertyHandler();
-    handler.addWriteFloatHandler(property::content_size_width,
+    handler.addWriteFloatHandler(Property::ContentSizeWidth,
                                  [this](cocos2d::Node* node, float value) {
                                      auto size = node->getContentSize();
                                      size.width = value;
                                      node->setContentSize(size);
+                                     return true;
                                  });
 
-    handler.addWriteFloatHandler(property::content_size_height,
+    handler.addWriteFloatHandler(Property::ContentSizeHeight,
                                  [this](cocos2d::Node* node, float value) {
                                      auto size = node->getContentSize();
                                      size.height = value;
                                      node->setContentSize(size);
+                                     return true;
                                  });
 
-    handler.addWriteFloatHandler(property::position_x,
+    handler.addWriteFloatHandler(Property::PositionX,
                                  [this](cocos2d::Node* node, float value) {
                                      auto position = node->getPosition();
                                      position.x = value;
@@ -57,7 +57,7 @@ Self::NodeLoader() {
         [this](const cocos2d::Node* node) { return node->getPosition().x; });
 
     handler.addReadFloatHandler(
-        property::position_y,
+        Property::PositionY,
         [this](const cocos2d::Node* node) { return node->getPosition().y; });
 }
 
