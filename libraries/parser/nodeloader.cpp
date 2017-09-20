@@ -33,27 +33,29 @@ Self::NodeLoader() {
                                      auto position = node->getPosition();
                                      position.x = value;
                                      node->setPosition(position);
+                                     return true;
                                  });
 
-    handler.addWriteFloatHandler(property::position_y,
+    handler.addWriteFloatHandler(Property::PositionY,
                                  [this](cocos2d::Node* node, float value) {
                                      auto position = node->getPosition();
                                      position.y = value;
                                      node->setPosition(position);
+                                     return true;
                                  });
 
-    handler.addReadFloatHandler(property::content_size_width,
+    handler.addReadFloatHandler(Property::ContentSizeWidth,
                                 [this](const cocos2d::Node* node) {
                                     return node->getContentSize().width;
                                 });
 
-    handler.addReadFloatHandler(property::content_size_height,
+    handler.addReadFloatHandler(Property::ContentSizeHeight,
                                 [this](const cocos2d::Node* node) {
                                     return node->getContentSize().height;
                                 });
 
     handler.addReadFloatHandler(
-        property::position_x,
+        Property::PositionX,
         [this](const cocos2d::Node* node) { return node->getPosition().x; });
 
     handler.addReadFloatHandler(
