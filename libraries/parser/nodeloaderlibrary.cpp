@@ -11,9 +11,19 @@ Self::NodeLoaderLibrary() {}
 
 Self::~NodeLoaderLibrary() {}
 
+Self::NodeLoaderLibrary(const Self& other) {
+    for (auto&& elt : other.loaders_) {
+        loaders_.emplace(elt.first, elt.second->clone());
+    }
+}
+
 void Self::addDefaultLoaders() {
     addLoader("_Node", std::make_unique<NodeLoader>());
     addLoader("_Sprite", std::make_unique<SpriteLoader>());
+}
+
+cocos2d::Node* Self::createNode(const std::string& name) const {
+    return getLoader(name)->createNode();
 }
 
 bool Self::addLoader(const std::string& name, NodeLoaderPtr loader) {
@@ -32,7 +42,7 @@ bool Self::removeLoader(const std::string& name) {
     return true;
 }
 
-const NodeLoaderPtr& Self::getLoader(const std::string& name) {
+const NodeLoaderPtr& Self::getLoader(const std::string& name) const {
     assert(loaders_.count(name) != 0);
     return loaders_.at(name);
 }

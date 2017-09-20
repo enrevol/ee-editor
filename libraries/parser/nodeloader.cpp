@@ -74,4 +74,12 @@ PropertyHandler& Self::getPropertyHandler() {
 const PropertyHandler& Self::getPropertyHandler() const {
     return propertyHandler_;
 }
+
+NodeLoaderPtr Self::clone() const {
+    return NodeLoaderPtr(cloneRaw());
+}
+
+Self* Self::cloneRaw() const {
+    return new Self();
+}
 } // namespace ee

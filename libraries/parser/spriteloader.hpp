@@ -5,6 +5,9 @@
 
 namespace ee {
 class SpriteLoader : public NodeLoader {
+private:
+    using Self = SpriteLoader;
+
 public:
     /// Constructs a sprite loader.
     SpriteLoader();
@@ -12,6 +15,9 @@ public:
     virtual ~SpriteLoader() override;
 
     virtual cocos2d::Node* createNode() const override;
+
+protected:
+    virtual Self* cloneRaw() const override;
 };
 } // namespace ee
 

@@ -10,6 +10,9 @@ class Node;
 
 namespace ee {
 class NodeLoader {
+private:
+    using Self = NodeLoader;
+
 public:
     /// Constructs a node loader.
     NodeLoader();
@@ -24,6 +27,11 @@ public:
 
     /// Gets the property handler.
     const PropertyHandler& getPropertyHandler() const;
+
+    NodeLoaderPtr clone() const;
+
+protected:
+    virtual Self* cloneRaw() const;
 
 private:
     PropertyHandler propertyHandler_;
