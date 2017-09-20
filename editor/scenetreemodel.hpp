@@ -16,11 +16,13 @@ private:
     using Super = QAbstractItemModel;
 
 public:
+    /// Constructs a scene tree model.
     explicit SceneTreeModel(QObject* parent = nullptr);
 
     virtual ~SceneTreeModel() override;
 
-    void setNodeGraph(const NodeGraph& graph);
+    /// Sets the node graph reference.
+    void setNodeGraph(NodeGraph* graph);
 
     virtual QVariant data(const QModelIndex& index, int role) const override;
 
@@ -45,10 +47,11 @@ public:
     virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
 
 protected:
+    /// Constructs the scene tree item with the corresponding node graph.
     void setupTree(SceneTreeItem* item, const NodeGraph& graph);
 
 private:
-    std::unique_ptr<NodeGraph> nodeGraph_;
+    NodeGraph* nodeGraph_;
     std::unique_ptr<SceneTreeItem> rootItem_;
 };
 } // namespace ee

@@ -13,10 +13,12 @@ Self::SceneTreeModel(QObject* parent)
 
 Self::~SceneTreeModel() {}
 
-void Self::setNodeGraph(const NodeGraph& graph) {
-    nodeGraph_ = std::make_unique<NodeGraph>(graph);
+void Self::setNodeGraph(NodeGraph* graph) {
+    nodeGraph_ = graph;
     rootItem_ = std::make_unique<SceneTreeItem>(nullptr);
-    setupTree(rootItem_.get(), graph);
+    auto node = std::make_unique<SceneTreeItem>(rootItem_.get());
+    setupTree(node.get(), *graph);
+    rootItem_->appendChild(std::move(node));
 }
 
 void Self::setupTree(SceneTreeItem* item, const NodeGraph& graph) {
