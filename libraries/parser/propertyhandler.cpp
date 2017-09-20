@@ -145,7 +145,8 @@ bool Self::addWriteFloatHandler(const std::string& name,
                                 const WriteFloatHandler& handler) {
     return addWriteHandler(
         name, [handler](cocos2d::Node* node, const cocos2d::Value& value) {
-            if (value.getType() != cocos2d::Value::Type::FLOAT) {
+            if (value.getType() != cocos2d::Value::Type::FLOAT &&
+                value.getType() != cocos2d::Value::Type::INTEGER) {
                 CC_ASSERT(false);
                 return false;
             }
