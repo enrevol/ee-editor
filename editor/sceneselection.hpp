@@ -15,13 +15,13 @@ public:
     static Self multipleSelection(const QVector<int>& ancestors,
                                   const QVector<int>& children);
 
-protected:
-    explicit SceneSelection(const QVector<int>& ancestors,
-                            const QVector<int>& children);
-
     bool isEmpty() const;
     const QVector<int>& getAncestorIndices() const;
     const QVector<int>& getChildrenIndices() const;
+
+protected:
+    explicit SceneSelection(const QVector<int>& ancestors,
+                            const QVector<int>& children);
 
 private:
     QVector<int> ancestorIndices_;

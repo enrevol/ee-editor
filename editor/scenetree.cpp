@@ -7,6 +7,8 @@
 
 #include <2d/CCNode.h>
 
+#include <QDebug>
+
 namespace ee {
 using Self = SceneTree;
 
@@ -34,9 +36,12 @@ Self::SceneTree(QWidget* parent)
             });
 }
 
+Self::~SceneTree() {}
+
 void Self::setNodeGraph(const NodeGraph& graph) {
+    nodeGraph_ = std::make_unique<NodeGraph>(graph);
     treeModel_ = new SceneTreeModel(this);
-    treeModel_->setNodeGraph(graph);
+    treeModel_->setNodeGraph(nodeGraph_.get());
     setModel(treeModel_);
 }
 

@@ -6,10 +6,13 @@
 namespace cocos2d {
 class LayerColor;
 class Sprite;
+
+template <class T> class RefPtr;
 } // namespace cocos2d
 
 namespace ee {
 class NodeGraph;
+class SceneSelection;
 
 class RootScene : public cocos2d::Scene {
 private:
@@ -21,12 +24,12 @@ public:
 
     void setNodeGraph(const NodeGraph& graph);
 
-    bool setTexturePath(const QString& path);
+    void setSelection(const SceneSelection& selection);
 
-    bool setShader(const QString& vertexShader, const QString& fragmentShader);
+    cocos2d::Node* getNode(const QVector<int>& treeIndices);
 
 protected:
-    CREATE_FUNC(Self)
+    static Self* create();
 
     virtual bool init() override;
 
@@ -36,8 +39,29 @@ protected:
     virtual void onExitTransitionDidStart() override;
     virtual void onExit() override;
 
+    virtual void update(float delta) override;
+
 private:
-    cocos2d::Sprite* sprite_;
+    void updateSelection();
+
+    void updateSelection(const SceneSelection& selection);
+
+    void highlightNodes(const std::vector<cocos2d::Node*>& nodes);
+
+    void highlightNode(cocos2d::LayerColor* highlighter,
+                       const cocos2d::Node* node);
+
+    void unhighlightNodes();
+
+    void unhighlightNode(cocos2d::LayerColor* highlighter);
+
+    void ensureHighlighters(std::size_t size);
+
+    std::unique_ptr<NodeGraph> nodeGraph_;
+    std::unique_ptr<SceneSelection> selection_;
+    cocos2d::Node* rootNode_;
+
+    std::vector<cocos2d::RefPtr<cocos2d::LayerColor>> highlighters_;
 };
 } // namespace ee
 

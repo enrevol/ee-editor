@@ -111,6 +111,14 @@ Self::MainWindow(QWidget* parent)
         // ui_->sceneTree->setRootNode(scene);
     });
 
+    connect(ui_->sceneTree,
+            static_cast<void (SceneTree::*)(const SceneSelection&)>(
+                &SceneTree::selectionChanged),
+            [this](const SceneSelection& selection) {
+                auto rootScene = RootScene::getInstance();
+                rootScene->setSelection(selection);
+            });
+
     ui_->actionProject_Settings->setEnabled(false);
     ui_->actionInterface_File->setEnabled(false);
     ui_->actionClose->setEnabled(false);

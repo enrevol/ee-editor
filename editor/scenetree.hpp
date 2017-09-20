@@ -24,6 +24,8 @@ private:
 public:
     explicit SceneTree(QWidget* parent);
 
+    virtual ~SceneTree() override;
+
     void setNodeGraph(const NodeGraph& graph);
 
     SceneSelection currentSelection() const;
@@ -36,6 +38,7 @@ protected:
                                   const QItemSelection& deselected) override;
 
 private:
+    std::unique_ptr<NodeGraph> nodeGraph_;
     SceneTreeModel* treeModel_;
 };
 } // namespace ee
