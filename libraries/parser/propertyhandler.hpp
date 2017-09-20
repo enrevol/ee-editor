@@ -9,31 +9,24 @@
 namespace ee {
 class PropertyHandler final {
 public:
-    using ReadHandler =
-        std::function<cocos2d::Value(const cocos2d::Node* node)>;
+    template <class T>
+    using GenericReadHandler = std::function<T(const cocos2d::Node* node)>;
 
-    using ReadBoolHandler = std::function<bool(const cocos2d::Node* node)>;
+    template <class T>
+    using GenericWriteHandler =
+        std::function<bool(cocos2d::Node* node, T value)>;
 
-    using ReadIntHandler = std::function<int(const cocos2d::Node* node)>;
+    using ReadHandler = GenericReadHandler<cocos2d::Value>;
+    using ReadBoolHandler = GenericReadHandler<bool>;
+    using ReadIntHandler = GenericReadHandler<int>;
+    using ReadFloatHandler = GenericReadHandler<float>;
+    using ReadStringHandler = GenericReadHandler<std::string>;
 
-    using ReadFloatHandler = std::function<float(const cocos2d::Node* node)>;
-
-    using ReadStringHandler =
-        std::function<std::string(const cocos2d::Node* node)>;
-
-    using WriteHandler =
-        std::function<bool(cocos2d::Node* node, const cocos2d::Value& value)>;
-
-    using WriteBoolHandler =
-        std::function<void(cocos2d::Node* node, bool value)>;
-
-    using WriteIntHandler = std::function<void(cocos2d::Node* node, int value)>;
-
-    using WriteFloatHandler =
-        std::function<void(cocos2d::Node* node, float value)>;
-
-    using WriteStringHandler =
-        std::function<void(cocos2d::Node* node, const std::string& value)>;
+    using WriteHandler = GenericWriteHandler<const cocos2d::Value&>;
+    using WriteBoolHandler = GenericWriteHandler<bool>;
+    using WriteIntHandler = GenericWriteHandler<int>;
+    using WriteFloatHandler = GenericWriteHandler<float>;
+    using WriteStringHandler = GenericWriteHandler<const std::string&>;
 
     PropertyHandler() = default;
     ~PropertyHandler() = default;
