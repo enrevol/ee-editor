@@ -1,6 +1,7 @@
 #include <ciso646>
 
 #include "nodegraph.hpp"
+#include "propertyhandler.hpp"
 
 namespace ee {
 namespace key {
@@ -34,6 +35,10 @@ void Self::setDictionary(const cocos2d::ValueMap& dict) {
         auto&& properties = dict.at(key::properties).asValueMap();
         properties_ = properties;
     }
+}
+
+const cocos2d::ValueMap& Self::getProperties() const {
+    return properties_;
 }
 
 cocos2d::Value Self::getProperty(const std::string& name) const {

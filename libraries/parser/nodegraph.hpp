@@ -4,6 +4,8 @@
 #include <base/CCValue.h>
 
 namespace ee {
+class PropertyHandler;
+
 class NodeGraph final {
 private:
     using Self = NodeGraph;
@@ -21,6 +23,8 @@ public:
     /// Sets the node graph's dictionary.
     /// @param dict The desired dictionary.
     void setDictionary(const cocos2d::ValueMap& dict);
+
+    const cocos2d::ValueMap& getProperties() const;
 
     /// Gets a generic property.
     /// @param name The property's name.
