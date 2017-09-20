@@ -26,6 +26,9 @@ public:
     void setNodeGraph(const NodeGraph& graph);
 
 protected:
+    virtual void selectionChanged(const QItemSelection& selected,
+                                  const QItemSelection& deselected) override;
+
 private:
     SceneTreeModel* treeModel_;
 };
