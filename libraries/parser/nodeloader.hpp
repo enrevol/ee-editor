@@ -15,10 +15,27 @@ private:
 
 public:
     struct Property {
+        static const std::string AnchorPointX;
+        static const std::string AnchorPointY;
+        static const std::string CascadeColorEnabled;
+        static const std::string CascadeOpacityEnabled;
+        static const std::string ColorB;
+        static const std::string ColorG;
+        static const std::string ColorR;
+        static const std::string ContentSizeHeight;
+        static const std::string ContentSizeWidth;
+        static const std::string IgnoreAnchorPointForPosition;
+        static const std::string LocalZOrder;
+        static const std::string Opacity;
         static const std::string PositionX;
         static const std::string PositionY;
-        static const std::string ContentSizeWidth;
-        static const std::string ContentSizeHeight;
+        static const std::string Rotation;
+        static const std::string ScaleX;
+        static const std::string ScaleY;
+        static const std::string SkewX;
+        static const std::string SkewY;
+        static const std::string Tag;
+        static const std::string Visible;
     };
 
     /// Constructs a node loader.
