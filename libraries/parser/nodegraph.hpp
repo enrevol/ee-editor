@@ -41,6 +41,7 @@ public:
     Self& getChild(std::size_t index);
     const Self& getChild(std::size_t index) const;
 
+    std::vector<Self>& getChildren();
     const std::vector<Self>& getChildren() const;
 
     void addChild(const Self& child);

@@ -1,4 +1,5 @@
 #include "nodeloader.hpp"
+#include "propertyreader.hpp"
 #include "propertywriter.hpp"
 
 #include <2d/CCNode.h>
@@ -69,6 +70,10 @@ cocos2d::Node* Self::createNode() const {
 
 const PropertyHandler& Self::getPropertyHandler() const {
     return propertyHandler_;
+}
+
+PropertyReader Self::getDefaultPropertyReader() const {
+    return PropertyReader(defaultProperties_);
 }
 
 void Self::addReadHandlers(PropertyHandler& handler) {

@@ -87,6 +87,10 @@ const Self& Self::getChild(std::size_t index) const {
     return children_.at(index);
 }
 
+std::vector<Self>& Self::getChildren() {
+    return children_;
+}
+
 const std::vector<Self>& Self::getChildren() const {
     return children_;
 }

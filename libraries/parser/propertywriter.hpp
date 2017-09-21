@@ -8,6 +8,9 @@ class PropertyWriter {
 public:
     explicit PropertyWriter(cocos2d::ValueMap& properties);
 
+    cocos2d::ValueMap& getProperties();
+    const cocos2d::ValueMap& getProperties() const;
+
     void setProperty(const std::string& name, const cocos2d::Value& value);
     void setProperty(const std::string& name, bool value);
     void setProperty(const std::string& name, int value);

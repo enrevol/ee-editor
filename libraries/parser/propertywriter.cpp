@@ -7,8 +7,16 @@ using Self = PropertyWriter;
 Self::PropertyWriter(cocos2d::ValueMap& properties)
     : properties_(properties) {}
 
+cocos2d::ValueMap& Self::getProperties() {
+    return properties_;
+}
+
+const cocos2d::ValueMap& Self::getProperties() const {
+    return properties_;
+}
+
 void Self::setProperty(const std::string& name, const cocos2d::Value& value) {
-    properties_[name] = value;
+    getProperties()[name] = value;
 }
 
 void Self::setProperty(const std::string& name, bool value) {
@@ -28,8 +36,7 @@ void Self::setProperty(const std::string& name, const std::string& value) {
 }
 
 bool Self::addProperty(const std::string& name, const cocos2d::Value& value) {
-    if (PropertyReader(properties_).hasProperty(name)) {
-        assert(false);
+    if (PropertyReader(getProperties()).hasProperty(name)) {
         return false;
     }
     setProperty(name, value);

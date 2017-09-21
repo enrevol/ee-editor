@@ -9,6 +9,7 @@ class Node;
 } // namespace cocos2d
 
 namespace ee {
+class PropertyReader;
 class PropertyWriter;
 
 class NodeLoader {
@@ -49,6 +50,8 @@ public:
 
     /// Gets the property handler.
     const PropertyHandler& getPropertyHandler() const;
+
+    PropertyReader getDefaultPropertyReader() const;
 
     NodeLoaderPtr clone() const;
 

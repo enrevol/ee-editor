@@ -6,8 +6,12 @@ using Self = PropertyReader;
 Self::PropertyReader(const cocos2d::ValueMap& properties)
     : properties_(properties) {}
 
+const cocos2d::ValueMap& Self::getProperties() const {
+    return properties_;
+}
+
 bool Self::hasProperty(const std::string& name) const {
-    return properties_.count(name) != 0;
+    return getProperties().count(name) != 0;
 }
 
 cocos2d::Value Self::getProperty(const std::string& name) const {
@@ -73,7 +77,6 @@ float Self::getFloatProperty(const std::string& name,
     auto value = getProperty(name, cocos2d::Value(defaultValue));
     if (value.getType() != cocos2d::Value::Type::FLOAT &&
         value.getType() != cocos2d::Value::Type::INTEGER) {
-        CC_ASSERT(false);
         return defaultValue;
     }
     return value.asFloat();
@@ -82,6 +85,7 @@ float Self::getFloatProperty(const std::string& name,
 std::string Self::getStringProperty(const std::string& name) const {
     auto value = getProperty(name);
     if (value.getType() != cocos2d::Value::Type::STRING) {
+        CC_ASSERT(false);
         return std::string();
     }
     return value.asString();

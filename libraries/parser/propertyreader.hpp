@@ -8,6 +8,8 @@ class PropertyReader {
 public:
     explicit PropertyReader(const cocos2d::ValueMap& properties);
 
+    const cocos2d::ValueMap& getProperties() const;
+
     bool hasProperty(const std::string& name) const;
 
     /// Gets a generic property.

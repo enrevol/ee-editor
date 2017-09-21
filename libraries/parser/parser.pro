@@ -18,7 +18,6 @@ HEADERS += \
     nodeloader.hpp \
     nodeloaderlibrary.hpp \
     parserfwd.hpp \
-    editorreader.hpp \
     propertyhandler.hpp \
     nodegraph.hpp \
     spriteloader.hpp \
@@ -27,12 +26,12 @@ HEADERS += \
     nodeinfowriter.hpp \
     propertyreader.hpp \
     propertywriter.hpp \
-    layercolorloader.hpp
+    layercolorloader.hpp \
+    graphreader.hpp
 
 SOURCES += \
     nodeloader.cpp \
     nodeloaderlibrary.cpp \
-    editorreader.cpp \
     propertyhandler.cpp \
     nodegraph.cpp \
     spriteloader.cpp \
@@ -41,4 +40,5 @@ SOURCES += \
     nodeinfowriter.cpp \
     propertyreader.cpp \
     propertywriter.cpp \
-    layercolorloader.cpp
+    layercolorloader.cpp \
+    graphreader.cpp

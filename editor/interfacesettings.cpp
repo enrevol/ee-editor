@@ -3,6 +3,9 @@
 #include "interfacesettings.hpp"
 #include "utils.hpp"
 
+#include <parser/graphreader.hpp>
+#include <parser/nodeloaderlibrary.hpp>
+
 #include <QDebug>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -34,6 +37,11 @@ const std::optional<NodeGraph>& Self::getNodeGraph() const {
 
 void Self::setNodeGraph(const NodeGraph& graph) {
     graph_ = graph;
+
+    NodeLoaderLibrary library;
+    library.addDefaultLoaders();
+    GraphReader reader(library);
+    reader.addDefaultProperties(graph_.value());
 }
 
 bool Self::read() {

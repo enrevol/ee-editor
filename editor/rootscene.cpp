@@ -5,7 +5,7 @@
 #include "sceneselection.hpp"
 #include "utils.hpp"
 
-#include <parser/editorreader.hpp>
+#include <parser/graphreader.hpp>
 #include <parser/nodegraph.hpp>
 #include <parser/nodeloader.hpp>
 #include <parser/nodeloaderlibrary.hpp>
@@ -110,7 +110,7 @@ void Self::setNodeGraph(const NodeGraph& graph) {
     auto library = NodeLoaderLibrary();
     library.addDefaultLoaders();
 
-    auto reader = EditorReader(library);
+    GraphReader reader(library);
     rootNode_ = reader.readNodeGraph(graph);
     addChild(rootNode_);
 }
