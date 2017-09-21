@@ -332,27 +332,31 @@ void Self::addWriteHandlers(PropertyHandler& handler) {
 }
 
 void Self::addDefaultProperties(PropertyWriter& writer) {
-    writer.addProperty(Property::AnchorPointX, 0.0f);
-    writer.addProperty(Property::AnchorPointY, 0.0f);
-    writer.addProperty(Property::CascadeColorEnabled, false);
-    writer.addProperty(Property::CascadeOpacityEnabled, false);
-    writer.addProperty(Property::ColorB, cocos2d::Color3B::WHITE.b);
-    writer.addProperty(Property::ColorG, cocos2d::Color3B::WHITE.g);
-    writer.addProperty(Property::ColorR, cocos2d::Color3B::WHITE.r);
-    writer.addProperty(Property::ContentSizeHeight, cocos2d::Size::ZERO.height);
-    writer.addProperty(Property::ContentSizeWidth, cocos2d::Size::ZERO.width);
-    writer.addProperty(Property::IgnoreAnchorPointForPosition, false);
-    writer.addProperty(Property::LocalZOrder, 0);
-    writer.addProperty(Property::Opacity, 255);
-    writer.addProperty(Property::PositionX, 0.0f);
-    writer.addProperty(Property::PositionY, 0.0f);
-    writer.addProperty(Property::Rotation, 0.0f);
-    writer.addProperty(Property::ScaleX, 1.0f);
-    writer.addProperty(Property::ScaleY, 1.0f);
-    writer.addProperty(Property::SkewX, 0.0f);
-    writer.addProperty(Property::SkewY, 0.0f);
-    writer.addProperty(Property::Tag, cocos2d::Node::INVALID_TAG);
-    writer.addProperty(Property::Visible, true);
+    bool flag = true;
+    flag &= writer.addProperty(Property::AnchorPointX, 0.0f);
+    flag &= writer.addProperty(Property::AnchorPointY, 0.0f);
+    flag &= writer.addProperty(Property::CascadeColorEnabled, false);
+    flag &= writer.addProperty(Property::CascadeOpacityEnabled, false);
+    flag &= writer.addProperty(Property::ColorB, cocos2d::Color3B::WHITE.b);
+    flag &= writer.addProperty(Property::ColorG, cocos2d::Color3B::WHITE.g);
+    flag &= writer.addProperty(Property::ColorR, cocos2d::Color3B::WHITE.r);
+    flag &= writer.addProperty(Property::ContentSizeHeight,
+                               cocos2d::Size::ZERO.height);
+    flag &= writer.addProperty(Property::ContentSizeWidth,
+                               cocos2d::Size::ZERO.width);
+    flag &= writer.addProperty(Property::IgnoreAnchorPointForPosition, false);
+    flag &= writer.addProperty(Property::LocalZOrder, 0);
+    flag &= writer.addProperty(Property::Opacity, 255);
+    flag &= writer.addProperty(Property::PositionX, 0.0f);
+    flag &= writer.addProperty(Property::PositionY, 0.0f);
+    flag &= writer.addProperty(Property::Rotation, 0.0f);
+    flag &= writer.addProperty(Property::ScaleX, 1.0f);
+    flag &= writer.addProperty(Property::ScaleY, 1.0f);
+    flag &= writer.addProperty(Property::SkewX, 0.0f);
+    flag &= writer.addProperty(Property::SkewY, 0.0f);
+    flag &= writer.addProperty(Property::Tag, cocos2d::Node::INVALID_TAG);
+    flag &= writer.addProperty(Property::Visible, true);
+    Q_ASSERT(flag);
 }
 
 NodeLoaderPtr Self::clone() const {
