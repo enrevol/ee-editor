@@ -77,5 +77,7 @@ cocos2d::Value convertToValue(const QJsonValue& json) {
         }
         return cocos2d::Value(dict);
     }
+    Q_ASSERT(false);
+    return cocos2d::Value::Null;
 }
 } // namespace ee
