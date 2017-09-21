@@ -37,6 +37,7 @@ Q_SIGNALS:
 
 protected:
     void setPropertyValue(float value);
+    float getGraphPropertyValue(const NodeGraph& graph) const;
 
 private:
     QString propertyName_;

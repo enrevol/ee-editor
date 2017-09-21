@@ -127,13 +127,23 @@ Self::MainWindow(QWidget* parent)
                 auto rootScene = RootScene::getInstance();
                 rootScene->setSelection(selection);
 
-                ui_->inspectorList->clearInspectors();
+                auto list = ui_->inspectorList;
+                list->clearInspectors();
                 auto inspector = new NodeInspector();
                 inspector->initialize();
-                inspector->refreshPropertyValue(ui_->sceneTree->getNodeGraph(),
-                                                selection);
-                ui_->inspectorList->addInspector(inspector);
+                list->addInspector(inspector);
+                list->refreshPropertyValue(ui_->sceneTree->getNodeGraph(),
+                                           selection);
             });
+
+    connect(
+        ui_->inspectorList, &InspectorListWidget::propertyValueChanged,
+        [this](const NodeGraph& graph, const SceneSelection& selection,
+               const QString& propertyName, const cocos2d::Value& value) {
+            Q_ASSERT(graph.toDict() == ui_->sceneTree->getNodeGraph().toDict());
+            auto rootScene = RootScene::getInstance();
+            rootScene->updateProperty(graph, selection, propertyName, value);
+        });
 
     ui_->actionProject_Settings->setEnabled(false);
     ui_->actionInterface_File->setEnabled(false);

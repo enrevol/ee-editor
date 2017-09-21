@@ -1,7 +1,10 @@
 #ifndef EE_EDITOR_ROOT_SCENE_HPP
 #define EE_EDITOR_ROOT_SCENE_HPP
 
+#include <parser/parserfwd.hpp>
+
 #include <2d/CCScene.h>
+#include <base/CCValue.h>
 
 namespace cocos2d {
 class LayerColor;
@@ -12,6 +15,7 @@ template <class T> class RefPtr;
 
 namespace ee {
 class NodeGraph;
+class NodeLoader;
 class SceneSelection;
 
 class RootScene : public cocos2d::Scene {
@@ -27,6 +31,14 @@ public:
     void setSelection(const SceneSelection& selection);
 
     cocos2d::Node* getNode(const QVector<int>& treeIndices);
+
+    void updateProperty(const NodeGraph& graph, const SceneSelection& selection,
+                        const QString& propertyName,
+                        const cocos2d::Value& value);
+
+    void updateProperty(cocos2d::Node* node, const NodeLoaderPtr& nodeLoader,
+                        const QString& propertyName,
+                        const cocos2d::Value& value);
 
 protected:
     static Self* create();

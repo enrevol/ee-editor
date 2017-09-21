@@ -28,11 +28,11 @@ public:
 
     void addDefaultProperties(NodeGraph& graph) const;
 
+    const NodeLoaderPtr& getNodeLoader(const NodeGraph& graph) const;
+
     const NodeLoaderLibrary& getNodeLoaderLibrary() const;
 
 protected:
-    const NodeLoaderPtr& getNodeLoader(const NodeGraph& graph) const;
-
 private:
     NodeLoaderLibrary loaderLibrary_;
 };

@@ -41,6 +41,9 @@ void Self::addInspector(Inspector* inspector) {
     boxLayout->addWidget(inspector, 0, alignment);
     connect(inspector, &Inspector::propertyValueChanged,
             [this](const QString& propertyName, const cocos2d::Value& value) {
+                if (selection_->isEmpty()) {
+                    return;
+                }
                 Q_EMIT propertyValueChanged(*nodeGraph_, *selection_,
                                             propertyName, value);
             });

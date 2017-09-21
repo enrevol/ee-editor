@@ -3,6 +3,7 @@
 #include "ui_inspectorfloat.h"
 
 #include <parser/nodegraph.hpp>
+#include <parser/propertyreader.hpp>
 
 namespace ee {
 using Self = InspectorFloat;
@@ -57,12 +58,17 @@ void Self::setPropertyValue(float value) {
     ui_->propertyValue->setValue(static_cast<double>(value));
 }
 
+float Self::getGraphPropertyValue(const NodeGraph& graph) const {
+    auto reader = graph.getPropertyReader();
+    return reader.getFloatProperty(propertyName_.toStdString());
+}
+
 void Self::refreshPropertyValue(const NodeGraph& graph,
                                 const SceneSelection& selection) {
     float sum = 0;
     std::size_t count = 0;
     if (selection.isRoot()) {
-        sum += graph.getFloatProperty(propertyName_.toStdString());
+        sum += getGraphPropertyValue(graph);
         ++count;
     } else {
         const NodeGraph* parent = &graph;
@@ -71,7 +77,7 @@ void Self::refreshPropertyValue(const NodeGraph& graph,
         }
         for (auto&& index : selection.getChildrenIndices()) {
             auto&& child = graph.getChild(static_cast<std::size_t>(index));
-            sum += child.getFloatProperty(propertyName_.toStdString());
+            sum += getGraphPropertyValue(child);
             ++count;
         }
     }

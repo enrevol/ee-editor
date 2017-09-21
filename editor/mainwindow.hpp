@@ -11,9 +11,9 @@ namespace ee {
 class OpenGLWidget;
 
 class MainWindow : public QMainWindow {
-private:
     Q_OBJECT
 
+private:
     using Self = MainWindow;
     using Super = QMainWindow;
 
@@ -23,7 +23,7 @@ public:
 
     OpenGLWidget* getOpenGLView();
 
-protected slots:
+protected Q_SLOTS:
     void onProjectSettingsButtonPressed();
 
 private:

@@ -9,6 +9,7 @@
 #include <parser/nodegraph.hpp>
 #include <parser/nodeloader.hpp>
 #include <parser/nodeloaderlibrary.hpp>
+#include <parser/propertyhandler.hpp>
 
 #include <2d/CCLayer.h>
 #include <2d/CCSprite.h>
@@ -166,5 +167,41 @@ cocos2d::Node* Self::getNode(const QVector<int>& treeIndices) {
         node = node->getChildren().at(index);
     }
     return node;
+}
+
+void Self::updateProperty(const NodeGraph& graph,
+                          const SceneSelection& selection,
+                          const QString& propertyName,
+                          const cocos2d::Value& value) {
+    Q_ASSERT(not selection.isEmpty());
+    NodeLoaderLibrary library;
+    library.addDefaultLoaders();
+    GraphReader reader(library);
+    if (selection.isRoot()) {
+        updateProperty(rootNode_, reader.getNodeLoader(graph), propertyName,
+                       value);
+    } else {
+        auto parentGraph = &graph;
+        auto parentNode = rootNode_;
+        for (auto&& index : selection.getAncestorIndices()) {
+            parentGraph =
+                &parentGraph->getChild(static_cast<std::size_t>(index));
+            parentNode = parentNode->getChildren().at(index);
+        }
+        for (auto&& childIndex : selection.getChildrenIndices()) {
+            auto&& childGraph =
+                parentGraph->getChild(static_cast<std::size_t>(childIndex));
+            auto childNode = parentNode->getChildren().at(childIndex);
+            updateProperty(childNode, reader.getNodeLoader(childGraph),
+                           propertyName, value);
+        }
+    }
+}
+
+void Self::updateProperty(cocos2d::Node* node, const NodeLoaderPtr& nodeLoader,
+                          const QString& propertyName,
+                          const cocos2d::Value& value) {
+    auto&& propertyHandler = nodeLoader->getPropertyHandler();
+    propertyHandler.writeProperty(node, propertyName.toStdString(), value);
 }
 } // namespace ee
