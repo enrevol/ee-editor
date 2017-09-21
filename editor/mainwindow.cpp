@@ -28,7 +28,6 @@ Self::MainWindow(QWidget* parent)
     // Not supported yet.
     ui_->actionClose->setVisible(false);
     ui_->actionClose_Project->setVisible(false);
-    ui_->actionSave->setVisible(false);
     ui_->actionSave_As->setVisible(false);
     ui_->actionSave_All->setVisible(false);
     ui_->actionPublish->setVisible(false);
@@ -52,7 +51,7 @@ Self::MainWindow(QWidget* parent)
         auto&& config = Config::getInstance();
         if (config.createProject(filePath)) {
             if (config.loadProject(filePath)) {
-                ui_->actionProject_Settings->setEnabled(true);
+                // Nothing.
             }
         }
     });
@@ -73,17 +72,26 @@ Self::MainWindow(QWidget* parent)
         if (not config.loadProject(filePath)) {
             return;
         }
-        ui_->actionProject_Settings->setEnabled(true);
-        ui_->actionInterface_File->setEnabled(true);
-        ui_->actionClose->setEnabled(true);
-        ui_->actionClose_Project->setEnabled(true);
-        ui_->actionSave->setEnabled(true);
-        ui_->actionSave_As->setEnabled(true);
-        ui_->actionSave_All->setEnabled(true);
-        ui_->actionPublish->setEnabled(true);
-        ui_->actionPublish_Settings->setEnabled(true);
-        ui_->resourceTree->setListenToFileChangeEvents(true);
     });
+
+    connect(ui_->actionSave, &QAction::triggered, [this] {
+        auto&& config = Config::getInstance();
+        config.saveInterface();
+    });
+
+    connect(&Config::getInstance(), &Config::projectLoaded,
+            [this](const QFileInfo& path) {
+                Q_UNUSED(path);
+                ui_->actionProject_Settings->setEnabled(true);
+                ui_->actionInterface_File->setEnabled(true);
+                ui_->resourceTree->setListenToFileChangeEvents(true);
+            });
+
+    connect(&Config::getInstance(), &Config::interfaceLoaded,
+            [this](const QFileInfo& path) {
+                Q_UNUSED(path);
+                ui_->actionSave->setEnabled(true);
+            });
 
     connect(ui_->actionInterface_File, &QAction::triggered, [this] {
         auto&& config = Config::getInstance();
@@ -129,13 +137,7 @@ Self::MainWindow(QWidget* parent)
 
     ui_->actionProject_Settings->setEnabled(false);
     ui_->actionInterface_File->setEnabled(false);
-    ui_->actionClose->setEnabled(false);
-    ui_->actionClose_Project->setEnabled(false);
     ui_->actionSave->setEnabled(false);
-    ui_->actionSave_As->setEnabled(false);
-    ui_->actionSave_All->setEnabled(false);
-    ui_->actionPublish->setEnabled(false);
-    ui_->actionPublish_Settings->setEnabled(false);
     ui_->resourceTree->setListenToFileChangeEvents(false);
 }
 

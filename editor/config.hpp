@@ -53,6 +53,7 @@ public:
 
 Q_SIGNALS:
     void interfaceLoaded(const QFileInfo& path);
+    void projectLoaded(const QFileInfo& path);
 
 protected:
     Config();

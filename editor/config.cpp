@@ -35,6 +35,7 @@ bool Self::loadProject(const QFileInfo& path) {
     setProjectSettings(settings);
     auto&& watcher = FileSystemWatcher::getInstance();
     watcher.setDirectories(settings.getResourceDirectories());
+    Q_EMIT projectLoaded(path);
     return true;
 }
 
