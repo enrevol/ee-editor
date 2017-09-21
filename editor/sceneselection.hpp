@@ -16,14 +16,16 @@ public:
                                   const QVector<int>& children);
 
     bool isEmpty() const;
+    bool isRoot() const;
     const QVector<int>& getAncestorIndices() const;
     const QVector<int>& getChildrenIndices() const;
 
 protected:
-    explicit SceneSelection(const QVector<int>& ancestors,
+    explicit SceneSelection(bool root, const QVector<int>& ancestors,
                             const QVector<int>& children);
 
 private:
+    bool root_;
     QVector<int> ancestorIndices_;
     QVector<int> childrenIndices_;
 };

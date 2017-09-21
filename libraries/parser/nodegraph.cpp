@@ -91,7 +91,8 @@ int Self::getIntProperty(const std::string& name, int defaultValue) const {
 
 float Self::getFloatProperty(const std::string& name) const {
     auto value = getProperty(name);
-    if (value.getType() != cocos2d::Value::Type::FLOAT) {
+    if (value.getType() != cocos2d::Value::Type::FLOAT &&
+        value.getType() != cocos2d::Value::Type::INTEGER) {
         CC_ASSERT(false);
         return 0.0f;
     }
@@ -101,7 +102,8 @@ float Self::getFloatProperty(const std::string& name) const {
 float Self::getFloatProperty(const std::string& name,
                              float defaultValue) const {
     auto value = getProperty(name, cocos2d::Value(defaultValue));
-    if (value.getType() != cocos2d::Value::Type::FLOAT) {
+    if (value.getType() != cocos2d::Value::Type::FLOAT &&
+        value.getType() != cocos2d::Value::Type::INTEGER) {
         CC_ASSERT(false);
         return defaultValue;
     }

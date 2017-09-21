@@ -81,8 +81,12 @@ void Self::updateSelection() {
 }
 
 void Self::updateSelection(const SceneSelection& selection) {
+    unhighlightNodes();
     if (selection.isEmpty()) {
-        unhighlightNodes();
+        // Nothing.
+    } else if (selection.isRoot()) {
+        ensureHighlighters(1);
+        highlightNode(highlighters_.front(), rootNode_);
     } else {
         std::size_t i = 0;
         for (auto&& childIndex : selection.getChildrenIndices()) {
@@ -154,13 +158,11 @@ void Self::ensureHighlighters(std::size_t size) {
 
 cocos2d::Node* Self::getNode(const QVector<int>& treeIndices) {
     Q_ASSERT(not treeIndices.empty());
-    if (treeIndices.size() == 1) {
-        Q_ASSERT(treeIndices.first() == 0);
+    if (treeIndices.isEmpty()) {
         return rootNode_;
     }
     auto node = rootNode_;
-    for (int i = 1; i < treeIndices.size(); ++i) {
-        auto index = treeIndices.at(i);
+    for (auto&& index : treeIndices) {
         node = node->getChildren().at(index);
     }
     return node;

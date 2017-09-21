@@ -26,6 +26,8 @@ public:
 
     virtual ~SceneTree() override;
 
+    const NodeGraph& getNodeGraph() const;
+
     void setNodeGraph(const NodeGraph& graph);
 
     SceneSelection currentSelection() const;

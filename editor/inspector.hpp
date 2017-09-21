@@ -7,7 +7,9 @@
 
 namespace ee {
 class NodeGraph;
+class SceneSelection;
 
+/// Base class for all inspectors.
 class Inspector : public QWidget {
     Q_OBJECT
 
@@ -16,13 +18,21 @@ private:
     using Super = QWidget;
 
 public:
+    /// Constructs an inspector.
     explicit Inspector(QWidget* parent = nullptr);
 
     virtual ~Inspector() override;
 
-    virtual void refreshPropertyValue(const NodeGraph& graph) = 0;
+    /// Refresh this inspector display with the specified graph and selection.
+    /// @param graph The current scene graph.
+    /// @param selection The current scene selection.
+    virtual void refreshPropertyValue(const NodeGraph& graph,
+                                      const SceneSelection& selection) = 0;
 
 Q_SIGNALS:
+    /// Occurs when this inspector properties values have changed.
+    /// @param propertyName The property name.
+    /// @param value New value of the property.
     void propertyValueChanged(const QString& propertyName,
                               const cocos2d::Value& value);
 };

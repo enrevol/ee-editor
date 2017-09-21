@@ -29,10 +29,14 @@ public:
     Self* setMaximumValue(float value);
     Self* setValueRange(float minimum, float maximum);
 
-    virtual void refreshPropertyValue(const NodeGraph& graph) override;
+    virtual void refreshPropertyValue(const NodeGraph& graph,
+                                      const SceneSelection& selection) override;
 
 Q_SIGNALS:
     void valueChanged(float value);
+
+protected:
+    void setPropertyValue(float value);
 
 private:
     QString propertyName_;

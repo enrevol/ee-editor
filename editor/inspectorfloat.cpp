@@ -1,4 +1,5 @@
 #include "inspectorfloat.hpp"
+#include "sceneselection.hpp"
 #include "ui_inspectorfloat.h"
 
 #include <parser/nodegraph.hpp>
@@ -52,8 +53,28 @@ Self* Self::setValueRange(float minimum, float maximum) {
     return this;
 }
 
-void Self::refreshPropertyValue(const NodeGraph& graph) {
-    ui_->propertyValue->setValue(static_cast<double>(
-        graph.getFloatProperty(propertyName_.toStdString())));
+void Self::setPropertyValue(float value) {
+    ui_->propertyValue->setValue(static_cast<double>(value));
+}
+
+void Self::refreshPropertyValue(const NodeGraph& graph,
+                                const SceneSelection& selection) {
+    float sum = 0;
+    std::size_t count = 0;
+    if (selection.isRoot()) {
+        sum += graph.getFloatProperty(propertyName_.toStdString());
+        ++count;
+    } else {
+        const NodeGraph* parent = &graph;
+        for (auto&& index : selection.getAncestorIndices()) {
+            parent = &parent->getChild(static_cast<std::size_t>(index));
+        }
+        for (auto&& index : selection.getChildrenIndices()) {
+            auto&& child = graph.getChild(static_cast<std::size_t>(index));
+            sum += child.getFloatProperty(propertyName_.toStdString());
+            ++count;
+        }
+    }
+    setPropertyValue(sum / static_cast<float>(count));
 }
 } // namespace ee

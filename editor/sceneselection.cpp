@@ -4,29 +4,36 @@ namespace ee {
 using Self = SceneSelection;
 
 Self Self::emptySelection() {
-    return Self({}, {});
+    return Self(false, {}, {});
 }
 
 Self Self::rootSelection() {
-    return Self({}, {0});
+    return Self(true, {}, {});
 }
 
 Self Self::singleSelection(const QVector<int>& ancestors, int child) {
-    return Self(ancestors, {child});
+    return Self(false, ancestors, {child});
 }
 
 Self Self::multipleSelection(const QVector<int>& ancestors,
                              const QVector<int>& children) {
-    return Self(ancestors, children);
+    Q_ASSERT(not children.isEmpty());
+    return Self(false, ancestors, children);
 }
 
-Self::SceneSelection(const QVector<int>& ancestors,
+Self::SceneSelection(bool root, const QVector<int>& ancestors,
                      const QVector<int>& children)
-    : ancestorIndices_(ancestors)
+    : root_(root)
+    , ancestorIndices_(ancestors)
     , childrenIndices_(children) {}
 
 bool Self::isEmpty() const {
-    return getAncestorIndices().isEmpty() && getChildrenIndices().isEmpty();
+    return not isRoot() && getAncestorIndices().isEmpty() &&
+           getChildrenIndices().isEmpty();
+}
+
+bool Self::isRoot() const {
+    return root_;
 }
 
 const QVector<int>& Self::getAncestorIndices() const {

@@ -1,12 +1,18 @@
 #ifndef EE_EDITOR_INSPECTOR_LIST_WIDGET_HPP
 #define EE_EDITOR_INSPECTOR_LIST_WIDGET_HPP
 
+#include <base/CCValue.h>
+
 #include <QWidget>
 
 namespace ee {
-class InspectorContainer;
+class Inspector;
+class NodeGraph;
+class SceneSelection;
 
 class InspectorListWidget : public QWidget {
+    Q_OBJECT
+
 private:
     using Self = InspectorListWidget;
     using Super = QWidget;
@@ -14,12 +20,25 @@ private:
 public:
     explicit InspectorListWidget(QWidget* parent = nullptr);
 
-    void addInspector(InspectorContainer* inspector);
+    virtual ~InspectorListWidget() override;
+
+    void addInspector(Inspector* inspector);
 
     void clearInspectors();
 
-protected:
+    void refreshPropertyValue(const NodeGraph& graph,
+                              const SceneSelection& selection);
+
+Q_SIGNALS:
+    void propertyValueChanged(const NodeGraph& graph,
+                              const SceneSelection& selection,
+                              const QString& propertyName,
+                              const cocos2d::Value& value);
+
 private:
+    const NodeGraph* nodeGraph_;
+    std::unique_ptr<SceneSelection> selection_;
+    QVector<Inspector*> inspectors_;
 };
 } // namespace ee
 

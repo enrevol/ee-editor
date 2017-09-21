@@ -37,9 +37,10 @@ const QVector<Inspector*>& Self::getInspectors() const {
     return inspectors_;
 }
 
-void Self::refreshPropertyValue(const NodeGraph& graph) {
+void Self::refreshPropertyValue(const NodeGraph& graph,
+                                const SceneSelection& selection) {
     for (auto&& inspector : getInspectors()) {
-        inspector->refreshPropertyValue(graph);
+        inspector->refreshPropertyValue(graph, selection);
     }
 }
 } // namespace ee
