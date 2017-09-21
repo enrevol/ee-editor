@@ -2,6 +2,8 @@
 
 #include "nodegraph.hpp"
 #include "propertyhandler.hpp"
+#include "propertyreader.hpp"
+#include "propertywriter.hpp"
 
 namespace ee {
 namespace key {
@@ -41,122 +43,24 @@ const cocos2d::ValueMap& Self::getProperties() const {
     return properties_;
 }
 
-cocos2d::Value Self::getProperty(const std::string& name) const {
-    auto value = getProperty(name, cocos2d::Value::Null);
-    CC_ASSERT(not value.isNull());
-    return value;
+PropertyReader Self::getPropertyReader() const {
+    return PropertyReader(properties_);
 }
 
-cocos2d::Value Self::getProperty(const std::string& name,
-                                 const cocos2d::Value& defaultValue) const {
-    if (not properties_.count(name)) {
-        return defaultValue;
-    }
-    return properties_.at(name);
-}
-
-bool Self::getBoolProperty(const std::string& name) const {
-    auto value = getProperty(name);
-    if (value.getType() != cocos2d::Value::Type::BOOLEAN) {
-        CC_ASSERT(false);
-        return false;
-    }
-    return value.asBool();
-}
-
-bool Self::getBoolProperty(const std::string& name, bool defaultValue) const {
-    auto value = getProperty(name, cocos2d::Value(defaultValue));
-    if (value.getType() != cocos2d::Value::Type::BOOLEAN) {
-        return defaultValue;
-    }
-    return value.asBool();
-}
-
-int Self::getIntProperty(const std::string& name) const {
-    auto value = getProperty(name);
-    if (value.getType() != cocos2d::Value::Type::INTEGER) {
-        CC_ASSERT(false);
-        return 0;
-    }
-    return value.asInt();
-}
-
-int Self::getIntProperty(const std::string& name, int defaultValue) const {
-    auto value = getProperty(name, cocos2d::Value(defaultValue));
-    if (value.getType() != cocos2d::Value::Type::INTEGER) {
-        return defaultValue;
-    }
-    return value.asInt();
-}
-
-float Self::getFloatProperty(const std::string& name) const {
-    auto value = getProperty(name);
-    if (value.getType() != cocos2d::Value::Type::FLOAT &&
-        value.getType() != cocos2d::Value::Type::INTEGER) {
-        CC_ASSERT(false);
-        return 0.0f;
-    }
-    return value.asFloat();
-}
-
-float Self::getFloatProperty(const std::string& name,
-                             float defaultValue) const {
-    auto value = getProperty(name, cocos2d::Value(defaultValue));
-    if (value.getType() != cocos2d::Value::Type::FLOAT &&
-        value.getType() != cocos2d::Value::Type::INTEGER) {
-        CC_ASSERT(false);
-        return defaultValue;
-    }
-    return value.asFloat();
-}
-
-std::string Self::getStringProperty(const std::string& name) const {
-    auto value = getProperty(name);
-    if (value.getType() != cocos2d::Value::Type::STRING) {
-        return std::string();
-    }
-    return value.asString();
-}
-
-std::string Self::getStringProperty(const std::string& name,
-                                    const std::string& defaultValue) const {
-    auto value = getProperty(name, cocos2d::Value(defaultValue));
-    if (value.getType() != cocos2d::Value::Type::STRING) {
-        return defaultValue;
-    }
-    return value.asString();
-}
-
-void Self::setProperty(const std::string& name, const cocos2d::Value& value) {
-    properties_[name] = value;
-}
-
-void Self::setProperty(const std::string& name, bool value) {
-    setProperty(name, cocos2d::Value(value));
-}
-
-void Self::setProperty(const std::string& name, int value) {
-    setProperty(name, cocos2d::Value(value));
-}
-
-void Self::setProperty(const std::string& name, float value) {
-    setProperty(name, cocos2d::Value(value));
-}
-
-void Self::setProperty(const std::string& name, const std::string& value) {
-    setProperty(name, cocos2d::Value(value));
+PropertyWriter Self::getPropertyWriter() {
+    return PropertyWriter(properties_);
 }
 
 std::string Self::getBaseClass() const {
-    return getStringProperty(key::base_class);
+    return getPropertyReader().getStringProperty(key::base_class);
 }
 
 std::string Self::getCustomClass() const {
-    return getStringProperty(key::custom_class, "");
+    return getPropertyReader().getStringProperty(key::custom_class, "");
 }
 
 std::string Self::getDisplayName() const {
-    auto value = getStringProperty(key::display_name, "");
+    auto value = getPropertyReader().getStringProperty(key::display_name, "");
     if (not value.empty()) {
         return value;
     }
@@ -164,15 +68,15 @@ std::string Self::getDisplayName() const {
 }
 
 void Self::setBaseClass(const std::string& name) {
-    setProperty(key::base_class, name);
+    getPropertyWriter().setProperty(key::base_class, name);
 }
 
 void Self::setCustomClass(const std::string& name) {
-    setProperty(key::custom_class, name);
+    getPropertyWriter().setProperty(key::custom_class, name);
 }
 
 void Self::setDisplayName(const std::string& name) {
-    setProperty(key::display_name, name);
+    getPropertyWriter().setProperty(key::display_name, name);
 }
 
 Self& Self::getChild(std::size_t index) {

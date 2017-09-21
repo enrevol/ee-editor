@@ -1,5 +1,6 @@
 #include <cassert>
 
+#include "layercolorloader.hpp"
 #include "nodeloader.hpp"
 #include "nodeloaderlibrary.hpp"
 #include "spriteloader.hpp"
@@ -18,12 +19,17 @@ Self::NodeLoaderLibrary(const Self& other) {
 }
 
 void Self::addDefaultLoaders() {
-    addLoader("_Node", std::make_unique<NodeLoader>());
-    addLoader("_Sprite", std::make_unique<SpriteLoader>());
+    addLoader("_Node", NodeLoader::create());
+    addLoader("_Sprite", SpriteLoader::create());
+    addLoader("_LayerColor", LayerColorLoader::create());
 }
 
 cocos2d::Node* Self::createNode(const std::string& name) const {
     return getLoader(name)->createNode();
+}
+
+bool Self::hasLoader(const std::string& name) const {
+    return loaders_.count(name) != 0;
 }
 
 bool Self::addLoader(const std::string& name, NodeLoaderPtr loader) {
@@ -43,7 +49,7 @@ bool Self::removeLoader(const std::string& name) {
 }
 
 const NodeLoaderPtr& Self::getLoader(const std::string& name) const {
-    assert(loaders_.count(name) != 0);
+    assert(hasLoader(name));
     return loaders_.at(name);
 }
 } // namespace ee

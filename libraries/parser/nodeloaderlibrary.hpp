@@ -26,6 +26,10 @@ public:
 
     cocos2d::Node* createNode(const std::string& name) const;
 
+    /// Checks whether this library has a loader for the specified class name.
+    /// @param name The name of the node loader.
+    bool hasLoader(const std::string& name) const;
+
     /// Adds a node loader with the specified name.
     /// @param name The name of the node loader.
     /// @param loader The desired loader.

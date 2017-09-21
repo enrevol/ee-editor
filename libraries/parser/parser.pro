@@ -24,7 +24,10 @@ HEADERS += \
     spriteloader.hpp \
     nodeinfo.hpp \
     nodeinforeader.hpp \
-    nodeinfowriter.hpp
+    nodeinfowriter.hpp \
+    propertyreader.hpp \
+    propertywriter.hpp \
+    layercolorloader.hpp
 
 SOURCES += \
     nodeloader.cpp \
@@ -35,4 +38,7 @@ SOURCES += \
     spriteloader.cpp \
     nodeinfo.cpp \
     nodeinforeader.cpp \
-    nodeinfowriter.cpp
+    nodeinfowriter.cpp \
+    propertyreader.cpp \
+    propertywriter.cpp \
+    layercolorloader.cpp

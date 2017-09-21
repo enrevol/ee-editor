@@ -9,6 +9,8 @@ class Node;
 } // namespace cocos2d
 
 namespace ee {
+class PropertyWriter;
+
 class NodeLoader {
 private:
     using Self = NodeLoader;
@@ -38,8 +40,7 @@ public:
         static const std::string Visible;
     };
 
-    /// Constructs a node loader.
-    NodeLoader();
+    static NodeLoaderPtr create();
 
     virtual ~NodeLoader();
 
@@ -47,18 +48,25 @@ public:
     virtual cocos2d::Node* createNode() const;
 
     /// Gets the property handler.
-    PropertyHandler& getPropertyHandler();
-
-    /// Gets the property handler.
     const PropertyHandler& getPropertyHandler() const;
 
     NodeLoaderPtr clone() const;
 
 protected:
+    /// Constructs a node loader.
+    NodeLoader();
+
+    void initialize();
+
+    virtual void addReadHandlers(PropertyHandler& handler);
+    virtual void addWriteHandlers(PropertyHandler& handler);
+    virtual void addDefaultProperties(PropertyWriter& writer);
+
     virtual Self* cloneRaw() const;
 
 private:
     PropertyHandler propertyHandler_;
+    cocos2d::ValueMap defaultProperties_;
 };
 } // namespace ee
 
