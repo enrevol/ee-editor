@@ -53,7 +53,8 @@ cocos2d::Value convertToValue(const QJsonValue& json) {
     }
     if (json.isDouble()) {
         auto v = json.toDouble();
-        if (int(v) == v) {
+        constexpr auto eps = std::numeric_limits<double>::epsilon();
+        if (std::abs(int(v) - v) < eps) {
             return cocos2d::Value(json.toInt());
         }
         return cocos2d::Value(json.toDouble());
