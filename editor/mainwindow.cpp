@@ -76,7 +76,12 @@ Self::MainWindow(QWidget* parent)
 
     connect(ui_->actionSave, &QAction::triggered, [this] {
         auto&& config = Config::getInstance();
-        config.saveInterface();
+        auto&& settings = config.getInterfaceSettings();
+        Q_ASSERT(settings.has_value());
+        InterfaceSettings newSettings(settings->getInterfacePath());
+        newSettings.setNodeGraph(ui_->sceneTree->getNodeGraph());
+        config.setInterfaceSettings(newSettings);
+        newSettings.write();
     });
 
     connect(&Config::getInstance(), &Config::projectLoaded,
