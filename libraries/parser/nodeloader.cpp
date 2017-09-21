@@ -351,7 +351,10 @@ void Self::addDefaultProperties(PropertyWriter& writer) {
 }
 
 NodeLoaderPtr Self::clone() const {
-    return NodeLoaderPtr(cloneRaw());
+    auto result = cloneRaw();
+    result->propertyHandler_ = propertyHandler_;
+    result->defaultProperties_ = defaultProperties_;
+    return NodeLoaderPtr(result);
 }
 
 Self* Self::cloneRaw() const {
