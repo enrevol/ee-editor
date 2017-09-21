@@ -32,6 +32,10 @@ public:
 
     SceneSelection currentSelection() const;
 
+    void updateProperty(const NodeGraph& graph, const SceneSelection& selection,
+                        const QString& propertyName,
+                        const cocos2d::Value& value);
+
 Q_SIGNALS:
     void selectionChanged(const SceneSelection& selection);
 

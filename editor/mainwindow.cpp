@@ -148,6 +148,8 @@ Self::MainWindow(QWidget* parent)
             Q_ASSERT(graph.toDict() == ui_->sceneTree->getNodeGraph().toDict());
             auto rootScene = RootScene::getInstance();
             rootScene->updateProperty(graph, selection, propertyName, value);
+            ui_->sceneTree->updateProperty(graph, selection, propertyName,
+                                           value);
         });
 
     ui_->actionProject_Settings->setEnabled(false);

@@ -4,6 +4,7 @@
 #include "scenetreemodel.hpp"
 
 #include <parser/nodegraph.hpp>
+#include <parser/propertywriter.hpp>
 
 #include <2d/CCNode.h>
 
@@ -150,6 +151,30 @@ void Self::selectionChanged(const QItemSelection& selected,
 
     if (shouldEmitSignal) {
         Q_EMIT selectionChanged(currentSelection());
+    }
+}
+
+void Self::updateProperty(const NodeGraph& graph,
+                          const SceneSelection& selection,
+                          const QString& propertyName,
+                          const cocos2d::Value& value) {
+    Q_ASSERT(not selection.isEmpty());
+    Q_ASSERT(&graph == nodeGraph_.get());
+    if (selection.isRoot()) {
+        auto&& writer = nodeGraph_->getPropertyWriter();
+        writer.setProperty(propertyName.toStdString(), value);
+    } else {
+        auto parentGraph = nodeGraph_.get();
+        for (auto&& index : selection.getAncestorIndices()) {
+            parentGraph =
+                &parentGraph->getChild(static_cast<std::size_t>(index));
+        }
+        for (auto&& childIndex : selection.getChildrenIndices()) {
+            auto&& childGraph =
+                parentGraph->getChild(static_cast<std::size_t>(childIndex));
+            auto&& writer = childGraph.getPropertyWriter();
+            writer.setProperty(propertyName.toStdString(), value);
+        }
     }
 }
 } // namespace ee
