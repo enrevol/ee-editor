@@ -21,11 +21,6 @@
 namespace ee {
 using Self = RootScene;
 
-Self* Self::getInstance() {
-    static cocos2d::RefPtr<Self> sharedInstance = create();
-    return sharedInstance;
-}
-
 Self* Self::create() {
     auto result = new Self();
     result->init();

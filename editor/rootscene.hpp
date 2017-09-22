@@ -24,7 +24,7 @@ private:
     using Super = cocos2d::Scene;
 
 public:
-    static Self* getInstance();
+    static Self* create();
 
     void setNodeGraph(const NodeGraph& graph);
 
@@ -41,8 +41,6 @@ public:
                         const cocos2d::Value& value);
 
 protected:
-    static Self* create();
-
     virtual bool init() override;
 
     virtual void onEnter() override;

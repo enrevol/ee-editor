@@ -47,7 +47,7 @@ bool Self::applicationDidFinishLaunching() {
     auto&& winSize = director->getWinSize();
     qDebug() << "winSize = " << winSize.width << " " << winSize.height;
 
-    auto scene = RootScene::getInstance();
+    auto scene = RootScene::create();
     director->runWithScene(scene);
 
     return true;

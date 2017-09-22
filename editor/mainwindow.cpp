@@ -9,6 +9,8 @@
 #include "settings.hpp"
 #include "ui_mainwindow.h"
 
+#include <base/CCDirector.h>
+
 #include <QDebug>
 #include <QFileDialog>
 
@@ -121,7 +123,8 @@ Self::MainWindow(QWidget* parent)
         [this](const QString& path) { ui_->imageView->setImagePath(path); });
 
     connect(ui_->addNodeButton, &QPushButton::clicked, [this] {
-        auto scene = RootScene::getInstance();
+        auto scene = dynamic_cast<RootScene*>(
+            cocos2d::Director::getInstance()->getRunningScene());
         // ui_->sceneTree->setRootNode(scene);
     });
 
@@ -129,7 +132,9 @@ Self::MainWindow(QWidget* parent)
             static_cast<void (SceneTree::*)(const SceneSelection&)>(
                 &SceneTree::selectionChanged),
             [this](const SceneSelection& selection) {
-                auto rootScene = RootScene::getInstance();
+                auto rootScene = dynamic_cast<RootScene*>(
+                    cocos2d::Director::getInstance()->getRunningScene());
+
                 rootScene->setSelection(selection);
 
                 auto list = ui_->inspectorList;
@@ -146,7 +151,8 @@ Self::MainWindow(QWidget* parent)
         [this](const NodeGraph& graph, const SceneSelection& selection,
                const QString& propertyName, const cocos2d::Value& value) {
             Q_ASSERT(graph.toDict() == ui_->sceneTree->getNodeGraph().toDict());
-            auto rootScene = RootScene::getInstance();
+            auto rootScene = dynamic_cast<RootScene*>(
+                cocos2d::Director::getInstance()->getRunningScene());
             rootScene->updateProperty(graph, selection, propertyName, value);
             ui_->sceneTree->updateProperty(graph, selection, propertyName,
                                            value);
