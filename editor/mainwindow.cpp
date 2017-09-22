@@ -7,6 +7,7 @@
 #include "projectsettings.hpp"
 #include "projectsettingsdialog.hpp"
 #include "rootscene.hpp"
+#include "selectiontree.hpp"
 #include "settings.hpp"
 #include "ui_mainwindow.h"
 
@@ -138,6 +139,10 @@ Self::MainWindow(QWidget* parent)
 
                 auto list = ui_->inspectorList;
                 list->clearInspectors();
+
+                if (selection.isEmpty()) {
+                    return;
+                }
                 auto inspector = new NodeInspector();
                 inspector->initialize();
                 list->addInspector(inspector);
