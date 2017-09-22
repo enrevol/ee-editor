@@ -50,12 +50,15 @@ SOURCES += \
     imageview.cpp \
     scenetreemodel.cpp \
     scenetreeitem.cpp \
-    sceneselection.cpp \
     nodehighlighter.cpp \
     nodeinspector.cpp \
     inspectorcontainer.cpp \
     inspector.cpp \
-    inspectorlistwidget.cpp
+    inspectorlistwidget.cpp \
+    inspectorbool.cpp \
+    selectionpath.cpp \
+    selectiontree.cpp \
+    propertygetter.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -84,16 +87,20 @@ HEADERS += \
     imageview.hpp \
     scenetreemodel.hpp \
     scenetreeitem.hpp \
-    sceneselection.hpp \
     nodehighlighter.hpp \
     nodeinspector.hpp \
     inspectorcontainer.hpp \
     inspector.hpp \
-    inspectorlistwidget.hpp
+    inspectorlistwidget.hpp \
+    inspectorbool.hpp \
+    selectionpath.hpp \
+    selectiontree.hpp \
+    propertygetter.hpp
 
 FORMS += \
     mainwindow.ui \
     projectsettingsdialog.ui \
     inspectortexture.ui \
     inspectorfloat.ui \
-    inspectorpoint.ui
+    inspectorpoint.ui \
+    inspectorbool.ui

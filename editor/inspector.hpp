@@ -7,7 +7,7 @@
 
 namespace ee {
 class NodeGraph;
-class SceneSelection;
+class SelectionTree;
 
 /// Base class for all inspectors.
 class Inspector : public QWidget {
@@ -27,7 +27,7 @@ public:
     /// @param graph The current scene graph.
     /// @param selection The current scene selection.
     virtual void refreshPropertyValue(const NodeGraph& graph,
-                                      const SceneSelection& selection) = 0;
+                                      const SelectionTree& selection) = 0;
 
 Q_SIGNALS:
     /// Occurs when this inspector properties values have changed.

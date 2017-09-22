@@ -1,7 +1,8 @@
 #include "scenetree.hpp"
 #include "config.hpp"
-#include "sceneselection.hpp"
 #include "scenetreemodel.hpp"
+#include "selectionpath.hpp"
+#include "selectiontree.hpp"
 
 #include <parser/nodegraph.hpp>
 #include <parser/propertywriter.hpp>
@@ -12,37 +13,6 @@
 
 namespace ee {
 using Self = SceneTree;
-
-namespace {
-/// Finds the tree indices, start from the root node.
-QVector<int> findTreeIndices(QModelIndex modelIndex) {
-    QVector<int> treeIndices;
-    while (modelIndex.isValid()) {
-        treeIndices.append(modelIndex.row());
-        modelIndex = modelIndex.parent();
-    }
-    Q_ASSERT(treeIndices.size() > 0);
-    Q_ASSERT(treeIndices.last() == 0);
-    // Remove root index.
-    treeIndices.removeLast();
-    std::reverse(treeIndices.begin(), treeIndices.end());
-    return treeIndices;
-}
-
-/// Finds the ancestor indices, start from the root node.
-QVector<int> findAncestorIndices(QModelIndex modelIndex, bool& root) {
-    auto treeIndices = findTreeIndices(modelIndex);
-    if (treeIndices.isEmpty()) {
-        // Root.
-        root = true;
-    } else {
-        // Remove the leaf index.
-        treeIndices.removeLast();
-        root = false;
-    }
-    return treeIndices;
-}
-} // namespace
 
 Self::SceneTree(QWidget* parent)
     : Super(parent) {
@@ -63,39 +33,14 @@ void Self::setNodeGraph(const NodeGraph& graph) {
     setModel(treeModel_.get());
 }
 
-SceneSelection Self::currentSelection() const {
+SelectionTree Self::currentSelection() const {
+    auto selection = SelectionTree::emptySelection();
     auto modelIndices = selectedIndexes();
-    if (modelIndices.isEmpty()) {
-        return SceneSelection::emptySelection();
+    for (auto&& index : modelIndices) {
+        auto path = SelectionPath::fromIndex(index, treeModel_->rootIndex());
+        selection.addPath(path);
     }
-
-    QVector<QVector<int>> treeIndices;
-    treeIndices.reserve(modelIndices.size());
-
-    for (auto&& modelIndex : modelIndices) {
-        treeIndices.append(findTreeIndices(modelIndex));
-    }
-
-    for (int i = 1; i < treeIndices.size(); ++i) {
-        auto&& previous = treeIndices.at(i - 1);
-        auto&& current = treeIndices.at(i);
-        Q_ASSERT(previous.size() == current.size());
-        Q_ASSERT(std::equal(previous.cbegin(), std::prev(previous.cend()),
-                            current.cbegin()));
-    }
-
-    auto ancestorIndices = treeIndices.first();
-    if (ancestorIndices.isEmpty()) {
-        return SceneSelection::rootSelection();
-    }
-    ancestorIndices.pop_back();
-
-    QVector<int> childrenIndices;
-    childrenIndices.reserve(treeIndices.size());
-    for (auto&& elt : treeIndices) {
-        childrenIndices.append(elt.last());
-    }
-    return SceneSelection::multipleSelection(ancestorIndices, childrenIndices);
+    return selection;
 }
 
 void Self::selectionChanged(const QItemSelection& selected,
@@ -113,22 +58,18 @@ void Self::selectionChanged(const QItemSelection& selected,
         // OK.
     } else {
         QItemSelection toBeDeselectedIndices;
-        QModelIndex candidateModelIndex;
-        for (auto&& modelIndex : currentModelIndices) {
-            if (not selected.contains(modelIndex)) {
-                candidateModelIndex = modelIndex;
+        QModelIndex candidateIndex;
+        for (auto&& index : currentModelIndices) {
+            if (not selected.contains(index)) {
+                candidateIndex = index;
                 break;
             }
         }
-        bool isCurrentRoot;
-        auto currentTreeIndices =
-            findAncestorIndices(candidateModelIndex, isCurrentRoot);
-
-        for (auto&& modelIndex : selectedModelIndices) {
-            bool isRoot;
-            auto treeIndices = findAncestorIndices(modelIndex, isRoot);
-            if (currentTreeIndices != treeIndices || isCurrentRoot != isRoot) {
-                toBeDeselectedIndices.append(QItemSelectionRange(modelIndex));
+        auto candidatePath = SelectionPath::fromIndex(candidateIndex);
+        for (auto&& index : selectedModelIndices) {
+            auto path = SelectionPath::fromIndex(index);
+            if (not candidatePath.isSibling(path)) {
+                toBeDeselectedIndices.append(QItemSelectionRange(index));
             }
         }
         if (toBeDeselectedIndices.isEmpty()) {
@@ -142,31 +83,15 @@ void Self::selectionChanged(const QItemSelection& selected,
     }
 
     if (shouldEmitSignal) {
-        Q_EMIT selectionChanged(currentSelection());
+        Q_EMIT sceneSelectionChanged(currentSelection());
     }
 }
 
-void Self::updateProperty(const NodeGraph& graph,
-                          const SceneSelection& selection,
-                          const QString& propertyName,
-                          const cocos2d::Value& value) {
-    Q_ASSERT(not selection.isEmpty());
-    Q_ASSERT(&graph == nodeGraph_.get());
-    if (selection.isRoot()) {
-        auto&& writer = nodeGraph_->getPropertyWriter();
-        writer.setProperty(propertyName.toStdString(), value);
-    } else {
-        auto parentGraph = nodeGraph_.get();
-        for (auto&& index : selection.getAncestorIndices()) {
-            parentGraph =
-                &parentGraph->getChild(static_cast<std::size_t>(index));
-        }
-        for (auto&& childIndex : selection.getChildrenIndices()) {
-            auto&& childGraph =
-                parentGraph->getChild(static_cast<std::size_t>(childIndex));
-            auto&& writer = childGraph.getPropertyWriter();
-            writer.setProperty(propertyName.toStdString(), value);
-        }
-    }
+void Self::updateSelectionProperty(const SelectionPath& path,
+                                   const QString& propertyName,
+                                   const cocos2d::Value& value) {
+    auto&& graph = path.find(*nodeGraph_);
+    auto&& writer = graph.getPropertyWriter();
+    writer.setProperty(propertyName.toStdString(), value);
 }
 } // namespace ee

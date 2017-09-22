@@ -1,7 +1,7 @@
 include(../cocos2d/cocos2d.pri)
 
-QT -= core
 QT -= gui
+QT += opengl
 
 TARGET = parser
 TEMPLATE = lib

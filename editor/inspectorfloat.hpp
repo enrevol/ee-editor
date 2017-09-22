@@ -2,6 +2,7 @@
 #define EE_EDITOR_INSPECTOR_FLOAT_HPP
 
 #include "inspector.hpp"
+#include "propertygetter.hpp"
 
 #include <QWidget>
 
@@ -30,17 +31,13 @@ public:
     Self* setValueRange(float minimum, float maximum);
 
     virtual void refreshPropertyValue(const NodeGraph& graph,
-                                      const SceneSelection& selection) override;
-
-Q_SIGNALS:
-    void valueChanged(float value);
+                                      const SelectionTree& selection) override;
 
 protected:
     void setPropertyValue(float value);
-    float getGraphPropertyValue(const NodeGraph& graph) const;
 
 private:
-    QString propertyName_;
+    FloatPropertyGetter property_;
     Ui::InspectorFloat* ui_;
 };
 } // namespace ee

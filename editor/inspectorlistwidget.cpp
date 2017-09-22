@@ -1,6 +1,7 @@
 #include "inspectorlistwidget.hpp"
 #include "inspectorcontainer.hpp"
-#include "sceneselection.hpp"
+#include "selectionpath.hpp"
+#include "selectiontree.hpp"
 
 #include <QLayout>
 #include <QLayoutItem>
@@ -44,7 +45,7 @@ void Self::addInspector(Inspector* inspector) {
                 if (selection_->isEmpty()) {
                     return;
                 }
-                Q_EMIT propertyValueChanged(*nodeGraph_, *selection_,
+                Q_EMIT propertyValueChanged(selection_->getPaths().front(),
                                             propertyName, value);
             });
     inspectors_.append(inspector);
@@ -56,9 +57,12 @@ void Self::clearInspectors() {
 }
 
 void Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SceneSelection& selection) {
+                                const SelectionTree& selection) {
+    if (selection.isEmpty()) {
+        return;
+    }
     nodeGraph_ = &graph;
-    selection_ = std::make_unique<SceneSelection>(selection);
+    selection_ = std::make_unique<SelectionTree>(selection);
     for (auto&& inspector : inspectors_) {
         inspector->refreshPropertyValue(graph, selection);
     }

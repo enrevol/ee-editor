@@ -1,5 +1,6 @@
 #include "inspectorfloat.hpp"
-#include "sceneselection.hpp"
+#include "selectionpath.hpp"
+#include "selectiontree.hpp"
 #include "ui_inspectorfloat.h"
 
 #include <parser/nodegraph.hpp>
@@ -10,7 +11,7 @@ using Self = InspectorFloat;
 
 Self::InspectorFloat(const QString& propertyName, QWidget* parent)
     : Super(parent)
-    , propertyName_(propertyName)
+    , property_(propertyName)
     , ui_(new Ui::InspectorFloat) {
     ui_->setupUi(this);
     connect(ui_->propertyValue,
@@ -18,8 +19,7 @@ Self::InspectorFloat(const QString& propertyName, QWidget* parent)
                 &QDoubleSpinBox::valueChanged),
             [this](double value) {
                 auto floatValue = static_cast<float>(value);
-                Q_EMIT valueChanged(floatValue);
-                Q_EMIT propertyValueChanged(propertyName_,
+                Q_EMIT propertyValueChanged(property_.name(),
                                             cocos2d::Value(floatValue));
             });
 }
@@ -58,29 +58,12 @@ void Self::setPropertyValue(float value) {
     ui_->propertyValue->setValue(static_cast<double>(value));
 }
 
-float Self::getGraphPropertyValue(const NodeGraph& graph) const {
-    auto reader = graph.getPropertyReader();
-    return reader.getFloatProperty(propertyName_.toStdString());
-}
-
 void Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SceneSelection& selection) {
-    float sum = 0;
-    std::size_t count = 0;
-    if (selection.isRoot()) {
-        sum += getGraphPropertyValue(graph);
-        ++count;
-    } else {
-        const NodeGraph* parent = &graph;
-        for (auto&& index : selection.getAncestorIndices()) {
-            parent = &parent->getChild(static_cast<std::size_t>(index));
-        }
-        for (auto&& index : selection.getChildrenIndices()) {
-            auto&& child = graph.getChild(static_cast<std::size_t>(index));
-            sum += getGraphPropertyValue(child);
-            ++count;
-        }
-    }
-    setPropertyValue(sum / static_cast<float>(count));
+                                const SelectionTree& selection) {
+    Q_ASSERT(not selection.isEmpty());
+    auto&& paths = selection.getPaths();
+    auto&& path = paths.front();
+    auto value = property_.get(path.find(graph));
+    setPropertyValue(value);
 }
 } // namespace ee

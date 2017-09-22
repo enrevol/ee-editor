@@ -38,7 +38,7 @@ const QVector<Inspector*>& Self::getInspectors() const {
 }
 
 void Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SceneSelection& selection) {
+                                const SelectionTree& selection) {
     for (auto&& inspector : getInspectors()) {
         inspector->refreshPropertyValue(graph, selection);
     }

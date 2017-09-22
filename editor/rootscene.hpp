@@ -16,7 +16,8 @@ template <class T> class RefPtr;
 namespace ee {
 class NodeGraph;
 class NodeLoader;
-class SceneSelection;
+class SelectionPath;
+class SelectionTree;
 
 class RootScene : public cocos2d::Scene {
 private:
@@ -28,17 +29,17 @@ public:
 
     void setNodeGraph(const NodeGraph& graph);
 
-    void setSelection(const SceneSelection& selection);
+    void setSelection(const SelectionTree& selection);
 
-    cocos2d::Node* getNode(const QVector<int>& treeIndices);
+    void updateSelectionProperty(const NodeGraph& graph,
+                                 const SelectionPath& path,
+                                 const QString& propertyName,
+                                 const cocos2d::Value& value);
 
-    void updateProperty(const NodeGraph& graph, const SceneSelection& selection,
-                        const QString& propertyName,
-                        const cocos2d::Value& value);
-
-    void updateProperty(cocos2d::Node* node, const NodeLoaderPtr& nodeLoader,
-                        const QString& propertyName,
-                        const cocos2d::Value& value);
+    void updateSelectionProperty(cocos2d::Node* node,
+                                 const NodeLoaderPtr& nodeLoader,
+                                 const QString& propertyName,
+                                 const cocos2d::Value& value);
 
 protected:
     virtual bool init() override;
@@ -54,7 +55,7 @@ protected:
 private:
     void updateSelection();
 
-    void updateSelection(const SceneSelection& selection);
+    void updateSelection(const SelectionTree& selection);
 
     void highlightNodes(const std::vector<cocos2d::Node*>& nodes);
 
@@ -68,7 +69,7 @@ private:
     void ensureHighlighters(std::size_t size);
 
     std::unique_ptr<NodeGraph> nodeGraph_;
-    std::unique_ptr<SceneSelection> selection_;
+    std::unique_ptr<SelectionTree> selection_;
     std::vector<cocos2d::RefPtr<cocos2d::LayerColor>> highlighters_;
 
     cocos2d::Node* rootNode_;

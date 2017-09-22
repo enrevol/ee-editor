@@ -2,7 +2,8 @@
 
 #include "config.hpp"
 #include "rootscene.hpp"
-#include "sceneselection.hpp"
+#include "selectionpath.hpp"
+#include "selectiontree.hpp"
 #include "utils.hpp"
 
 #include <parser/graphreader.hpp>
@@ -33,8 +34,7 @@ bool Self::init() {
         return false;
     }
 
-    selection_ =
-        std::make_unique<SceneSelection>(SceneSelection::emptySelection());
+    setSelection(SelectionTree::emptySelection());
 
     background_ = cocos2d::LayerColor::create(cocos2d::Color4B::BLACK);
     addChild(background_);
@@ -68,23 +68,14 @@ void Self::updateSelection() {
     updateSelection(*selection_);
 }
 
-void Self::updateSelection(const SceneSelection& selection) {
+void Self::updateSelection(const SelectionTree& selection) {
     unhighlightNodes();
-    if (selection.isEmpty()) {
-        // Nothing.
-    } else if (selection.isRoot()) {
-        ensureHighlighters(1);
-        highlightNode(highlighters_.front(), rootNode_);
-    } else {
-        std::size_t i = 0;
-        for (auto&& childIndex : selection.getChildrenIndices()) {
-            auto treeIndices = selection.getAncestorIndices();
-            treeIndices.append(childIndex);
-            auto node = getNode(treeIndices);
-            ensureHighlighters(i + 1);
-            highlightNode(highlighters_.at(i), node);
-            ++i;
-        }
+    std::size_t i = 0;
+    for (auto&& path : selection.getPaths()) {
+        auto node = path.find(rootNode_);
+        ensureHighlighters(i + 1);
+        highlightNode(highlighters_.at(i), node);
+        ++i;
     }
 }
 
@@ -103,8 +94,8 @@ void Self::setNodeGraph(const NodeGraph& graph) {
     addChild(rootNode_);
 }
 
-void Self::setSelection(const SceneSelection& selection) {
-    selection_ = std::make_unique<SceneSelection>(selection);
+void Self::setSelection(const SelectionTree& selection) {
+    selection_ = std::make_unique<SelectionTree>(selection);
 }
 
 void Self::highlightNodes(const std::vector<cocos2d::Node*>& nodes) {
@@ -144,50 +135,23 @@ void Self::ensureHighlighters(std::size_t size) {
     }
 }
 
-cocos2d::Node* Self::getNode(const QVector<int>& treeIndices) {
-    Q_ASSERT(not treeIndices.empty());
-    if (treeIndices.isEmpty()) {
-        return rootNode_;
-    }
-    auto node = rootNode_;
-    for (auto&& index : treeIndices) {
-        node = node->getChildren().at(index);
-    }
-    return node;
-}
-
-void Self::updateProperty(const NodeGraph& graph,
-                          const SceneSelection& selection,
-                          const QString& propertyName,
-                          const cocos2d::Value& value) {
-    Q_ASSERT(not selection.isEmpty());
+void Self::updateSelectionProperty(const NodeGraph& graph,
+                                   const SelectionPath& path,
+                                   const QString& propertyName,
+                                   const cocos2d::Value& value) {
+    Q_ASSERT(not path.isEmpty());
     NodeLoaderLibrary library;
     library.addDefaultLoaders();
     GraphReader reader(library);
-    if (selection.isRoot()) {
-        updateProperty(rootNode_, reader.getNodeLoader(graph), propertyName,
-                       value);
-    } else {
-        auto parentGraph = &graph;
-        auto parentNode = rootNode_;
-        for (auto&& index : selection.getAncestorIndices()) {
-            parentGraph =
-                &parentGraph->getChild(static_cast<std::size_t>(index));
-            parentNode = parentNode->getChildren().at(index);
-        }
-        for (auto&& childIndex : selection.getChildrenIndices()) {
-            auto&& childGraph =
-                parentGraph->getChild(static_cast<std::size_t>(childIndex));
-            auto childNode = parentNode->getChildren().at(childIndex);
-            updateProperty(childNode, reader.getNodeLoader(childGraph),
-                           propertyName, value);
-        }
-    }
+    auto node = path.find(rootNode_);
+    updateSelectionProperty(node, reader.getNodeLoader(graph), propertyName,
+                            value);
 }
 
-void Self::updateProperty(cocos2d::Node* node, const NodeLoaderPtr& nodeLoader,
-                          const QString& propertyName,
-                          const cocos2d::Value& value) {
+void Self::updateSelectionProperty(cocos2d::Node* node,
+                                   const NodeLoaderPtr& nodeLoader,
+                                   const QString& propertyName,
+                                   const cocos2d::Value& value) {
     auto&& propertyHandler = nodeLoader->getPropertyHandler();
     propertyHandler.writeProperty(node, propertyName.toStdString(), value);
 }

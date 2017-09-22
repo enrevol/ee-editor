@@ -10,7 +10,6 @@
 namespace ee {
 class Inspector;
 class NodeGraph;
-class SceneSelection;
 
 /// Groups many inspectors.
 class InspectorContainer : public Inspector {
@@ -29,7 +28,7 @@ public:
 
     /// @see Super.
     virtual void refreshPropertyValue(const NodeGraph& graph,
-                                      const SceneSelection& selection) override;
+                                      const SelectionTree& selection) override;
 
 protected:
     virtual QVector<Inspector*> buildInspectors() = 0;

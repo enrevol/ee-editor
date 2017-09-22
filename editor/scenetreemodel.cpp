@@ -36,6 +36,10 @@ SceneTreeItem* Self::getTreeItem(const QModelIndex& index) const {
     return static_cast<SceneTreeItem*>(index.internalPointer());
 }
 
+QModelIndex Self::rootIndex() const {
+    return index(0, 0, QModelIndex());
+}
+
 QVariant Self::data(const QModelIndex& index, int role) const {
     if (not index.isValid()) {
         return QVariant();

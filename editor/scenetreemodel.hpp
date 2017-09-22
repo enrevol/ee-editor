@@ -21,6 +21,8 @@ public:
     /// Sets the node graph reference.
     void setNodeGraph(NodeGraph& graph);
 
+    QModelIndex rootIndex() const;
+
     /// @see Super.
     virtual QVariant data(const QModelIndex& index, int role) const override;
 

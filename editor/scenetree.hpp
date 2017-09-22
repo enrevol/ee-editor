@@ -12,8 +12,10 @@ class Node;
 namespace ee {
 class NodeGraph;
 class SceneTreeModel;
-class SceneSelection;
+class SelectionPath;
+class SelectionTree;
 
+/// Display the scene tree nodes.
 class SceneTree : public QTreeView {
     Q_OBJECT
 
@@ -28,16 +30,22 @@ public:
 
     const NodeGraph& getNodeGraph() const;
 
+    /// Sets the node graph.
     void setNodeGraph(const NodeGraph& graph);
 
-    SceneSelection currentSelection() const;
+    /// Gets the currently selected nodes.
+    SelectionTree currentSelection() const;
 
-    void updateProperty(const NodeGraph& graph, const SceneSelection& selection,
-                        const QString& propertyName,
-                        const cocos2d::Value& value);
+    /// Updates the property for the selection.
+    /// @param path The selection path.
+    /// @param propertyName The name of the property.
+    /// @param value The value of the property.
+    void updateSelectionProperty(const SelectionPath& path,
+                                 const QString& propertyName,
+                                 const cocos2d::Value& value);
 
 Q_SIGNALS:
-    void selectionChanged(const SceneSelection& selection);
+    void sceneSelectionChanged(const SelectionTree& selection);
 
 protected:
     virtual void selectionChanged(const QItemSelection& selected,

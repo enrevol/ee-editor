@@ -8,7 +8,8 @@
 namespace ee {
 class Inspector;
 class NodeGraph;
-class SceneSelection;
+class SelectionPath;
+class SelectionTree;
 
 class InspectorListWidget : public QWidget {
     Q_OBJECT
@@ -27,17 +28,16 @@ public:
     void clearInspectors();
 
     void refreshPropertyValue(const NodeGraph& graph,
-                              const SceneSelection& selection);
+                              const SelectionTree& selection);
 
 Q_SIGNALS:
-    void propertyValueChanged(const NodeGraph& graph,
-                              const SceneSelection& selection,
+    void propertyValueChanged(const SelectionPath& path,
                               const QString& propertyName,
                               const cocos2d::Value& value);
 
 private:
     const NodeGraph* nodeGraph_;
-    std::unique_ptr<SceneSelection> selection_;
+    std::unique_ptr<SelectionTree> selection_;
     QVector<Inspector*> inspectors_;
 };
 } // namespace ee

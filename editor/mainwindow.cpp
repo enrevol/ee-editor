@@ -129,10 +129,8 @@ Self::MainWindow(QWidget* parent)
         // ui_->sceneTree->setRootNode(scene);
     });
 
-    connect(ui_->sceneTree,
-            static_cast<void (SceneTree::*)(const SceneSelection&)>(
-                &SceneTree::selectionChanged),
-            [this](const SceneSelection& selection) {
+    connect(ui_->sceneTree, &SceneTree::sceneSelectionChanged,
+            [this](const SelectionTree& selection) {
                 auto rootScene = dynamic_cast<RootScene*>(
                     cocos2d::Director::getInstance()->getRunningScene());
 
@@ -147,25 +145,25 @@ Self::MainWindow(QWidget* parent)
                                            selection);
             });
 
-    connect(
-        ui_->inspectorList, &InspectorListWidget::propertyValueChanged,
-        [this](const NodeGraph& graph, const SceneSelection& selection,
-               const QString& propertyName, const cocos2d::Value& value) {
-            Q_ASSERT(graph.toDict() == ui_->sceneTree->getNodeGraph().toDict());
-            auto rootScene = dynamic_cast<RootScene*>(
-                cocos2d::Director::getInstance()->getRunningScene());
-            rootScene->updateProperty(graph, selection, propertyName, value);
-            ui_->sceneTree->updateProperty(graph, selection, propertyName,
-                                           value);
-        });
+    connect(ui_->inspectorList, &InspectorListWidget::propertyValueChanged,
+            [this](const SelectionPath& path, const QString& propertyName,
+                   const cocos2d::Value& value) {
+                auto sceneTree = ui_->sceneTree;
+                auto rootScene = dynamic_cast<RootScene*>(
+                    cocos2d::Director::getInstance()->getRunningScene());
+                rootScene->updateSelectionProperty(sceneTree->getNodeGraph(),
+                                                   path, propertyName, value);
+                sceneTree->updateSelectionProperty(path, propertyName, value);
+            });
 
     connect(&Config::getInstance(), &Config::interfaceLoaded,
             [this](const QFileInfo& path) {
                 Q_UNUSED(path);
-                ui_->sceneTree->setNodeGraph(Config::getInstance()
-                                                 .getInterfaceSettings()
-                                                 ->getNodeGraph()
-                                                 .value());
+                auto sceneTree = ui_->sceneTree;
+                sceneTree->setNodeGraph(Config::getInstance()
+                                            .getInterfaceSettings()
+                                            ->getNodeGraph()
+                                            .value());
 
                 auto rootScene = dynamic_cast<RootScene*>(
                     cocos2d::Director::getInstance()->getRunningScene());
