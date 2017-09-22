@@ -1,6 +1,7 @@
 #include "nodeinspector.hpp"
 #include "inspectorbool.hpp"
 #include "inspectorfloat.hpp"
+#include "inspectorscale.hpp"
 
 #include <parser/nodeloader.hpp>
 
@@ -59,19 +60,7 @@ QVector<Inspector*> Self::buildInspectors() {
                           ->setMaximumValue(+99)
                           ->setValuePrecision(3));
 
-    inspectors.append((new InspectorFloat(QString::fromStdString(
-                           NodeLoader::Property::ScaleX)))
-                          ->setPropertyDisplayName("Scale X")
-                          ->setMinimumValue(-99)
-                          ->setMaximumValue(+99)
-                          ->setValuePrecision(3));
-
-    inspectors.append((new InspectorFloat(QString::fromStdString(
-                           NodeLoader::Property::ScaleY)))
-                          ->setPropertyDisplayName("Scale Y")
-                          ->setMinimumValue(-99)
-                          ->setMaximumValue(+99)
-                          ->setValuePrecision(3));
+    inspectors.append(new InspectorScale());
 
     inspectors.append((new InspectorFloat(QString::fromStdString(
                            NodeLoader::Property::Rotation)))

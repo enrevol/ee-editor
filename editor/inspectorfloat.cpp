@@ -11,8 +11,8 @@ using Self = InspectorFloat;
 
 Self::InspectorFloat(const QString& propertyName, QWidget* parent)
     : Super(parent)
-    , property_(propertyName)
-    , ui_(new Ui::InspectorFloat) {
+    , ui_(new Ui::InspectorFloat)
+    , property_(propertyName) {
     ui_->setupUi(this);
     connect(ui_->propertyValue,
             static_cast<void (QDoubleSpinBox::*)(double)>(

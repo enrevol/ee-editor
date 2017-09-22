@@ -37,8 +37,8 @@ protected:
     void setPropertyValue(float value);
 
 private:
-    FloatPropertyGetter property_;
     Ui::InspectorFloat* ui_;
+    FloatPropertyGetter property_;
 };
 } // namespace ee
 
