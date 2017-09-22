@@ -202,7 +202,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="ee::InspectorListWidget" name="inspectorList" native="true">
+          <widget class="QWidget" name="rightPanel" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -219,6 +219,9 @@
             <property name="spacing">
              <number>0</number>
             </property>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
+            </property>
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -233,28 +236,38 @@
             </property>
             <item>
              <widget class="QScrollArea" name="scrollArea">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
               <property name="widgetResizable">
                <bool>true</bool>
               </property>
-              <widget class="QWidget" name="scrollAreaWidgetContents">
+              <widget class="ee::InspectorListWidget" name="inspectorList">
                <property name="geometry">
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>198</width>
-                 <height>507</height>
+                 <width>200</width>
+                 <height>509</height>
                 </rect>
                </property>
-               <widget class="QWidget" name="widget" native="true">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>200</y>
-                  <width>120</width>
-                  <height>80</height>
-                 </rect>
+               <layout class="QVBoxLayout" name="verticalLayout_7">
+                <property name="spacing">
+                 <number>0</number>
                 </property>
-               </widget>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+               </layout>
               </widget>
              </widget>
             </item>
