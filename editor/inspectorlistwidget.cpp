@@ -36,10 +36,7 @@ Self::~InspectorListWidget() {}
 
 void Self::addInspector(Inspector* inspector) {
     auto boxLayout = dynamic_cast<QBoxLayout*>(layout());
-    QFlags<Qt::AlignmentFlag> alignment;
-    alignment |= Qt::AlignmentFlag::AlignTop;
-    alignment |= Qt::AlignmentFlag::AlignJustify;
-    boxLayout->addWidget(inspector, 0, alignment);
+    boxLayout->addWidget(inspector);
     connect(inspector, &Inspector::propertyValueChanged,
             [this](const QString& propertyName, const cocos2d::Value& value) {
                 if (selection_->isEmpty()) {

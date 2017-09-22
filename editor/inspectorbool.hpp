@@ -17,11 +17,11 @@ private:
     using Super = Inspector;
 
 public:
-    explicit InspectorBool(const QString& propertyName,
-                           QWidget* parent = nullptr);
+    explicit InspectorBool(QWidget* parent = nullptr);
 
     virtual ~InspectorBool() override;
 
+    Self* setPropertyName(const QString& name);
     Self* setPropertyDisplayName(const QString& name);
 
     virtual void refreshPropertyValue(const NodeGraph& graph,
@@ -31,8 +31,8 @@ protected:
     void setPropertyValue(bool value);
 
 private:
-    BoolPropertyGetter property_;
     Ui::InspectorBool* ui_;
+    std::unique_ptr<BoolPropertyGetter> property_;
 };
 } // namespace ee
 

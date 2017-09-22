@@ -19,11 +19,11 @@ private:
     using Super = Inspector;
 
 public:
-    explicit InspectorFloat(const QString& propertyName,
-                            QWidget* parent = nullptr);
+    explicit InspectorFloat(QWidget* parent = nullptr);
 
     virtual ~InspectorFloat() override;
 
+    Self* setPropertyName(const QString& name);
     Self* setPropertyDisplayName(const QString& name);
     Self* setValuePrecision(int precision);
     Self* setMinimumValue(float value);
@@ -38,7 +38,7 @@ protected:
 
 private:
     Ui::InspectorFloat* ui_;
-    FloatPropertyGetter property_;
+    std::unique_ptr<FloatPropertyGetter> property_;
 };
 } // namespace ee
 

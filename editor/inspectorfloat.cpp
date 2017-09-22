@@ -9,17 +9,16 @@
 namespace ee {
 using Self = InspectorFloat;
 
-Self::InspectorFloat(const QString& propertyName, QWidget* parent)
+Self::InspectorFloat(QWidget* parent)
     : Super(parent)
-    , ui_(new Ui::InspectorFloat)
-    , property_(propertyName) {
+    , ui_(new Ui::InspectorFloat) {
     ui_->setupUi(this);
     connect(ui_->propertyValue,
             static_cast<void (QDoubleSpinBox::*)(double)>(
                 &QDoubleSpinBox::valueChanged),
             [this](double value) {
                 auto floatValue = static_cast<float>(value);
-                Q_EMIT propertyValueChanged(property_.name(),
+                Q_EMIT propertyValueChanged(property_->name(),
                                             cocos2d::Value(floatValue));
             });
 }
@@ -28,8 +27,13 @@ Self::~InspectorFloat() {
     delete ui_;
 }
 
+Self* Self::setPropertyName(const QString& name) {
+    property_ = std::make_unique<FloatPropertyGetter>(name);
+    return this;
+}
+
 Self* Self::setPropertyDisplayName(const QString& name) {
-    ui_->propertyName->setText(name);
+    ui_->propertyDisplayName->setText(name);
     return this;
 }
 
@@ -63,7 +67,7 @@ void Self::refreshPropertyValue(const NodeGraph& graph,
     Q_ASSERT(not selection.isEmpty());
     auto&& paths = selection.getPaths();
     auto&& path = paths.front();
-    auto value = property_.get(path.find(graph));
+    auto value = property_->get(path.find(graph));
     setPropertyValue(value);
 }
 } // namespace ee
