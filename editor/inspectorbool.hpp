@@ -10,8 +10,6 @@ class InspectorBool;
 
 namespace ee {
 class InspectorBool : public Inspector {
-    Q_OBJECT
-
 private:
     using Self = InspectorBool;
     using Super = Inspector;

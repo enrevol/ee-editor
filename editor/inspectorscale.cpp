@@ -41,7 +41,7 @@ Self::~InspectorScale() {
 }
 
 void Self::setupSpinner(QDoubleSpinBox* spinner) {
-    spinner->setRange(-99, +99);
+    spinner->setRange(-99.999, +99.999);
     spinner->setDecimals(3);
     spinner->setSingleStep(0.05);
 }

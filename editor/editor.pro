@@ -43,7 +43,6 @@ SOURCES += \
     inspectortexture.cpp \
     inspectorfloat.cpp \
     scenetree.cpp \
-    inspectorpoint.cpp \
     interfacesettings.cpp \
     filesystemwatcher.cpp \
     resourcetree.cpp \
@@ -59,7 +58,8 @@ SOURCES += \
     selectionpath.cpp \
     selectiontree.cpp \
     propertygetter.cpp \
-    inspectorscale.cpp
+    inspectorscale.cpp \
+    inspectorfloatxy.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -81,7 +81,6 @@ HEADERS += \
     inspectortexture.hpp \
     inspectorfloat.hpp \
     scenetree.hpp \
-    inspectorpoint.hpp \
     interfacesettings.hpp \
     filesystemwatcher.hpp \
     resourcetree.hpp \
@@ -97,13 +96,14 @@ HEADERS += \
     selectionpath.hpp \
     selectiontree.hpp \
     propertygetter.hpp \
-    inspectorscale.hpp
+    inspectorscale.hpp \
+    inspectorfloatxy.hpp
 
 FORMS += \
     mainwindow.ui \
     projectsettingsdialog.ui \
     inspectortexture.ui \
     inspectorfloat.ui \
-    inspectorpoint.ui \
     inspectorbool.ui \
-    inspectorscale.ui
+    inspectorscale.ui \
+    inspectorfloatxy.ui

@@ -37,6 +37,11 @@ Self* Self::setPropertyDisplayName(const QString& name) {
     return this;
 }
 
+Self* Self::setSingleStep(float value) {
+    ui_->propertyValue->setSingleStep(static_cast<double>(value));
+    return this;
+}
+
 Self* Self::setValuePrecision(int precision) {
     ui_->propertyValue->setDecimals(precision);
     return this;

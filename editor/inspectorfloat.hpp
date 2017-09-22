@@ -12,8 +12,6 @@ class InspectorFloat;
 
 namespace ee {
 class InspectorFloat : public Inspector {
-    Q_OBJECT
-
 private:
     using Self = InspectorFloat;
     using Super = Inspector;
@@ -25,6 +23,7 @@ public:
 
     Self* setPropertyName(const QString& name);
     Self* setPropertyDisplayName(const QString& name);
+    Self* setSingleStep(float value);
     Self* setValuePrecision(int precision);
     Self* setMinimumValue(float value);
     Self* setMaximumValue(float value);

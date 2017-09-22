@@ -13,8 +13,6 @@ class NodeGraph;
 
 /// Groups many inspectors.
 class InspectorContainer : public Inspector {
-    Q_OBJECT
-
 private:
     using Self = InspectorContainer;
     using Super = Inspector;

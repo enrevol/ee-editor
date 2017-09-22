@@ -12,8 +12,6 @@ class InspectorScale;
 
 namespace ee {
 class InspectorScale : public Inspector {
-    Q_OBJECT
-
 private:
     using Self = InspectorScale;
     using Super = Inspector;
