@@ -33,14 +33,6 @@ bool Self::init() {
         return false;
     }
 
-    QObject::connect(&Config::getInstance(), &Config::interfaceLoaded,
-                     [this](const QFileInfo& path) {
-                         setNodeGraph(Config::getInstance()
-                                          .getInterfaceSettings()
-                                          ->getNodeGraph()
-                                          .value());
-                     });
-
     selection_ =
         std::make_unique<SceneSelection>(SceneSelection::emptySelection());
 

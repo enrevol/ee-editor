@@ -1,6 +1,7 @@
 #include <ciso646>
 
 #include "config.hpp"
+#include "filesystemwatcher.hpp"
 #include "mainwindow.hpp"
 #include "nodeinspector.hpp"
 #include "projectsettings.hpp"
@@ -157,6 +158,33 @@ Self::MainWindow(QWidget* parent)
             ui_->sceneTree->updateProperty(graph, selection, propertyName,
                                            value);
         });
+
+    connect(&Config::getInstance(), &Config::interfaceLoaded,
+            [this](const QFileInfo& path) {
+                Q_UNUSED(path);
+                ui_->sceneTree->setNodeGraph(Config::getInstance()
+                                                 .getInterfaceSettings()
+                                                 ->getNodeGraph()
+                                                 .value());
+
+                auto rootScene = dynamic_cast<RootScene*>(
+                    cocos2d::Director::getInstance()->getRunningScene());
+                rootScene->setNodeGraph(Config::getInstance()
+                                            .getInterfaceSettings()
+                                            ->getNodeGraph()
+                                            .value());
+            });
+
+    auto&& watcher = FileSystemWatcher::getInstance();
+    connect(&watcher, &FileSystemWatcher::fileChanged,
+            [this](const QString& path) {
+                ui_->resourceTree->updateResourceDirectories();
+            });
+
+    connect(&watcher, &FileSystemWatcher::directoryChanged,
+            [this](const QString& path) {
+                ui_->resourceTree->updateResourceDirectories();
+            });
 
     ui_->actionProject_Settings->setEnabled(false);
     ui_->actionInterface_File->setEnabled(false);

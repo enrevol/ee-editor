@@ -47,14 +47,6 @@ QVector<int> findAncestorIndices(QModelIndex modelIndex, bool& root) {
 Self::SceneTree(QWidget* parent)
     : Super(parent) {
     setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
-    connect(&Config::getInstance(), &Config::interfaceLoaded,
-            [this](const QFileInfo& path) {
-                Q_UNUSED(path);
-                setNodeGraph(Config::getInstance()
-                                 .getInterfaceSettings()
-                                 ->getNodeGraph()
-                                 .value());
-            });
 }
 
 Self::~SceneTree() {}

@@ -19,14 +19,6 @@ Self::ResourceTree(QWidget* parent)
     : Super(parent) {
     header()->close();
 
-    auto&& watcher = FileSystemWatcher::getInstance();
-
-    connect(&watcher, &FileSystemWatcher::fileChanged,
-            [this](const QString& path) { updateResourceDirectories(); });
-
-    connect(&watcher, &FileSystemWatcher::directoryChanged,
-            [this](const QString& path) { updateResourceDirectories(); });
-
     connect(this, &Self::currentItemChanged, [this](QTreeWidgetItem* item) {
         if (item == nullptr) {
             // FIXME.
