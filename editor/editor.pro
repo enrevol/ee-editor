@@ -1,6 +1,6 @@
 include(../libraries/cocos2d/cocos2d.pri)
 
-QT += core gui opengl
+QT += opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

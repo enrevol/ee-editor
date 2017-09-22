@@ -14,7 +14,7 @@ include(cocos/platform/platform.pri)
 include(cocos/renderer/renderer.pri)
 include(cocos/ui/ui.pri)
 
-QT += core gui widgets opengl
+QT += opengl
 
 TARGET = cocos2d
 TEMPLATE = lib
