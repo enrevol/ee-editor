@@ -59,7 +59,8 @@ SOURCES += \
     selectiontree.cpp \
     propertygetter.cpp \
     inspectorscale.cpp \
-    inspectorfloatxy.cpp
+    inspectorfloatxy.cpp \
+    inspectorint.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -97,7 +98,8 @@ HEADERS += \
     selectiontree.hpp \
     propertygetter.hpp \
     inspectorscale.hpp \
-    inspectorfloatxy.hpp
+    inspectorfloatxy.hpp \
+    inspectorint.hpp
 
 FORMS += \
     mainwindow.ui \
@@ -106,4 +108,5 @@ FORMS += \
     inspectorfloat.ui \
     inspectorbool.ui \
     inspectorscale.ui \
-    inspectorfloatxy.ui
+    inspectorfloatxy.ui \
+    inspectorint.ui

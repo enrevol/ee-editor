@@ -2,6 +2,7 @@
 #include "inspectorbool.hpp"
 #include "inspectorfloat.hpp"
 #include "inspectorfloatxy.hpp"
+#include "inspectorint.hpp"
 #include "inspectorscale.hpp"
 
 #include <parser/nodeloader.hpp>
@@ -61,17 +62,55 @@ QVector<Inspector*> Self::buildInspectors() {
     inspectors.append((new InspectorFloat())
                           ->setPropertyName(QString::fromStdString(
                               NodeLoader::Property::Rotation))
-                          ->setSingleStep(1.0f)
-                          ->setValuePrecision(3)
                           ->setPropertyDisplayName("Rotation")
-                          ->setMinimumValue(-359.999f)
-                          ->setMaximumValue(+359.999f));
+                          ->setSingleStep(1.0f)
+                          ->setValuePrecision(2)
+                          ->setMinimumValue(-359.99f)
+                          ->setMaximumValue(+359.99f));
+
+    inspectors.append(
+        (new InspectorFloatXY())
+            ->setPropertyName(
+                QString::fromStdString(NodeLoader::Property::SkewX),
+                QString::fromStdString(NodeLoader::Property::SkewY))
+            ->setPropertyDisplayName("Skew")
+            ->setSubPropertyDisplayName("X", "Y")
+            ->setSingleStep(0.05f)
+            ->setValuePrecision(3)
+            ->setMinimumValue(-99.999f)
+            ->setMaximumValue(+99.999f));
+
+    inspectors.append(
+        (new InspectorInt())
+            ->setPropertyName(QString::fromStdString(NodeLoader::Property::Tag))
+            ->setPropertyDisplayName("Tag")
+            ->setSingleStep(1)
+            ->setMinimumValue(-1)
+            ->setMaximumValue(+9999));
 
     inspectors.append(
         (new InspectorBool())
             ->setPropertyName(QString::fromStdString(
                 NodeLoader::Property::IgnoreAnchorPointForPosition))
             ->setPropertyDisplayName("Ignore anchor point for position"));
+
+    inspectors.append((new InspectorInt())
+                          ->setPropertyName(QString::fromStdString(
+                              NodeLoader::Property::Opacity))
+                          ->setPropertyDisplayName("Opacity")
+                          ->setSingleStep(1)
+                          ->setMinimumValue(+0)
+                          ->setMaximumValue(+255));
+
+    inspectors.append((new InspectorBool())
+                          ->setPropertyName(QString::fromStdString(
+                              NodeLoader::Property::CascadeColorEnabled))
+                          ->setPropertyDisplayName("Cascade color enabled"));
+
+    inspectors.append((new InspectorBool())
+                          ->setPropertyName(QString::fromStdString(
+                              NodeLoader::Property::CascadeOpacityEnabled))
+                          ->setPropertyDisplayName("Cascade opacity enabled"));
 
     return inspectors;
 }

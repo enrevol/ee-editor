@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>InspectorFloat</class>
- <widget class="QWidget" name="InspectorFloat">
+ <class>InspectorInt</class>
+ <widget class="QWidget" name="InspectorInt">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>361</width>
-    <height>34</height>
+    <width>372</width>
+    <height>24</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -49,14 +43,14 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>40</width>
+       <width>179</width>
        <height>20</height>
       </size>
      </property>
     </spacer>
    </item>
    <item>
-    <widget class="QDoubleSpinBox" name="propertyInput"/>
+    <widget class="QSpinBox" name="propertyInput"/>
    </item>
   </layout>
  </widget>

@@ -4,8 +4,6 @@
 #include "inspector.hpp"
 #include "propertygetter.hpp"
 
-#include <QWidget>
-
 namespace Ui {
 class InspectorFloat;
 } // namespace Ui
@@ -27,7 +25,6 @@ public:
     Self* setValuePrecision(int precision);
     Self* setMinimumValue(float value);
     Self* setMaximumValue(float value);
-    Self* setValueRange(float minimum, float maximum);
 
     virtual void refreshPropertyValue(const NodeGraph& graph,
                                       const SelectionTree& selection) override;

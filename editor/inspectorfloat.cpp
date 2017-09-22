@@ -13,7 +13,7 @@ Self::InspectorFloat(QWidget* parent)
     : Super(parent)
     , ui_(new Ui::InspectorFloat) {
     ui_->setupUi(this);
-    connect(ui_->propertyValue,
+    connect(ui_->propertyInput,
             static_cast<void (QDoubleSpinBox::*)(double)>(
                 &QDoubleSpinBox::valueChanged),
             [this](double value) {
@@ -38,33 +38,27 @@ Self* Self::setPropertyDisplayName(const QString& name) {
 }
 
 Self* Self::setSingleStep(float value) {
-    ui_->propertyValue->setSingleStep(static_cast<double>(value));
+    ui_->propertyInput->setSingleStep(static_cast<double>(value));
     return this;
 }
 
 Self* Self::setValuePrecision(int precision) {
-    ui_->propertyValue->setDecimals(precision);
+    ui_->propertyInput->setDecimals(precision);
     return this;
 }
 
 Self* Self::setMinimumValue(float value) {
-    ui_->propertyValue->setMinimum(static_cast<double>(value));
+    ui_->propertyInput->setMinimum(static_cast<double>(value));
     return this;
 }
 
 Self* Self::setMaximumValue(float value) {
-    ui_->propertyValue->setMaximum(static_cast<double>(value));
-    return this;
-}
-
-Self* Self::setValueRange(float minimum, float maximum) {
-    setMinimumValue(minimum);
-    setMaximumValue(maximum);
+    ui_->propertyInput->setMaximum(static_cast<double>(value));
     return this;
 }
 
 void Self::setPropertyValue(float value) {
-    ui_->propertyValue->setValue(static_cast<double>(value));
+    ui_->propertyInput->setValue(static_cast<double>(value));
 }
 
 void Self::refreshPropertyValue(const NodeGraph& graph,

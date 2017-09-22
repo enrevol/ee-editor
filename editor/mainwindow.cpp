@@ -181,11 +181,13 @@ Self::MainWindow(QWidget* parent)
     auto&& watcher = FileSystemWatcher::getInstance();
     connect(&watcher, &FileSystemWatcher::fileChanged,
             [this](const QString& path) {
+                Q_UNUSED(path);
                 ui_->resourceTree->updateResourceDirectories();
             });
 
     connect(&watcher, &FileSystemWatcher::directoryChanged,
             [this](const QString& path) {
+                Q_UNUSED(path);
                 ui_->resourceTree->updateResourceDirectories();
             });
 
