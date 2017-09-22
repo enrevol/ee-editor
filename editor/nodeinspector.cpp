@@ -1,4 +1,5 @@
 #include "nodeinspector.hpp"
+#include "inspectorbool.hpp"
 #include "inspectorfloat.hpp"
 
 #include <parser/nodeloader.hpp>
@@ -10,39 +11,80 @@ Self::NodeInspector(QWidget* parent)
     : Super(parent) {}
 
 QVector<Inspector*> Self::buildInspectors() {
-    auto inspector_position_x = new InspectorFloat(
-        QString::fromStdString(NodeLoader::Property::PositionX));
-    inspector_position_x->setPropertyDisplayName("Position X")
-        ->setMinimumValue(-9999)
-        ->setMaximumValue(+9999)
-        ->setValuePrecision(3);
-
-    auto inspector_position_y = new InspectorFloat(
-        QString::fromStdString(NodeLoader::Property::PositionY));
-    inspector_position_y->setPropertyDisplayName("Position Y")
-        ->setMinimumValue(-9999)
-        ->setMaximumValue(+9999)
-        ->setValuePrecision(3);
-
-    auto inspector_content_width = new InspectorFloat(
-        QString::fromStdString(NodeLoader::Property::ContentSizeWidth));
-    inspector_content_width->setPropertyDisplayName("Content width")
-        ->setMinimumValue(0)
-        ->setMaximumValue(+999)
-        ->setValuePrecision(3);
-
-    auto inspector_content_height = new InspectorFloat(
-        QString::fromStdString(NodeLoader::Property::ContentSizeHeight));
-    inspector_content_height->setPropertyDisplayName("Content height")
-        ->setMinimumValue(0)
-        ->setMaximumValue(+999)
-        ->setValuePrecision(3);
-
     QVector<Inspector*> inspectors;
-    inspectors.append(inspector_position_x);
-    inspectors.append(inspector_position_y);
-    inspectors.append(inspector_content_width);
-    inspectors.append(inspector_content_height);
+
+    inspectors.append((new InspectorBool(QString::fromStdString(
+                           NodeLoader::Property::Visible)))
+                          ->setPropertyDisplayName("Visible"));
+
+    inspectors.append((new InspectorFloat(QString::fromStdString(
+                           NodeLoader::Property::PositionX)))
+                          ->setPropertyDisplayName("Position X")
+                          ->setMinimumValue(-9999)
+                          ->setMaximumValue(+9999)
+                          ->setValuePrecision(3));
+
+    inspectors.append((new InspectorFloat(QString::fromStdString(
+                           NodeLoader::Property::PositionY)))
+                          ->setPropertyDisplayName("Position Y")
+                          ->setMinimumValue(-9999)
+                          ->setMaximumValue(+9999)
+                          ->setValuePrecision(3));
+
+    inspectors.append((new InspectorFloat(QString::fromStdString(
+                           NodeLoader::Property::ContentSizeWidth)))
+                          ->setPropertyDisplayName("Content width")
+                          ->setMinimumValue(0)
+                          ->setMaximumValue(+999)
+                          ->setValuePrecision(3));
+
+    inspectors.append((new InspectorFloat(QString::fromStdString(
+                           NodeLoader::Property::ContentSizeHeight)))
+                          ->setPropertyDisplayName("Content height")
+                          ->setMinimumValue(0)
+                          ->setMaximumValue(+999)
+                          ->setValuePrecision(3));
+
+    inspectors.append((new InspectorFloat(QString::fromStdString(
+                           NodeLoader::Property::AnchorPointX)))
+                          ->setPropertyDisplayName("Anchor point X")
+                          ->setMinimumValue(-99)
+                          ->setMaximumValue(+99)
+                          ->setValuePrecision(3));
+
+    inspectors.append((new InspectorFloat(QString::fromStdString(
+                           NodeLoader::Property::AnchorPointY)))
+                          ->setPropertyDisplayName("Anchor point Y")
+                          ->setMinimumValue(-99)
+                          ->setMaximumValue(+99)
+                          ->setValuePrecision(3));
+
+    inspectors.append((new InspectorFloat(QString::fromStdString(
+                           NodeLoader::Property::ScaleX)))
+                          ->setPropertyDisplayName("Scale X")
+                          ->setMinimumValue(-99)
+                          ->setMaximumValue(+99)
+                          ->setValuePrecision(3));
+
+    inspectors.append((new InspectorFloat(QString::fromStdString(
+                           NodeLoader::Property::ScaleY)))
+                          ->setPropertyDisplayName("Scale Y")
+                          ->setMinimumValue(-99)
+                          ->setMaximumValue(+99)
+                          ->setValuePrecision(3));
+
+    inspectors.append((new InspectorFloat(QString::fromStdString(
+                           NodeLoader::Property::Rotation)))
+                          ->setPropertyDisplayName("Rotation")
+                          ->setMinimumValue(-360)
+                          ->setMaximumValue(+360)
+                          ->setValuePrecision(3));
+
+    inspectors.append(
+        (new InspectorBool(QString::fromStdString(
+             NodeLoader::Property::IgnoreAnchorPointForPosition)))
+            ->setPropertyDisplayName("Ignore anchor point for position"));
+
     return inspectors;
 }
 } // namespace ee
