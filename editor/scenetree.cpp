@@ -67,7 +67,7 @@ const NodeGraph& Self::getNodeGraph() const {
 void Self::setNodeGraph(const NodeGraph& graph) {
     nodeGraph_ = std::make_unique<NodeGraph>(graph);
     treeModel_ = std::make_unique<SceneTreeModel>(this);
-    treeModel_->setNodeGraph(nodeGraph_.get());
+    treeModel_->setNodeGraph(*nodeGraph_);
     setModel(treeModel_.get());
 }
 

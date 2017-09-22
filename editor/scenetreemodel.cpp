@@ -13,20 +13,27 @@ Self::SceneTreeModel(QObject* parent)
 
 Self::~SceneTreeModel() {}
 
-void Self::setNodeGraph(NodeGraph* graph) {
-    nodeGraph_ = graph;
-    rootItem_ = std::make_unique<SceneTreeItem>(nullptr);
-    auto node = std::make_unique<SceneTreeItem>(rootItem_.get());
-    setupTree(node.get(), *graph);
-    rootItem_->appendChild(std::move(node));
+void Self::setNodeGraph(NodeGraph& graph) {
+    nodeGraph_ = &graph;
+    rootItem_ = SceneTreeItem::createRootItem();
+    auto node = SceneTreeItem::createChildItem(rootItem_.get());
+    setupTree(node.get(), graph);
+    rootItem_->addChild(std::move(node));
 }
 
 void Self::setupTree(SceneTreeItem* item, const NodeGraph& graph) {
     for (auto&& child : graph.getChildren()) {
-        auto childItem = std::make_unique<SceneTreeItem>(item);
+        auto childItem = SceneTreeItem::createChildItem(item);
         setupTree(childItem.get(), child);
-        item->appendChild(std::move(childItem));
+        item->addChild(std::move(childItem));
     }
+}
+
+SceneTreeItem* Self::getTreeItem(const QModelIndex& index) const {
+    if (not index.isValid()) {
+        return rootItem_.get();
+    }
+    return static_cast<SceneTreeItem*>(index.internalPointer());
 }
 
 QVariant Self::data(const QModelIndex& index, int role) const {
@@ -36,11 +43,14 @@ QVariant Self::data(const QModelIndex& index, int role) const {
     if (role != Qt::ItemDataRole::DisplayRole) {
         return QVariant();
     }
-    auto item = static_cast<SceneTreeItem*>(index.internalPointer());
+    auto item = getTreeItem(index);
     return item->data(index.column());
 }
 
 bool Self::setData(const QModelIndex& index, const QVariant& value, int role) {
+    Q_UNUSED(index);
+    Q_UNUSED(value);
+    Q_UNUSED(role);
     return false;
 }
 
@@ -59,12 +69,7 @@ QModelIndex Self::index(int row, int column, const QModelIndex& parent) const {
     if (not hasIndex(row, column, parent)) {
         return QModelIndex();
     }
-
-    auto parentItem = rootItem_.get();
-    if (parent.isValid()) {
-        parentItem = static_cast<SceneTreeItem*>(parent.internalPointer());
-    }
-
+    auto parentItem = getTreeItem(parent);
     if (row > parentItem->childCount()) {
         return QModelIndex();
     }
@@ -78,7 +83,7 @@ QModelIndex Self::parent(const QModelIndex& index) const {
         return QModelIndex();
     }
 
-    auto childItem = static_cast<SceneTreeItem*>(index.internalPointer());
+    auto childItem = getTreeItem(index);
     auto parentItem = childItem->parent();
     if (parentItem == rootItem_.get()) {
         return QModelIndex();
@@ -87,14 +92,12 @@ QModelIndex Self::parent(const QModelIndex& index) const {
 }
 
 int Self::rowCount(const QModelIndex& parent) const {
-    auto parentItem = rootItem_.get();
-    if (parent.isValid()) {
-        parentItem = static_cast<SceneTreeItem*>(parent.internalPointer());
-    }
+    auto parentItem = getTreeItem(parent);
     return parentItem->childCount();
 }
 
 int Self::columnCount(const QModelIndex& parent) const {
+    Q_UNUSED(parent);
     return 1;
 }
 
