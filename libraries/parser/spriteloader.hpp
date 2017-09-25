@@ -11,6 +11,12 @@ private:
 
 public:
     struct Property {
+        static const std::string BlendFuncDst;
+        static const std::string BlendFuncSrc;
+        static const std::string FlippedX;
+        static const std::string FlippedY;
+        static const std::string SpriteFrame;
+        static const std::string StretchEnabled;
         static const std::string Texture;
     };
 
