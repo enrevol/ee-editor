@@ -60,7 +60,9 @@ SOURCES += \
     propertygetter.cpp \
     inspectorscale.cpp \
     inspectorfloatxy.cpp \
-    inspectorint.cpp
+    inspectorint.cpp \
+    inspectorcolor.cpp \
+    clickablewidget.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -99,7 +101,9 @@ HEADERS += \
     propertygetter.hpp \
     inspectorscale.hpp \
     inspectorfloatxy.hpp \
-    inspectorint.hpp
+    inspectorint.hpp \
+    inspectorcolor.hpp \
+    clickablewidget.hpp
 
 FORMS += \
     mainwindow.ui \
@@ -109,4 +113,5 @@ FORMS += \
     inspectorbool.ui \
     inspectorscale.ui \
     inspectorfloatxy.ui \
-    inspectorint.ui
+    inspectorint.ui \
+    inspectorcolor.ui

@@ -1,5 +1,6 @@
 #include "nodeinspector.hpp"
 #include "inspectorbool.hpp"
+#include "inspectorcolor.hpp"
 #include "inspectorfloat.hpp"
 #include "inspectorfloatxy.hpp"
 #include "inspectorint.hpp"
@@ -39,7 +40,7 @@ QVector<Inspector*> Self::buildInspectors() {
                 QString::fromStdString(NodeLoader::Property::ContentSizeWidth),
                 QString::fromStdString(NodeLoader::Property::ContentSizeHeight))
             ->setPropertyDisplayName("Content size")
-            ->setSubPropertyDisplayName("Width", "Height")
+            ->setSubPropertyDisplayName("W", "H")
             ->setSingleStep(1.0f)
             ->setValuePrecision(2)
             ->setMinimumValue(-9999.99f)
@@ -57,7 +58,17 @@ QVector<Inspector*> Self::buildInspectors() {
             ->setMinimumValue(-99.999f)
             ->setMaximumValue(+99.999f));
 
-    inspectors.append(new InspectorScale());
+    inspectors.append(
+        (new InspectorFloatXY())
+            ->setPropertyName(
+                QString::fromStdString(NodeLoader::Property::ScaleX),
+                QString::fromStdString(NodeLoader::Property::ScaleY))
+            ->setPropertyDisplayName("Scale")
+            ->setSubPropertyDisplayName("X", "Y")
+            ->setSingleStep(0.05f)
+            ->setValuePrecision(3)
+            ->setMinimumValue(-99.999f)
+            ->setMaximumValue(+99.999f));
 
     inspectors.append((new InspectorFloat())
                           ->setPropertyName(QString::fromStdString(
@@ -93,6 +104,14 @@ QVector<Inspector*> Self::buildInspectors() {
             ->setPropertyName(QString::fromStdString(
                 NodeLoader::Property::IgnoreAnchorPointForPosition))
             ->setPropertyDisplayName("Ignore anchor point for position"));
+
+    inspectors.append(
+        (new InspectorColor)
+            ->setPropertyName(
+                QString::fromStdString(NodeLoader::Property::ColorR),
+                QString::fromStdString(NodeLoader::Property::ColorG),
+                QString::fromStdString(NodeLoader::Property::ColorB))
+            ->setPropertyDisplayName("Color"));
 
     inspectors.append((new InspectorInt())
                           ->setPropertyName(QString::fromStdString(
