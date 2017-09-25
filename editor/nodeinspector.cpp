@@ -100,12 +100,6 @@ QVector<Inspector*> Self::buildInspectors() {
             ->setMaximumValue(+9999));
 
     inspectors.append(
-        (new InspectorBool())
-            ->setPropertyName(QString::fromStdString(
-                NodeLoader::Property::IgnoreAnchorPointForPosition))
-            ->setPropertyDisplayName("Ignore anchor point for position"));
-
-    inspectors.append(
         (new InspectorColor)
             ->setPropertyName(
                 QString::fromStdString(NodeLoader::Property::ColorR),
@@ -130,6 +124,12 @@ QVector<Inspector*> Self::buildInspectors() {
                           ->setPropertyName(QString::fromStdString(
                               NodeLoader::Property::CascadeOpacityEnabled))
                           ->setPropertyDisplayName("Cascade opacity enabled"));
+
+    inspectors.append(
+        (new InspectorBool())
+            ->setPropertyName(QString::fromStdString(
+                NodeLoader::Property::IgnoreAnchorPointForPosition))
+            ->setPropertyDisplayName("Ignore anchor point for position"));
 
     return inspectors;
 }

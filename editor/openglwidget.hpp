@@ -1,5 +1,5 @@
-#ifndef OPENGLWIDGET_HPP
-#define OPENGLWIDGET_HPP
+#ifndef EE_EDITOR_OPEN_GL_WIDGET_HPP
+#define EE_EDITOR_OPEN_GL_WIDGET_HPP
 
 #include <platform/qt/CCOpenGLWidget_Qt.hpp>
 
@@ -16,4 +16,4 @@ public:
 };
 } // namespace ee
 
-#endif // OPENGLWIDGET_HPP
+#endif // EE_EDITOR_OPEN_GL_WIDGET_HPP
