@@ -4,6 +4,7 @@
 #include "nodeloader.hpp"
 #include "nodeloaderlibrary.hpp"
 #include "spriteloader.hpp"
+#include "widgetloader.hpp"
 
 namespace ee {
 using Self = NodeLoaderLibrary;
@@ -21,6 +22,7 @@ Self::NodeLoaderLibrary(const Self& other) {
 void Self::addDefaultLoaders() {
     addLoader("_Node", NodeLoader::create());
     addLoader("_Sprite", SpriteLoader::create());
+    addLoader("_Widget", WidgetLoader::create());
     addLoader("_LayerColor", LayerColorLoader::create());
 }
 

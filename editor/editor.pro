@@ -64,7 +64,8 @@ SOURCES += \
     clickablewidget.cpp \
     inspectorgroup.cpp \
     spriteinspector.cpp \
-    inspectorstring.cpp
+    inspectorstring.cpp \
+    widgetinspector.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -107,7 +108,8 @@ HEADERS += \
     clickablewidget.hpp \
     inspectorgroup.hpp \
     spriteinspector.hpp \
-    inspectorstring.hpp
+    inspectorstring.hpp \
+    widgetinspector.hpp
 
 FORMS += \
     mainwindow.ui \

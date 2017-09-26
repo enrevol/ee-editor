@@ -10,6 +10,7 @@
 #include "selectiontree.hpp"
 #include "settings.hpp"
 #include "ui_mainwindow.h"
+#include "widgetinspector.hpp"
 
 #include <base/CCDirector.h>
 
@@ -143,8 +144,8 @@ Self::MainWindow(QWidget* parent)
                 if (selection.isEmpty()) {
                     return;
                 }
-                auto inspector = new NodeInspector();
-                list->addInspector(inspector);
+                list->addInspector(new NodeInspector());
+                list->addInspector(new WidgetInspector());
                 list->refreshPropertyValue(ui_->sceneTree->getNodeGraph(),
                                            selection);
             });

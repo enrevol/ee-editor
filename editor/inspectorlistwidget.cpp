@@ -1,5 +1,5 @@
 #include "inspectorlistwidget.hpp"
-#include "inspectorcontainer.hpp"
+#include "inspector.hpp"
 #include "selectionpath.hpp"
 #include "selectiontree.hpp"
 
