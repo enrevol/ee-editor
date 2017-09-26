@@ -1,19 +1,16 @@
 #ifndef EE_EDITOR_NODE_INSPECTOR_HPP
 #define EE_EDITOR_NODE_INSPECTOR_HPP
 
-#include "inspectorcontainer.hpp"
+#include "inspectorgroup.hpp"
 
 namespace ee {
-class NodeInspector : public InspectorContainer {
+class NodeInspector : public InspectorGroup {
 private:
     using Self = NodeInspector;
-    using Super = InspectorContainer;
+    using Super = InspectorGroup;
 
 public:
     explicit NodeInspector(QWidget* parent = nullptr);
-
-protected:
-    virtual QVector<Inspector*> buildInspectors() override;
 
 private:
 };

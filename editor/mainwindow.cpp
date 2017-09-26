@@ -144,7 +144,6 @@ Self::MainWindow(QWidget* parent)
                     return;
                 }
                 auto inspector = new NodeInspector();
-                inspector->initialize();
                 list->addInspector(inspector);
                 list->refreshPropertyValue(ui_->sceneTree->getNodeGraph(),
                                            selection);

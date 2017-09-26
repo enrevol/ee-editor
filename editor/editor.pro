@@ -51,7 +51,6 @@ SOURCES += \
     scenetreeitem.cpp \
     nodehighlighter.cpp \
     nodeinspector.cpp \
-    inspectorcontainer.cpp \
     inspector.cpp \
     inspectorlistwidget.cpp \
     inspectorbool.cpp \
@@ -62,7 +61,9 @@ SOURCES += \
     inspectorfloatxy.cpp \
     inspectorint.cpp \
     inspectorcolor.cpp \
-    clickablewidget.cpp
+    clickablewidget.cpp \
+    inspectorgroup.cpp \
+    spriteinspector.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -92,7 +93,6 @@ HEADERS += \
     scenetreeitem.hpp \
     nodehighlighter.hpp \
     nodeinspector.hpp \
-    inspectorcontainer.hpp \
     inspector.hpp \
     inspectorlistwidget.hpp \
     inspectorbool.hpp \
@@ -103,7 +103,9 @@ HEADERS += \
     inspectorfloatxy.hpp \
     inspectorint.hpp \
     inspectorcolor.hpp \
-    clickablewidget.hpp
+    clickablewidget.hpp \
+    inspectorgroup.hpp \
+    spriteinspector.hpp
 
 FORMS += \
     mainwindow.ui \
@@ -114,4 +116,5 @@ FORMS += \
     inspectorscale.ui \
     inspectorfloatxy.ui \
     inspectorint.ui \
-    inspectorcolor.ui
+    inspectorcolor.ui \
+    inspectorgroup.ui
