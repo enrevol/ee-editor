@@ -81,7 +81,7 @@ Self::WidgetInspector(QWidget* parent)
                 QString::fromStdString(WidgetLoader::Property::SizePercentX),
                 QString::fromStdString(WidgetLoader::Property::SizePercentY))
             ->setPropertyDisplayName("Size percent")
-            ->setSubPropertyDisplayName("W", "Y")
+            ->setSubPropertyDisplayName("W", "H")
             ->setSingleStep(0.5f)
             ->setValuePrecision(3)
             ->setMinimumValue(0.000f)
