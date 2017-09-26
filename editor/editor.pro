@@ -63,7 +63,8 @@ SOURCES += \
     inspectorcolor.cpp \
     clickablewidget.cpp \
     inspectorgroup.cpp \
-    spriteinspector.cpp
+    spriteinspector.cpp \
+    inspectorstring.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -105,7 +106,8 @@ HEADERS += \
     inspectorcolor.hpp \
     clickablewidget.hpp \
     inspectorgroup.hpp \
-    spriteinspector.hpp
+    spriteinspector.hpp \
+    inspectorstring.hpp
 
 FORMS += \
     mainwindow.ui \
@@ -117,4 +119,5 @@ FORMS += \
     inspectorfloatxy.ui \
     inspectorint.ui \
     inspectorcolor.ui \
-    inspectorgroup.ui
+    inspectorgroup.ui \
+    inspectorstring.ui

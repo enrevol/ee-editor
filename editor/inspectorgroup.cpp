@@ -30,6 +30,7 @@ void Self::setDisplayName(const QString& name) {
 void Self::addInspector(Inspector* inspector) {
     Q_ASSERT(layout() != nullptr);
     ui_->containerWidget->layout()->addWidget(inspector);
+    inspectors_.append(inspector);
     connect(inspector, &Inspector::propertyValueChanged,
             [this](const QString& propertyName, const cocos2d::Value& value) {
                 Q_EMIT propertyValueChanged(propertyName, value);

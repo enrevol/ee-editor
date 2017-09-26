@@ -5,6 +5,7 @@
 #include "inspectorfloatxy.hpp"
 #include "inspectorint.hpp"
 #include "inspectorscale.hpp"
+#include "inspectorstring.hpp"
 
 #include <parser/nodeloader.hpp>
 
@@ -19,6 +20,11 @@ Self::NodeInspector(QWidget* parent)
                      ->setPropertyName(
                          QString::fromStdString(NodeLoader::Property::Visible))
                      ->setPropertyDisplayName("Visible"));
+
+    addInspector((new InspectorString())
+                     ->setPropertyName(
+                         QString::fromStdString(NodeLoader::Property::Name))
+                     ->setPropertyDisplayName("Name"));
 
     addInspector(
         (new InspectorFloatXY())
@@ -119,6 +125,11 @@ Self::NodeInspector(QWidget* parent)
                      ->setPropertyName(QString::fromStdString(
                          NodeLoader::Property::CascadeOpacityEnabled))
                      ->setPropertyDisplayName("Cascade opacity enabled"));
+
+    addInspector((new InspectorBool())
+                     ->setPropertyName(QString::fromStdString(
+                         NodeLoader::Property::OpacityModifyRGB))
+                     ->setPropertyDisplayName("Opacity modify RGB"));
 
     addInspector(
         (new InspectorBool())

@@ -21,7 +21,9 @@ const std::string Self::Property::ContentSizeWidth = "content_size_width";
 const std::string Self::Property::IgnoreAnchorPointForPosition =
     "ignore_anchor_point_for_position";
 const std::string Self::Property::LocalZOrder = "local_z_order";
+const std::string Self::Property::Name = "name";
 const std::string Self::Property::Opacity = "opacity";
+const std::string Self::Property::OpacityModifyRGB = "opacity_modify_rgb";
 const std::string Self::Property::PositionX = "position_x";
 const std::string Self::Property::PositionY = "position_y";
 const std::string Self::Property::Rotation = "rotation";
@@ -125,9 +127,17 @@ void Self::addReadHandlers(PropertyHandler& handler) {
         Property::LocalZOrder,
         [](const cocos2d::Node* node) { return node->getLocalZOrder(); });
 
+    handler.addReadStringHandler(Property::Name, [](const cocos2d::Node* node) {
+        return node->getName();
+    });
+
     handler.addReadIntHandler(Property::Opacity, [](const cocos2d::Node* node) {
         return static_cast<int>(node->getOpacity());
     });
+
+    handler.addReadBoolHandler(
+        Property::OpacityModifyRGB,
+        [](const cocos2d::Node* node) { return node->isOpacityModifyRGB(); });
 
     handler.addReadFloatHandler(
         Property::PositionX,
@@ -257,6 +267,12 @@ void Self::addWriteHandlers(PropertyHandler& handler) {
                                    return true;
                                });
 
+    handler.addWriteStringHandler(
+        Property::Name, [](cocos2d::Node* node, const std::string& name) {
+            node->setName(name);
+            return true;
+        });
+
     handler.addWriteIntHandler(
         Property::Opacity, [](cocos2d::Node* node, int value) {
             if (not isInColorRange(value)) {
@@ -265,6 +281,12 @@ void Self::addWriteHandlers(PropertyHandler& handler) {
             node->setOpacity(static_cast<GLubyte>(value));
             return true;
         });
+
+    handler.addWriteBoolHandler(Property::OpacityModifyRGB,
+                                [](cocos2d::Node* node, bool value) {
+                                    node->setOpacityModifyRGB(value);
+                                    return true;
+                                });
 
     handler.addWriteFloatHandler(Property::PositionX,
                                  [](cocos2d::Node* node, float value) {
@@ -340,7 +362,9 @@ void Self::addDefaultProperties(PropertyWriter& writer) {
                                cocos2d::Size::ZERO.width);
     flag &= writer.addProperty(Property::IgnoreAnchorPointForPosition, false);
     flag &= writer.addProperty(Property::LocalZOrder, 0);
+    flag &= writer.addProperty(Property::Name, std::string());
     flag &= writer.addProperty(Property::Opacity, 255);
+    flag &= writer.addProperty(Property::OpacityModifyRGB, false);
     flag &= writer.addProperty(Property::PositionX, 0.0f);
     flag &= writer.addProperty(Property::PositionY, 0.0f);
     flag &= writer.addProperty(Property::Rotation, 0.0f);

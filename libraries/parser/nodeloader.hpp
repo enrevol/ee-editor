@@ -29,7 +29,9 @@ public:
         static const std::string ContentSizeWidth;
         static const std::string IgnoreAnchorPointForPosition;
         static const std::string LocalZOrder;
+        static const std::string Name;
         static const std::string Opacity;
+        static const std::string OpacityModifyRGB;
         static const std::string PositionX;
         static const std::string PositionY;
         static const std::string Rotation;
