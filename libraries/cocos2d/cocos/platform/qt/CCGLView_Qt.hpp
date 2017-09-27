@@ -45,24 +45,27 @@ public:
 
     virtual void setRepaintInterval(int milliseconds) override;
 
+protected:
+    GLViewImpl();
+
     void mouseMove(QMouseEvent* event);
     void mousePress(QMouseEvent* event);
     void mouseRelease(QMouseEvent* event);
+    void wheel(QWheelEvent* event);
     void keyPress(QKeyEvent* event);
     void keyRelease(QKeyEvent* event);
-
-protected:
-    GLViewImpl();
+    void paint();
+    void resize(QResizeEvent* event);
 
 private:
     virtual bool initWithView(OpenGLWidget* view);
 
-    bool captured_;
-    float frameZoomFactor_;
-    float screenScaleFactor_;
+    void resizeFrame(float width, float height);
 
-    std::vector<Touch*> touches_;
-    Touch* touch_;
+    cocos2d::Point parseCursorPosition(float x, float y) const;
+    cocos2d::Point parseCursorPosition(const QPointF& p) const;
+
+    bool captured_;
     OpenGLWidget* view_;
 };
 NS_CC_END

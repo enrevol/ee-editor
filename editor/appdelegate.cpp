@@ -29,15 +29,11 @@ void Self::setOpenGLView(cocos2d::OpenGLWidget* view) {
 bool Self::applicationDidFinishLaunching() {
     qDebug() << Q_FUNC_INFO;
 
-    auto director = cocos2d::Director::getInstance();
-
     auto glView = cocos2d::GLViewImpl::create(openGLView_);
-    glView->setDesignResolutionSize(480, 320, ResolutionPolicy::NO_BORDER);
-
     makeCocosContext(glView);
 
+    auto director = cocos2d::Director::getInstance();
     director->setOpenGLView(glView);
-
     director->setDisplayStats(true);
     director->setAnimationInterval(1.0f / 30);
 

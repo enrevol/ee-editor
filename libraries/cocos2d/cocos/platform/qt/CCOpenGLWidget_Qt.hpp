@@ -7,11 +7,6 @@
 #include <QOpenGLWidget>
 
 NS_CC_BEGIN
-using MouseEventCallback = std::function<void(QMouseEvent* event)>;
-using KeyEventCallback = std::function<void(QKeyEvent* event)>;
-using ResizeEventCallback = std::function<void(QResizeEvent* event)>;
-using RepaintCallback = std::function<void()>;
-
 /// Inherits from QOpenGLWidget and provides callbacks for mouse and keyboard
 /// events.
 class CC_DLL OpenGLWidget : public QOpenGLWidget {
@@ -30,13 +25,15 @@ public:
     /// Defaults is 1 / 60 seconds.
     void setRepaintInterval(int milliseconds);
 
-    void setRepaintCallback(const RepaintCallback& callback);
-    void setMouseMoveCallback(const MouseEventCallback& callback);
-    void setMousePressCallback(const MouseEventCallback& callback);
-    void setMouseReleaseCallback(const MouseEventCallback& callback);
-    void setKeyPressCallback(const KeyEventCallback& callback);
-    void setKeyReleaseCallback(const KeyEventCallback& callback);
-    void setResizeCallback(const ResizeEventCallback& callback);
+Q_SIGNALS:
+    void onPainted();
+    void onMouseMoved(QMouseEvent* event);
+    void onMousePressed(QMouseEvent* event);
+    void onMouseReleased(QMouseEvent* event);
+    void onKeyPressed(QKeyEvent* event);
+    void onKeyReleased(QKeyEvent* event);
+    void onResized(QResizeEvent* event);
+    void onWheeled(QWheelEvent* event);
 
 protected:
     virtual void initializeGL() override;
@@ -49,18 +46,11 @@ protected:
     virtual void keyPressEvent(QKeyEvent* event) override;
     virtual void keyReleaseEvent(QKeyEvent* event) override;
     virtual void resizeEvent(QResizeEvent* event) override;
+    virtual void wheelEvent(QWheelEvent* event) override;
 
 private:
     int repaintInterval_;
     QTimer* timer_;
-
-    RepaintCallback repaintCallback_;
-    MouseEventCallback mouseMoveCallback_;
-    MouseEventCallback mousePressCallback_;
-    MouseEventCallback mouseReleaseCallback_;
-    KeyEventCallback keyPressCallback_;
-    KeyEventCallback keyReleaseCallback_;
-    ResizeEventCallback resizeCallback_;
 };
 NS_CC_END
 

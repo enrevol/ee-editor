@@ -7,13 +7,7 @@ NS_CC_BEGIN
 using Self = OpenGLWidget;
 
 Self::OpenGLWidget(QWidget* parent)
-    : Super(parent)
-    , mouseMoveCallback_(nullptr)
-    , mousePressCallback_(nullptr)
-    , mouseReleaseCallback_(nullptr)
-    , keyPressCallback_(nullptr)
-    , keyReleaseCallback_(nullptr)
-    , resizeCallback_(nullptr) {
+    : Super(parent) {
     qDebug() << Q_FUNC_INFO;
     timer_ = new QTimer(this);
     connect(timer_, &QTimer::timeout, [this] { update(); });
@@ -31,18 +25,19 @@ void Self::initializeGL() {
     qDebug() << Q_FUNC_INFO;
     auto f = context()->functions();
     f->initializeOpenGLFunctions();
+
+    // Enable point size by default.
+    f->glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 }
 
 void Self::resizeGL(int width, int height) {
-    // qDebug() << __PRETTY_FUNCTION__ << ": width = " << width
-    //          << " height = " << height;
+    Q_UNUSED(width);
+    Q_UNUSED(height);
 }
 
 void Self::paintGL() {
     // qDebug() << __PRETTY_FUNCTION__;
-    if (repaintCallback_) {
-        repaintCallback_();
-    }
+    Q_EMIT onPainted();
 }
 
 void Self::setRepaintInterval(int milliseconds) {
@@ -50,75 +45,43 @@ void Self::setRepaintInterval(int milliseconds) {
     timer_->setInterval(milliseconds);
 }
 
-void Self::setRepaintCallback(const RepaintCallback& callback) {
-    repaintCallback_ = callback;
-}
-
-void Self::setMouseMoveCallback(const MouseEventCallback& callback) {
-    mouseMoveCallback_ = callback;
-}
-
-void Self::setMousePressCallback(const MouseEventCallback& callback) {
-    mousePressCallback_ = callback;
-}
-
-void Self::setMouseReleaseCallback(const MouseEventCallback& callback) {
-    mouseReleaseCallback_ = callback;
-}
-
-void Self::setKeyPressCallback(const KeyEventCallback& callback) {
-    keyPressCallback_ = callback;
-}
-
-void Self::setKeyReleaseCallback(const KeyEventCallback& callback) {
-    keyReleaseCallback_ = callback;
-}
-
-void Self::setResizeCallback(const ResizeEventCallback& callback) {
-    resizeCallback_ = callback;
-}
-
 void Self::mouseMoveEvent(QMouseEvent* event) {
-    if (mouseMoveCallback_) {
-        mouseMoveCallback_(event);
-    }
     Super::mouseMoveEvent(event);
+    Q_EMIT onMouseMoved(event);
 }
 
 void Self::mousePressEvent(QMouseEvent* event) {
-    if (mousePressCallback_) {
-        mousePressCallback_(event);
-    }
     Super::mousePressEvent(event);
+    Q_EMIT onMousePressed(event);
 }
 
 void Self::mouseReleaseEvent(QMouseEvent* event) {
-    if (mouseReleaseCallback_) {
-        mouseReleaseCallback_(event);
-    }
     Super::mouseReleaseEvent(event);
+    Q_EMIT onMouseReleased(event);
 }
 
 void Self::keyPressEvent(QKeyEvent* event) {
-    if (keyPressCallback_) {
-        keyPressCallback_(event);
-    }
+    qDebug() << Q_FUNC_INFO << ": " << event->text();
     Super::keyPressEvent(event);
+    Q_EMIT onKeyPressed(event);
 }
 
 void Self::keyReleaseEvent(QKeyEvent* event) {
-    if (keyReleaseCallback_) {
-        keyReleaseCallback_(event);
-    }
+    qDebug() << Q_FUNC_INFO << ": " << event->text();
     Super::keyReleaseEvent(event);
+    Q_EMIT onKeyReleased(event);
 }
 
 void Self::resizeEvent(QResizeEvent* event) {
     qDebug() << Q_FUNC_INFO << ": width = " << event->size().width()
              << " height = " << event->size().height();
-    if (resizeCallback_) {
-        resizeCallback_(event);
-    }
     Super::resizeEvent(event);
+    Q_EMIT onResized(event);
 }
+
+void Self::wheelEvent(QWheelEvent* event) {
+    Super::wheelEvent(event);
+    Q_EMIT onWheeled(event);
+}
+
 NS_CC_END
