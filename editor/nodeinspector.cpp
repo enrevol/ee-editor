@@ -4,6 +4,7 @@
 #include "inspectorfloat.hpp"
 #include "inspectorfloatxy.hpp"
 #include "inspectorint.hpp"
+#include "inspectorintslider.hpp"
 #include "inspectorscale.hpp"
 #include "inspectorstring.hpp"
 
@@ -108,7 +109,7 @@ Self::NodeInspector(QWidget* parent)
                          QString::fromStdString(NodeLoader::Property::ColorB))
                      ->setPropertyDisplayName("Color"));
 
-    addInspector((new InspectorInt())
+    addInspector((new InspectorIntSlider())
                      ->setPropertyName(
                          QString::fromStdString(NodeLoader::Property::Opacity))
                      ->setPropertyDisplayName("Opacity")

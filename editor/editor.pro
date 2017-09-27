@@ -65,7 +65,8 @@ SOURCES += \
     inspectorgroup.cpp \
     spriteinspector.cpp \
     inspectorstring.cpp \
-    widgetinspector.cpp
+    widgetinspector.cpp \
+    inspectorintslider.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -109,7 +110,8 @@ HEADERS += \
     inspectorgroup.hpp \
     spriteinspector.hpp \
     inspectorstring.hpp \
-    widgetinspector.hpp
+    widgetinspector.hpp \
+    inspectorintslider.hpp
 
 FORMS += \
     mainwindow.ui \
@@ -122,4 +124,5 @@ FORMS += \
     inspectorint.ui \
     inspectorcolor.ui \
     inspectorgroup.ui \
-    inspectorstring.ui
+    inspectorstring.ui \
+    inspectorintslider.ui
