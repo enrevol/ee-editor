@@ -54,6 +54,8 @@ void Self::setPropertyValue(int r, int g, int b) {
     auto pal = ui_->colorWidget->palette();
     pal.setColor(QPalette::ColorRole::Background, QColor::fromRgb(r, g, b));
     ui_->colorWidget->setPalette(pal);
+    auto text = QString("(%1, %2, %3)").arg(r).arg(g).arg(b);
+    ui_->rgbValue->setText(text);
 }
 
 void Self::changeColor(const QColor& color) {
