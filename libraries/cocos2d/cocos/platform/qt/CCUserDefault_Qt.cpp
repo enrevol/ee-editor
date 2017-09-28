@@ -62,7 +62,7 @@ Data Self::getDataForKey(const char* key) {
 
 Data Self::getDataForKey(const char* key, const Data& defaultValue) {
     Q_UNUSED(key);
-    return Data::Null;
+    return defaultValue;
 }
 
 void Self::setBoolForKey(const char* key, bool value) {
