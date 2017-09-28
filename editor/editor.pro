@@ -22,6 +22,7 @@ LIBS += \
     -L$$OUT_PWD/../libraries/parser -lparser
 
 PRE_TARGETDEPS += \
+    $$OUT_PWD/../libraries/cocos2d/libcocos2d.a \
     $$OUT_PWD/../libraries/parser/libparser.a
 
 SOURCES += \
