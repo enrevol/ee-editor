@@ -38,10 +38,14 @@ public:
 
 protected:
     void setPropertyValue(float x, float y);
+    void setPropertyValueLazy(float x, float y);
 
 private:
     Ui::InspectorFloatXY* ui_;
     bool updating_;
+    QTimer* updater_;
+    float valueX_;
+    float valueY_;
     std::unique_ptr<FloatPropertyGetter> propertyX_;
     std::unique_ptr<FloatPropertyGetter> propertyY_;
 };

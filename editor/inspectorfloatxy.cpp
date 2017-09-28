@@ -6,6 +6,8 @@
 #include <parser/nodegraph.hpp>
 #include <parser/propertyreader.hpp>
 
+#include <QTimer>
+
 namespace ee {
 using Self = InspectorFloatXY;
 
@@ -14,6 +16,14 @@ Self::InspectorFloatXY(QWidget* parent)
     , ui_(new Ui::InspectorFloatXY)
     , updating_(false) {
     ui_->setupUi(this);
+
+    // http://www.qtcentre.org/threads/18787-QDoubleSpinBox-setValue()-performance-issue
+    updater_ = new QTimer(this);
+    updater_->setInterval(200);
+    updater_->start();
+    connect(updater_, &QTimer::timeout,
+            [this] { setPropertyValue(valueX_, valueY_); });
+
     connect(ui_->propertyXInput,
             static_cast<void (QDoubleSpinBox::*)(double)>(
                 &QDoubleSpinBox::valueChanged),
@@ -91,6 +101,11 @@ void Self::setPropertyValue(float x, float y) {
     updating_ = false;
 }
 
+void Self::setPropertyValueLazy(float x, float y) {
+    valueX_ = x;
+    valueY_ = y;
+}
+
 void Self::refreshPropertyValue(const NodeGraph& graph,
                                 const SelectionTree& selection) {
     Q_ASSERT(not selection.isEmpty());
@@ -98,7 +113,7 @@ void Self::refreshPropertyValue(const NodeGraph& graph,
     auto&& path = paths.front();
     auto x = propertyX_->get(path.find(graph));
     auto y = propertyY_->get(path.find(graph));
-    setPropertyValue(x, y);
+    setPropertyValueLazy(x, y);
 }
 
 bool Self::refreshPropertyValue(const NodeGraph& graph,
