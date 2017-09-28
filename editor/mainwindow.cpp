@@ -131,7 +131,7 @@ Self::MainWindow(QWidget* parent)
         // ui_->sceneTree->setRootNode(scene);
     });
 
-    connect(ui_->sceneTree, &SceneTree::sceneSelectionChanged,
+    connect(ui_->sceneTree, &SceneTree::selectionTreeChanged,
             [this](const SelectionTree& selection) {
                 auto rootScene = dynamic_cast<RootScene*>(
                     cocos2d::Director::getInstance()->getRunningScene());

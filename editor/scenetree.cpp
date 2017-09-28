@@ -83,7 +83,7 @@ void Self::selectionChanged(const QItemSelection& selected,
     }
 
     if (shouldEmitSignal) {
-        Q_EMIT sceneSelectionChanged(currentSelection());
+        Q_EMIT selectionTreeChanged(currentSelection());
     }
 }
 

@@ -45,7 +45,7 @@ public:
                                  const cocos2d::Value& value);
 
 Q_SIGNALS:
-    void sceneSelectionChanged(const SelectionTree& selection);
+    void selectionTreeChanged(const SelectionTree& selection);
 
 protected:
     virtual void selectionChanged(const QItemSelection& selected,
