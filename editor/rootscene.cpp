@@ -85,6 +85,7 @@ void Self::onExit() {
 
 void Self::update(float delta) {
     updateSelection();
+    updateGizmo();
 }
 
 void Self::updateSelection() {
@@ -100,6 +101,9 @@ void Self::updateSelection(const SelectionTree& selection) {
         highlightNode(highlighters_.at(i), node);
         ++i;
     }
+}
+
+void Self::updateGizmo() {
     if (selection_->isEmpty()) {
         gizmo_->setVisible(false);
     } else {
@@ -130,7 +134,27 @@ void Self::setSelection(const SelectionTree& selection) {
 }
 
 void Self::moveSelectionBy(const cocos2d::Vec2& delta) {
-    gizmo_->setPosition(gizmo_->getPosition() + delta);
+    constexpr auto eps = std::numeric_limits<float>::epsilon();
+    if (std::abs(delta.x) <= eps && std::abs(delta.y) <= eps) {
+        return;
+    }
+    Q_ASSERT(not selection_->isEmpty());
+    auto&& paths = selection_->getPaths();
+    for (auto&& path : paths) {
+        auto node = path.find(rootNode_);
+        auto worldPosition = node->convertToWorldSpaceAR(cocos2d::Point::ZERO);
+        auto newWorldPosition = worldPosition + delta;
+        Q_ASSERT(node->getParent() != nullptr);
+        auto newPosition =
+            node->getParent()->convertToNodeSpace(newWorldPosition);
+        node->setPosition(newPosition);
+        Q_EMIT propertyValueChanged(
+            path, QString::fromStdString(NodeLoader::Property::PositionX),
+            cocos2d::Value(newPosition.x));
+        Q_EMIT propertyValueChanged(
+            path, QString::fromStdString(NodeLoader::Property::PositionY),
+            cocos2d::Value(newPosition.y));
+    }
 }
 
 void Self::highlightNodes(const std::vector<cocos2d::Node*>& nodes) {

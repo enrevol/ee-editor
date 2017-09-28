@@ -55,6 +55,11 @@ public:
                                  const QString& propertyName,
                                  const cocos2d::Value& value);
 
+Q_SIGNALS:
+    void propertyValueChanged(const SelectionPath& path,
+                              const QString& propertyName,
+                              const cocos2d::Value& value);
+
 protected Q_SLOTS:
     void moveSelectionBy(const cocos2d::Vec2& delta);
 
@@ -86,6 +91,8 @@ private:
     void unhighlightNode(cocos2d::LayerColor* highlighter);
 
     void ensureHighlighters(std::size_t size);
+
+    void updateGizmo();
 
     std::unique_ptr<NodeGraph> nodeGraph_;
     std::unique_ptr<SelectionTree> selection_;
