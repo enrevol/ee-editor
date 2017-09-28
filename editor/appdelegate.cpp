@@ -6,6 +6,7 @@
 #include <2d/CCLabel.h>
 #include <2d/CCLayer.h>
 #include <base/CCDirector.h>
+#include <platform/CCFileUtils.h>
 #include <platform/CCGLView.h>
 #include <platform/qt/CCGLView_Qt.hpp>
 
@@ -42,6 +43,9 @@ bool Self::applicationDidFinishLaunching() {
 
     auto&& winSize = director->getWinSize();
     qDebug() << "winSize = " << winSize.width << " " << winSize.height;
+
+    auto fileUtils = cocos2d::FileUtils::getInstance();
+    fileUtils->addSearchPath("cocos_images");
 
     auto scene = RootScene::create();
     director->runWithScene(scene);

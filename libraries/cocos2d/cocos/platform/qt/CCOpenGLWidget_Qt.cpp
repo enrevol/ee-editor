@@ -14,6 +14,7 @@ Self::OpenGLWidget(QWidget* parent)
 
     setUpdatesEnabled(true);
     setRepaintInterval(static_cast<int>(1.0f / 60 * 1000));
+    setMouseTracking(true);
     timer_->start();
 }
 
@@ -83,5 +84,4 @@ void Self::wheelEvent(QWheelEvent* event) {
     Super::wheelEvent(event);
     Q_EMIT onWheeled(event);
 }
-
 NS_CC_END

@@ -25,6 +25,15 @@ PRE_TARGETDEPS += \
     $$OUT_PWD/../libraries/cocos2d/libcocos2d.a \
     $$OUT_PWD/../libraries/parser/libparser.a
 
+
+mac {
+    cocos_images.path = Contents/Resources/cocos_images
+    cocos_images.files = $$files($$PWD/res/*.png)
+
+    QMAKE_BUNDLE_DATA += \
+        cocos_images
+}
+
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
@@ -67,7 +76,8 @@ SOURCES += \
     spriteinspector.cpp \
     inspectorstring.cpp \
     widgetinspector.cpp \
-    inspectorintslider.cpp
+    inspectorintslider.cpp \
+    gizmo.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -112,7 +122,8 @@ HEADERS += \
     spriteinspector.hpp \
     inspectorstring.hpp \
     widgetinspector.hpp \
-    inspectorintslider.hpp
+    inspectorintslider.hpp \
+    gizmo.hpp
 
 FORMS += \
     mainwindow.ui \

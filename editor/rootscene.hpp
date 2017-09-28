@@ -3,10 +3,21 @@
 
 #include <parser/parserfwd.hpp>
 
+/// Moc compile error.
+#include "selectionpath.hpp"
+#include "selectiontree.hpp"
+#include <2d/CCLayer.h>
+#include <base/CCRefPtr.h>
+#include <parser/nodegraph.hpp>
+
+#include <QObject>
+
 #include <2d/CCScene.h>
 #include <base/CCValue.h>
 
 namespace cocos2d {
+class EventListenerMouse;
+class EventListenerTouchOneByOne;
 class LayerColor;
 class Sprite;
 
@@ -14,12 +25,15 @@ template <class T> class RefPtr;
 } // namespace cocos2d
 
 namespace ee {
+class Gizmo;
 class NodeGraph;
 class NodeLoader;
 class SelectionPath;
 class SelectionTree;
 
-class RootScene : public cocos2d::Scene {
+class RootScene : public QObject, public cocos2d::Scene {
+    Q_OBJECT
+
 private:
     using Self = RootScene;
     using Super = cocos2d::Scene;
@@ -41,6 +55,9 @@ public:
                                  const QString& propertyName,
                                  const cocos2d::Value& value);
 
+protected Q_SLOTS:
+    void moveSelectionBy(const cocos2d::Vec2& delta);
+
 protected:
     virtual bool init() override;
 
@@ -51,6 +68,8 @@ protected:
     virtual void onExit() override;
 
     virtual void update(float delta) override;
+
+    bool touchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
 
 private:
     void updateSelection();
@@ -74,6 +93,11 @@ private:
 
     cocos2d::Node* rootNode_;
     cocos2d::LayerColor* background_;
+
+    Gizmo* gizmo_;
+
+    cocos2d::EventListenerTouchOneByOne* listener_;
+    cocos2d::EventListenerMouse* mouseListener_;
 };
 } // namespace ee
 

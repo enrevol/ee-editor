@@ -1,6 +1,7 @@
 #include <ciso646>
 
 #include "config.hpp"
+#include "gizmo.hpp"
 #include "rootscene.hpp"
 #include "selectionpath.hpp"
 #include "selectiontree.hpp"
@@ -14,6 +15,9 @@
 
 #include <2d/CCLayer.h>
 #include <2d/CCSprite.h>
+#include <base/CCEventDispatcher.h>
+#include <base/CCEventListenerMouse.h>
+#include <base/CCEventListenerTouch.h>
 #include <base/CCRefPtr.h>
 #include <renderer/CCGLProgram.h>
 
@@ -34,10 +38,29 @@ bool Self::init() {
         return false;
     }
 
+    gizmo_ = Gizmo::create();
+    gizmo_->setPosition(cocos2d::Point(100, 100));
+    addChild(gizmo_, +1);
+    connect(gizmo_, &Gizmo::moveBy, this, &Self::moveSelectionBy);
+
     setSelection(SelectionTree::emptySelection());
 
-    background_ = cocos2d::LayerColor::create(cocos2d::Color4B::BLACK);
+    background_ =
+        cocos2d::LayerColor::create(cocos2d::Color4B(50, 50, 50, 255));
     addChild(background_);
+
+    listener_ = cocos2d::EventListenerTouchOneByOne::create();
+    listener_->onTouchBegan = std::bind(
+        &Self::touchBegan, this, std::placeholders::_1, std::placeholders::_2);
+    getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener_,
+                                                                 this);
+
+    mouseListener_ = cocos2d::EventListenerMouse::create();
+    mouseListener_->onMouseUp = [](cocos2d::EventMouse* event) {
+        qDebug() << Q_FUNC_INFO;
+    };
+    getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener_,
+                                                                 this);
 
     scheduleUpdate();
 
@@ -98,6 +121,10 @@ void Self::setSelection(const SelectionTree& selection) {
     selection_ = std::make_unique<SelectionTree>(selection);
 }
 
+void Self::moveSelectionBy(const cocos2d::Vec2& delta) {
+    gizmo_->setPosition(gizmo_->getPosition() + delta);
+}
+
 void Self::highlightNodes(const std::vector<cocos2d::Node*>& nodes) {
     for (auto i = nodes.size(); i < highlighters_.size(); ++i) {
         unhighlightNode(highlighters_.at(i));
@@ -129,7 +156,7 @@ void Self::ensureHighlighters(std::size_t size) {
     for (std::size_t i = highlighters_.size(); i < size; ++i) {
         auto layer = cocos2d::LayerColor::create(cocos2d::Color4B::BLACK);
         layer->setLocalZOrder(+999);
-        layer->setOpacity(200);
+        layer->setOpacity(0);
         addChild(layer);
         highlighters_.push_back(layer);
     }
@@ -154,5 +181,10 @@ void Self::updateSelectionProperty(cocos2d::Node* node,
                                    const cocos2d::Value& value) {
     auto&& propertyHandler = nodeLoader->getPropertyHandler();
     propertyHandler.writeProperty(node, propertyName.toStdString(), value);
+}
+
+bool Self::touchBegan(cocos2d::Touch* touch, cocos2d::Event* event) {
+    qDebug() << Q_FUNC_INFO;
+    return false;
 }
 } // namespace ee

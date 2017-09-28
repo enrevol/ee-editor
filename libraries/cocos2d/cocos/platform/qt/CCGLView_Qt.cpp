@@ -181,7 +181,8 @@ Self* Self::create(OpenGLWidget* view) {
 }
 
 Self::GLViewImpl()
-    : captured_(false)
+    : touchCaptured_(false)
+    , previousCursorPosition_(cocos2d::Point::ZERO)
     , view_(nullptr) {
     qDebug() << Q_FUNC_INFO;
 }
@@ -294,13 +295,16 @@ EventMouse::MouseButton parseMouseButton(Qt::MouseButton button) {
 void Self::mouseMove(QMouseEvent* event) {
     auto x = static_cast<float>(event->localPos().x());
     auto y = static_cast<float>(event->localPos().y());
-    if (captured_) {
+    if (touchCaptured_) {
         std::intptr_t id = 0;
         handleTouchesMove(1, &id, &x, &y);
     }
     auto cursorPosition = parseCursorPosition(x, y);
     EventMouse mouseEvent(EventMouse::MouseEventType::MOUSE_MOVE);
+    mouseEvent.setCursorPosition(previousCursorPosition_.x,
+                                 previousCursorPosition_.y);
     mouseEvent.setCursorPosition(cursorPosition.x, cursorPosition.y);
+    previousCursorPosition_ = cursorPosition;
     if (event->buttons() & Qt::MouseButton::LeftButton) {
         mouseEvent.setMouseButton(
             parseMouseButton(Qt::MouseButton::LeftButton));
@@ -318,7 +322,7 @@ void Self::mousePress(QMouseEvent* event) {
     auto x = static_cast<float>(event->localPos().x());
     auto y = static_cast<float>(event->localPos().y());
     if (event->button() == Qt::MouseButton::LeftButton) {
-        captured_ = true;
+        touchCaptured_ = true;
         auto&& viewPort = getViewPortRect();
         if (viewPort.equals(Rect::ZERO) ||
             viewPort.containsPoint(cocos2d::Point(x, y))) {
@@ -328,7 +332,10 @@ void Self::mousePress(QMouseEvent* event) {
     }
     auto cursorPosition = parseCursorPosition(x, y);
     EventMouse mouseEvent(EventMouse::MouseEventType::MOUSE_DOWN);
+    mouseEvent.setCursorPosition(previousCursorPosition_.x,
+                                 previousCursorPosition_.y);
     mouseEvent.setCursorPosition(cursorPosition.x, cursorPosition.y);
+    previousCursorPosition_ = cursorPosition;
     mouseEvent.setMouseButton(parseMouseButton(event->button()));
     Director::getInstance()->getEventDispatcher()->dispatchEvent(&mouseEvent);
 }
@@ -336,16 +343,19 @@ void Self::mousePress(QMouseEvent* event) {
 void Self::mouseRelease(QMouseEvent* event) {
     auto x = static_cast<float>(event->localPos().x());
     auto y = static_cast<float>(event->localPos().y());
-    if (event->button() == Qt::MouseButton::RightButton) {
-        if (captured_) {
-            captured_ = false;
+    if (event->button() == Qt::MouseButton::LeftButton) {
+        if (touchCaptured_) {
+            touchCaptured_ = false;
             std::intptr_t id = 0;
             handleTouchesEnd(1, &id, &x, &y);
         }
     }
     auto cursorPosition = parseCursorPosition(x, y);
     EventMouse mouseEvent(EventMouse::MouseEventType::MOUSE_UP);
+    mouseEvent.setCursorPosition(previousCursorPosition_.x,
+                                 previousCursorPosition_.y);
     mouseEvent.setCursorPosition(cursorPosition.x, cursorPosition.y);
+    previousCursorPosition_ = cursorPosition;
     mouseEvent.setMouseButton(parseMouseButton(event->button()));
     Director::getInstance()->getEventDispatcher()->dispatchEvent(&mouseEvent);
 }
@@ -390,10 +400,8 @@ void Self::resize(QResizeEvent* event) {
 }
 
 void Self::resizeFrame(float width, float height) {
-    setDesignResolutionSize(width, height, ResolutionPolicy::EXACT_FIT);
-
-    // Must setFrameSize later.
     setFrameSize(width, height);
+    setDesignResolutionSize(width, height, ResolutionPolicy::EXACT_FIT);
 }
 
 cocos2d::Point Self::parseCursorPosition(float x, float y) const {
@@ -406,7 +414,7 @@ cocos2d::Point Self::parseCursorPosition(const QPointF& p) const {
     auto x = static_cast<float>(p.x());
     auto y = static_cast<float>(p.y());
     auto cursorX = (x - viewPort.getMinX()) / getScaleX();
-    auto cursorY = (viewPort.getMaxY() - y) / getScaleY();
+    auto cursorY = (y - viewPort.getMinY()) / getScaleY();
     return cocos2d::Point(cursorX, cursorY);
 }
 NS_CC_END

@@ -65,7 +65,8 @@ private:
     cocos2d::Point parseCursorPosition(float x, float y) const;
     cocos2d::Point parseCursorPosition(const QPointF& p) const;
 
-    bool captured_;
+    bool touchCaptured_;
+    cocos2d::Point previousCursorPosition_;
     OpenGLWidget* view_;
 };
 NS_CC_END
