@@ -161,6 +161,24 @@ Self::MainWindow(QWidget* parent)
                 sceneTree->updateSelectionProperty(path, propertyName, value);
             });
 
+    // FIXME: RootScene hasn't been initialized.
+    QTimer::singleShot(1, [this] {
+        auto rootScene = dynamic_cast<RootScene*>(
+            cocos2d::Director::getInstance()->getRunningScene());
+        connect(rootScene, &RootScene::propertyValueChanged,
+                [this](const SelectionPath& path, const QString& propertyName,
+                       const cocos2d::Value& value) {
+                    qDebug() << "root scene change property " << propertyName;
+                    auto sceneTree = ui_->sceneTree;
+                    auto inspectorList = ui_->inspectorList;
+                    sceneTree->updateSelectionProperty(path, propertyName,
+                                                       value);
+                    inspectorList->refreshPropertyValue(
+                        sceneTree->getNodeGraph(),
+                        sceneTree->currentSelection(), propertyName);
+                });
+    });
+
     connect(&Config::getInstance(), &Config::interfaceLoaded,
             [this](const QFileInfo& path) {
                 Q_UNUSED(path);
