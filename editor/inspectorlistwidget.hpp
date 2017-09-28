@@ -30,6 +30,10 @@ public:
     void refreshPropertyValue(const NodeGraph& graph,
                               const SelectionTree& selection);
 
+    bool refreshPropertyValue(const NodeGraph& graph,
+                              const SelectionTree& selection,
+                              const QString& propertyName);
+
 Q_SIGNALS:
     void propertyValueChanged(const SelectionPath& path,
                               const QString& propertyName,

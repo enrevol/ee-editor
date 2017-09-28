@@ -64,4 +64,16 @@ void Self::refreshPropertyValue(const NodeGraph& graph,
         inspector->refreshPropertyValue(graph, selection);
     }
 }
+
+bool Self::refreshPropertyValue(const NodeGraph& graph,
+                                const SelectionTree& selection,
+                                const QString& propertyName) {
+    Q_ASSERT(not selection.isEmpty());
+    for (auto&& inspector : inspectors_) {
+        if (inspector->refreshPropertyValue(graph, selection, propertyName)) {
+            return true;
+        }
+    }
+    return false;
+}
 } // namespace ee

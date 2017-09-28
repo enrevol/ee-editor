@@ -90,4 +90,15 @@ void Self::refreshPropertyValue(const NodeGraph& graph,
     auto y = propertyY_->get(path.find(graph));
     setPropertyValue(x, y);
 }
+
+bool Self::refreshPropertyValue(const NodeGraph& graph,
+                                const SelectionTree& selection,
+                                const QString& propertyName) {
+    if (propertyName != propertyX_->name() &&
+        propertyName != propertyY_->name()) {
+        return false;
+    }
+    refreshPropertyValue(graph, selection);
+    return true;
+}
 } // namespace ee

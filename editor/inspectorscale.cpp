@@ -62,4 +62,14 @@ void Self::refreshPropertyValue(const NodeGraph& graph,
     setScaleX(scaleXProperty_.get(path.find(graph)));
     setScaleY(scaleYProperty_.get(path.find(graph)));
 }
+
+bool Self::refreshPropertyValue(const NodeGraph& graph,
+                                const SelectionTree& selection,
+                                const QString& propertyName) {
+    Q_UNUSED(graph);
+    Q_UNUSED(selection);
+    Q_UNUSED(propertyName);
+    // FIXME.
+    return false;
+}
 } // namespace ee

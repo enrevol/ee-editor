@@ -28,6 +28,10 @@ public:
     virtual void refreshPropertyValue(const NodeGraph& graph,
                                       const SelectionTree& selection) override;
 
+    virtual bool refreshPropertyValue(const NodeGraph& graph,
+                                      const SelectionTree& selection,
+                                      const QString& propertyName) override;
+
 protected:
     void setPropertyValue(int value);
 

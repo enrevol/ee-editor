@@ -29,6 +29,10 @@ public:
     virtual void refreshPropertyValue(const NodeGraph& graph,
                                       const SelectionTree& selection) = 0;
 
+    virtual bool refreshPropertyValue(const NodeGraph& graph,
+                                      const SelectionTree& selection,
+                                      const QString& propertyName) = 0;
+
 Q_SIGNALS:
     /// Occurs when this inspector properties values have changed.
     /// @param propertyName The property name.
