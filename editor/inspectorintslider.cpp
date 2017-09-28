@@ -11,9 +11,13 @@ using Self = InspectorIntSlider;
 
 Self::InspectorIntSlider(QWidget* parent)
     : Super(parent)
-    , ui_(new Ui::InspectorIntSlider) {
+    , ui_(new Ui::InspectorIntSlider)
+    , updating_(false) {
     ui_->setupUi(this);
     auto onValueChanged = [this](int value) {
+        if (updating_) {
+            return;
+        }
         setPropertyValue(value);
         Q_EMIT propertyValueChanged(property_->name(), cocos2d::Value(value));
     };
@@ -58,8 +62,11 @@ Self* Self::setMaximumValue(int value) {
 }
 
 void Self::setPropertyValue(int value) {
+    Q_ASSERT(not updating_);
+    updating_ = true;
     ui_->propertyInput->setValue(value);
     ui_->propertySlider->setValue(value);
+    updating_ = false;
 }
 
 void Self::refreshPropertyValue(const NodeGraph& graph,

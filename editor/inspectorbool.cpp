@@ -11,9 +11,13 @@ using Self = InspectorBool;
 
 Self::InspectorBool(QWidget* parent)
     : Super(parent)
-    , ui_(new Ui::InspectorBool) {
+    , ui_(new Ui::InspectorBool)
+    , updating_(false) {
     ui_->setupUi(this);
     connect(ui_->checkBox, &QCheckBox::stateChanged, [this](int state) {
+        if (updating_) {
+            return;
+        }
         if (state == Qt::CheckState::Unchecked) {
             Q_EMIT propertyValueChanged(property_->name(),
                                         cocos2d::Value(false));
@@ -39,7 +43,10 @@ Self* Self::setPropertyDisplayName(const QString& name) {
 }
 
 void Self::setPropertyValue(bool value) {
+    Q_ASSERT(not updating_);
+    updating_ = true;
     ui_->checkBox->setChecked(value);
+    updating_ = false;
 }
 
 void Self::refreshPropertyValue(const NodeGraph& graph,

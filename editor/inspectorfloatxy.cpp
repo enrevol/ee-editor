@@ -11,12 +11,16 @@ using Self = InspectorFloatXY;
 
 Self::InspectorFloatXY(QWidget* parent)
     : Super(parent)
-    , ui_(new Ui::InspectorFloatXY) {
+    , ui_(new Ui::InspectorFloatXY)
+    , updating_(false) {
     ui_->setupUi(this);
     connect(ui_->propertyXInput,
             static_cast<void (QDoubleSpinBox::*)(double)>(
                 &QDoubleSpinBox::valueChanged),
             [this](double value) {
+                if (updating_) {
+                    return;
+                }
                 auto floatValue = static_cast<float>(value);
                 Q_EMIT propertyValueChanged(propertyX_->name(),
                                             cocos2d::Value(floatValue));
@@ -25,6 +29,9 @@ Self::InspectorFloatXY(QWidget* parent)
             static_cast<void (QDoubleSpinBox::*)(double)>(
                 &QDoubleSpinBox::valueChanged),
             [this](double value) {
+                if (updating_) {
+                    return;
+                }
                 auto floatValue = static_cast<float>(value);
                 Q_EMIT propertyValueChanged(propertyY_->name(),
                                             cocos2d::Value(floatValue));
@@ -77,8 +84,11 @@ Self* Self::setMaximumValue(float value) {
 }
 
 void Self::setPropertyValue(float x, float y) {
+    Q_ASSERT(not updating_);
+    updating_ = true;
     ui_->propertyXInput->setValue(static_cast<double>(x));
     ui_->propertyYInput->setValue(static_cast<double>(y));
+    updating_ = false;
 }
 
 void Self::refreshPropertyValue(const NodeGraph& graph,

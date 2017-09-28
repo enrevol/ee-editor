@@ -38,6 +38,7 @@ protected:
 
 private:
     Ui::InspectorFloat* ui_;
+    bool updating_;
     std::unique_ptr<FloatPropertyGetter> property_;
 };
 } // namespace ee

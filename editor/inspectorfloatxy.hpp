@@ -41,6 +41,7 @@ protected:
 
 private:
     Ui::InspectorFloatXY* ui_;
+    bool updating_;
     std::unique_ptr<FloatPropertyGetter> propertyX_;
     std::unique_ptr<FloatPropertyGetter> propertyY_;
 };

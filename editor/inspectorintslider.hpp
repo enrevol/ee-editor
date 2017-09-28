@@ -37,6 +37,7 @@ protected:
 
 private:
     Ui::InspectorIntSlider* ui_;
+    bool updating_;
     std::unique_ptr<IntPropertyGetter> property_;
 };
 } // namespace ee

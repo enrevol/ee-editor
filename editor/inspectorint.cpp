@@ -11,11 +11,15 @@ using Self = InspectorInt;
 
 Self::InspectorInt(QWidget* parent)
     : Super(parent)
-    , ui_(new Ui::InspectorInt) {
+    , ui_(new Ui::InspectorInt)
+    , updating_(false) {
     ui_->setupUi(this);
     connect(ui_->propertyInput,
             static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             [this](int value) {
+                if (updating_) {
+                    return;
+                }
                 Q_EMIT propertyValueChanged(property_->name(),
                                             cocos2d::Value(value));
             });
@@ -51,7 +55,10 @@ Self* Self::setMaximumValue(int value) {
 }
 
 void Self::setPropertyValue(int value) {
+    Q_ASSERT(not updating_);
+    updating_ = true;
     ui_->propertyInput->setValue(value);
+    updating_ = false;
 }
 
 void Self::refreshPropertyValue(const NodeGraph& graph,

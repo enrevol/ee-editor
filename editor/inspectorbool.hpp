@@ -34,6 +34,7 @@ protected:
 
 private:
     Ui::InspectorBool* ui_;
+    bool updating_;
     std::unique_ptr<BoolPropertyGetter> property_;
 };
 } // namespace ee
