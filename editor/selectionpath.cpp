@@ -1,4 +1,5 @@
 #include "selectionpath.hpp"
+#include "scenetreemodel.hpp"
 
 #include <parser/nodegraph.hpp>
 
@@ -62,6 +63,15 @@ bool Self::isSibling(const Self& other) const {
         }
     }
     return true;
+}
+
+QModelIndex Self::find(const SceneTreeModel& model) const {
+    Q_ASSERT(not isEmpty());
+    auto modelIndex = model.rootIndex();
+    for (auto&& index : indices_) {
+        modelIndex = model.index(index, 0, modelIndex);
+    }
+    return modelIndex;
 }
 
 cocos2d::Node* Self::find(cocos2d::Node* node) const {

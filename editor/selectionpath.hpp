@@ -10,6 +10,7 @@ class Node;
 
 namespace ee {
 class NodeGraph;
+class SceneTreeModel;
 
 class SelectionPath {
 private:
@@ -27,6 +28,8 @@ public:
     const QVector<int>& getIndices() const;
 
     bool isSibling(const Self& other) const;
+
+    QModelIndex find(const SceneTreeModel& model) const;
 
     /// Finds the node.
     cocos2d::Node* find(cocos2d::Node* node) const;
