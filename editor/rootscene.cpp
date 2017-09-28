@@ -39,7 +39,7 @@ bool Self::init() {
     }
 
     gizmo_ = Gizmo::create();
-    gizmo_->setPosition(cocos2d::Point(100, 100));
+    gizmo_->setVisible(false);
     addChild(gizmo_, +1);
     connect(gizmo_, &Gizmo::moveBy, this, &Self::moveSelectionBy);
 
@@ -99,6 +99,14 @@ void Self::updateSelection(const SelectionTree& selection) {
         ensureHighlighters(i + 1);
         highlightNode(highlighters_.at(i), node);
         ++i;
+    }
+    if (selection_->isEmpty()) {
+        gizmo_->setVisible(false);
+    } else {
+        gizmo_->setVisible(true);
+        auto&& path = selection_->getPaths().front();
+        auto node = path.find(rootNode_);
+        gizmo_->setPosition(node->convertToWorldSpaceAR(cocos2d::Point::ZERO));
     }
 }
 
