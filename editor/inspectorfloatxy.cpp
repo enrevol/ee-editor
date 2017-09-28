@@ -32,6 +32,7 @@ Self::InspectorFloatXY(QWidget* parent)
                     return;
                 }
                 auto floatValue = static_cast<float>(value);
+                valueX_ = floatValue;
                 Q_EMIT propertyValueChanged(propertyX_->name(),
                                             cocos2d::Value(floatValue));
             });
@@ -43,6 +44,7 @@ Self::InspectorFloatXY(QWidget* parent)
                     return;
                 }
                 auto floatValue = static_cast<float>(value);
+                valueY_ = floatValue;
                 Q_EMIT propertyValueChanged(propertyY_->name(),
                                             cocos2d::Value(floatValue));
             });
