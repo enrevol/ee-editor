@@ -57,7 +57,7 @@ cocos2d::Value convertToValue(const QJsonValue& json) {
         if (std::abs(int(v) - v) < eps) {
             return cocos2d::Value(json.toInt());
         }
-        return cocos2d::Value(json.toDouble());
+        return cocos2d::Value(static_cast<float>(json.toDouble()));
     }
     if (json.isString()) {
         return cocos2d::Value(json.toString().toStdString());
