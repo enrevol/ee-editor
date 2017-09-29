@@ -106,14 +106,11 @@ void Self::updateSelection() {
 }
 
 void Self::updateSelection(const SelectionTree& selection) {
-    //    unhighlightNodes();
-    //    std::size_t i = 0;
-    //    for (auto&& path : selection.getPaths()) {
-    //        auto node = path.find(rootNode_);
-    //        ensureHighlighters(i + 1);
-    //        highlightNode(highlighters_.at(i), node);
-    //        ++i;
-    //    }
+    highlighter_->deselectAll();
+    for (auto&& path : selection.getPaths()) {
+        auto node = path.find(rootNode_);
+        highlighter_->select(node);
+    }
 }
 
 void Self::updateGizmo() {

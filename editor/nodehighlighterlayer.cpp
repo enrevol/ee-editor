@@ -50,6 +50,13 @@ void Self::deselect(const cocos2d::Node* node) {
 void Self::deselectAll() {
     for (auto&& elt : selectHighlighters_) {
         auto&& highlighter = elt.second;
+        highlighter->setVisible(false);
+    }
+}
+
+void Self::clearSelection() {
+    for (auto&& elt : selectHighlighters_) {
+        auto&& highlighter = elt.second;
         highlighter->removeFromParentAndCleanup(true);
     }
     selectHighlighters_.clear();

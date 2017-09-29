@@ -21,6 +21,7 @@ public:
     void select(const cocos2d::Node* node);
     void deselect(const cocos2d::Node* node);
     void deselectAll();
+    void clearSelection();
 
 protected:
     virtual bool init() override;
