@@ -355,6 +355,9 @@ void Self::addWriteHandlers(PropertyHandler& handler) {
 void Self::addDefaultProperties(PropertyWriter& writer) {
     Super::addDefaultProperties(writer);
 
+    writer.setProperty(NodeLoader::Property::AnchorPointX, 0.5f);
+    writer.setProperty(NodeLoader::Property::AnchorPointY, 0.5f);
+
     bool flag = true;
     flag &= writer.addProperty(Property::Bright, true);
     flag &= writer.addProperty(Property::Enabled, true);
