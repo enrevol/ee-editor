@@ -29,7 +29,9 @@ HEADERS += \
     propertywriter.hpp \
     layercolorloader.hpp \
     graphreader.hpp \
-    widgetloader.hpp
+    widgetloader.hpp \
+    layoutloader.hpp \
+    property.hpp
 
 SOURCES += \
     nodeloader.cpp \
@@ -44,4 +46,6 @@ SOURCES += \
     propertywriter.cpp \
     layercolorloader.cpp \
     graphreader.cpp \
-    widgetloader.cpp
+    widgetloader.cpp \
+    layoutloader.cpp \
+    property.cpp
