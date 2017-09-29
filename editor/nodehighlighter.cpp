@@ -53,8 +53,9 @@ void Self::select() {
 }
 
 void Self::setRegion(const cocos2d::Rect& rect) {
-    border_->setPosition(rect.origin);
-    border_->setContentSize(rect.size);
+    constexpr float offset = 0.5f;
+    border_->setPosition(rect.origin - cocos2d::Vec2(offset, offset));
+    border_->setContentSize(rect.size + cocos2d::Size(+offset, +offset) * 2);
 }
 
 void Self::resetInsets() {
