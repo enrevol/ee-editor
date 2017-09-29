@@ -11,11 +11,15 @@ private:
     using Super = NodeLoader;
 
 public:
+    static const std::string ClassName;
+
     static NodeLoaderPtr create();
 
     virtual ~LayerColorLoader() override;
 
     virtual cocos2d::Node* createNode() const override;
+
+    virtual std::string getClassName() const override;
 
 protected:
     /// Constructs a sprite loader.

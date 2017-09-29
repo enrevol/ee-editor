@@ -5,6 +5,8 @@
 namespace ee {
 using Self = LayerColorLoader;
 
+const std::string Self::ClassName = "_LayerColor";
+
 NodeLoaderPtr Self::create() {
     auto result = std::unique_ptr<Self>(new Self());
     result->initialize();
@@ -29,6 +31,10 @@ void Self::addDefaultProperties(PropertyWriter& writer) {
 
 cocos2d::Node* Self::createNode() const {
     return cocos2d::LayerColor::create();
+}
+
+std::string Self::getClassName() const {
+    return ClassName;
 }
 
 Self* Self::cloneRaw() const {

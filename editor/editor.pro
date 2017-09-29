@@ -78,7 +78,12 @@ SOURCES += \
     widgetinspector.cpp \
     inspectorintslider.cpp \
     gizmo.cpp \
-    nodehighlighterlayer.cpp
+    nodehighlighterlayer.cpp \
+    nodeinspectorloader.cpp \
+    inspectorloader.cpp \
+    widgetinspectorloader.cpp \
+    inspectorloaderlibrary.cpp \
+    layercolorinspectorloader.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -125,7 +130,12 @@ HEADERS += \
     widgetinspector.hpp \
     inspectorintslider.hpp \
     gizmo.hpp \
-    nodehighlighterlayer.hpp
+    nodehighlighterlayer.hpp \
+    nodeinspectorloader.hpp \
+    inspectorloader.hpp \
+    widgetinspectorloader.hpp \
+    inspectorloaderlibrary.hpp \
+    layercolorinspectorloader.hpp
 
 FORMS += \
     mainwindow.ui \

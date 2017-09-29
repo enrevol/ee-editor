@@ -30,6 +30,8 @@ public:
     /// @param name The name of the node loader.
     bool hasLoader(const std::string& name) const;
 
+    bool addLoader(NodeLoaderPtr loader);
+
     /// Adds a node loader with the specified name.
     /// @param name The name of the node loader.
     /// @param loader The desired loader.

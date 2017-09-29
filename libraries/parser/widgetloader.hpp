@@ -30,11 +30,15 @@ public:
         static const std::string UnifySizeEnabled;
     };
 
+    static const std::string ClassName;
+
     static NodeLoaderPtr create();
 
     virtual ~WidgetLoader() override;
 
     virtual cocos2d::Node* createNode() const override;
+
+    virtual std::string getClassName() const override;
 
 protected:
     WidgetLoader();

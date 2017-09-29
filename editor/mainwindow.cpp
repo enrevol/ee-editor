@@ -10,7 +10,6 @@
 #include "selectiontree.hpp"
 #include "settings.hpp"
 #include "ui_mainwindow.h"
-#include "widgetinspector.hpp"
 
 #include <base/CCDirector.h>
 
@@ -135,19 +134,11 @@ Self::MainWindow(QWidget* parent)
             [this](const SelectionTree& selection) {
                 auto rootScene = dynamic_cast<RootScene*>(
                     cocos2d::Director::getInstance()->getRunningScene());
+                auto sceneTree = ui_->sceneTree;
+                auto list = ui_->inspectorList;
 
                 rootScene->setSelection(selection);
-
-                auto list = ui_->inspectorList;
-                list->clearInspectors();
-
-                if (selection.isEmpty()) {
-                    return;
-                }
-                list->addInspector(new NodeInspector());
-                list->addInspector(new WidgetInspector());
-                list->refreshPropertyValue(ui_->sceneTree->getNodeGraph(),
-                                           selection);
+                list->setSelection(sceneTree->getNodeGraph(), selection);
             });
 
     connect(ui_->inspectorList, &InspectorListWidget::propertyValueChanged,
@@ -181,18 +172,10 @@ Self::MainWindow(QWidget* parent)
         connect(rootScene, &RootScene::selectionTreeChanged,
                 [this](const SelectionTree& selection) {
                     auto sceneTree = ui_->sceneTree;
-                    sceneTree->selectTree(selection);
-
                     auto list = ui_->inspectorList;
-                    list->clearInspectors();
 
-                    if (selection.isEmpty()) {
-                        return;
-                    }
-                    list->addInspector(new NodeInspector());
-                    list->addInspector(new WidgetInspector());
-                    list->refreshPropertyValue(ui_->sceneTree->getNodeGraph(),
-                                               selection);
+                    sceneTree->selectTree(selection);
+                    list->setSelection(sceneTree->getNodeGraph(), selection);
                 });
     });
 

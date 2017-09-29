@@ -27,6 +27,8 @@ public:
 
     void clearInspectors();
 
+    void setSelection(const NodeGraph& graph, const SelectionTree& selection);
+
     void refreshPropertyValue(const NodeGraph& graph,
                               const SelectionTree& selection);
 

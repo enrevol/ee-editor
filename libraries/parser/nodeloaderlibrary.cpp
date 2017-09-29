@@ -34,6 +34,10 @@ bool Self::hasLoader(const std::string& name) const {
     return loaders_.count(name) != 0;
 }
 
+bool Self::addLoader(NodeLoaderPtr loader) {
+    return addLoader(loader->getClassName(), std::move(loader));
+}
+
 bool Self::addLoader(const std::string& name, NodeLoaderPtr loader) {
     if (loaders_.count(name) != 0) {
         return false;

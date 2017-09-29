@@ -27,6 +27,8 @@ const std::string Self::Property::SwallowTouches = "swallow_touches";
 const std::string Self::Property::TouchEnabled = "touch_enabled";
 const std::string Self::Property::UnifySizeEnabled = "unify_size_enabled";
 
+const std::string Self::ClassName = "_Widget";
+
 NodeLoaderPtr Self::create() {
     auto result = std::unique_ptr<Self>(new Self());
     result->initialize();
@@ -379,6 +381,10 @@ void Self::addDefaultProperties(PropertyWriter& writer) {
 
 cocos2d::Node* Self::createNode() const {
     return cocos2d::ui::Widget::create();
+}
+
+std::string Self::getClassName() const {
+    return ClassName;
 }
 
 Self* Self::cloneRaw() const {

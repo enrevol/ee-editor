@@ -1,7 +1,11 @@
 #include "inspectorlistwidget.hpp"
 #include "inspector.hpp"
+#include "inspectorgroup.hpp"
+#include "inspectorloaderlibrary.hpp"
 #include "selectionpath.hpp"
 #include "selectiontree.hpp"
+
+#include <parser/nodegraph.hpp>
 
 #include <QLayout>
 #include <QLayoutItem>
@@ -53,13 +57,30 @@ void Self::clearInspectors() {
     inspectors_.clear();
 }
 
-void Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection) {
+void Self::setSelection(const NodeGraph& graph,
+                        const SelectionTree& selection) {
+    nodeGraph_ = &graph;
+    selection_ = std::make_unique<SelectionTree>(selection);
+    clearInspectors();
     if (selection.isEmpty()) {
         return;
     }
-    nodeGraph_ = &graph;
-    selection_ = std::make_unique<SelectionTree>(selection);
+    auto library = InspectorLoaderLibrary();
+    library.addDefaultLoaders();
+    auto&& path = selection.getPaths().front();
+    auto&& subGraph = path.find(graph);
+    auto&& className = subGraph.getBaseClass();
+    auto&& inspectors =
+        library.createInspectors(QString::fromStdString(className));
+    for (auto&& inspector : inspectors) {
+        addInspector(inspector);
+    }
+
+    refreshPropertyValue(graph, selection);
+}
+
+void Self::refreshPropertyValue(const NodeGraph& graph,
+                                const SelectionTree& selection) {
     for (auto&& inspector : inspectors_) {
         inspector->refreshPropertyValue(graph, selection);
     }

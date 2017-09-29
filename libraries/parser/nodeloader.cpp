@@ -34,6 +34,8 @@ const std::string Self::Property::SkewY = "skew_y";
 const std::string Self::Property::Tag = "tag";
 const std::string Self::Property::Visible = "visible";
 
+const std::string Self::ClassName = "_Node";
+
 namespace {
 bool isInColorRange(int value) {
     auto min = std::numeric_limits<GLubyte>::min();
@@ -68,6 +70,10 @@ void Self::initialize() {
 
 cocos2d::Node* Self::createNode() const {
     return cocos2d::Node::create();
+}
+
+std::string Self::getClassName() const {
+    return ClassName;
 }
 
 const PropertyHandler& Self::getPropertyHandler() const {

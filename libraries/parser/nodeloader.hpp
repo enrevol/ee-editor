@@ -43,12 +43,16 @@ public:
         static const std::string Visible;
     };
 
+    static const std::string ClassName;
+
     static NodeLoaderPtr create();
 
     virtual ~NodeLoader();
 
     /// Creates a node.
     virtual cocos2d::Node* createNode() const;
+
+    virtual std::string getClassName() const;
 
     /// Gets the property handler.
     const PropertyHandler& getPropertyHandler() const;
