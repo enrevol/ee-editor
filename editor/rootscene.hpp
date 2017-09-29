@@ -18,15 +18,22 @@
 namespace cocos2d {
 class EventListenerMouse;
 class EventListenerTouchOneByOne;
+class EventMouse;
 class LayerColor;
 class Sprite;
 
 template <class T> class RefPtr;
+
+namespace ui {
+class Layout;
+} // namespace ui
 } // namespace cocos2d
 
 namespace ee {
 class Gizmo;
 class NodeGraph;
+class NodeHighlighter;
+class NodeHighlighterLayer;
 class NodeLoader;
 class SelectionPath;
 class SelectionTree;
@@ -75,35 +82,32 @@ protected:
     virtual void update(float delta) override;
 
     bool touchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+    void touchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
+    void touchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
+
+    void mousePressed(cocos2d::EventMouse* event);
+    void mouseMoved(cocos2d::EventMouse* event);
+    void mouseReleased(cocos2d::EventMouse* event);
 
 private:
     void updateSelection();
 
     void updateSelection(const SelectionTree& selection);
 
-    void highlightNodes(const std::vector<cocos2d::Node*>& nodes);
-
-    void highlightNode(cocos2d::LayerColor* highlighter,
-                       const cocos2d::Node* node);
-
-    void unhighlightNodes();
-
-    void unhighlightNode(cocos2d::LayerColor* highlighter);
-
-    void ensureHighlighters(std::size_t size);
-
     void updateGizmo();
+
+    void updateHighlighter();
 
     std::unique_ptr<NodeGraph> nodeGraph_;
     std::unique_ptr<SelectionTree> selection_;
-    std::vector<cocos2d::RefPtr<cocos2d::LayerColor>> highlighters_;
 
     cocos2d::Node* rootNode_;
     cocos2d::LayerColor* background_;
 
     Gizmo* gizmo_;
+    NodeHighlighterLayer* highlighter_;
 
-    cocos2d::EventListenerTouchOneByOne* listener_;
+    cocos2d::EventListenerTouchOneByOne* touchListener_;
     cocos2d::EventListenerMouse* mouseListener_;
 };
 } // namespace ee

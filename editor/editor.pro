@@ -77,7 +77,8 @@ SOURCES += \
     inspectorstring.cpp \
     widgetinspector.cpp \
     inspectorintslider.cpp \
-    gizmo.cpp
+    gizmo.cpp \
+    nodehighlighterlayer.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -123,7 +124,8 @@ HEADERS += \
     inspectorstring.hpp \
     widgetinspector.hpp \
     inspectorintslider.hpp \
-    gizmo.hpp
+    gizmo.hpp \
+    nodehighlighterlayer.hpp
 
 FORMS += \
     mainwindow.ui \

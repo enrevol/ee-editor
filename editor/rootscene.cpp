@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 #include "gizmo.hpp"
+#include "nodehighlighterlayer.hpp"
 #include "rootscene.hpp"
 #include "selectionpath.hpp"
 #include "selectiontree.hpp"
@@ -19,6 +20,7 @@
 #include <base/CCEventListenerMouse.h>
 #include <base/CCEventListenerTouch.h>
 #include <base/CCRefPtr.h>
+#include <base/ccUTF8.h>
 #include <renderer/CCGLProgram.h>
 
 #include <QDebug>
@@ -38,9 +40,12 @@ bool Self::init() {
         return false;
     }
 
+    highlighter_ = NodeHighlighterLayer::create();
+    addChild(highlighter_, +1);
+
     gizmo_ = Gizmo::create();
     gizmo_->setVisible(false);
-    addChild(gizmo_, +1);
+    addChild(gizmo_, +2);
     connect(gizmo_, &Gizmo::moveBy, this, &Self::moveSelectionBy);
 
     setSelection(SelectionTree::emptySelection());
@@ -49,16 +54,23 @@ bool Self::init() {
         cocos2d::LayerColor::create(cocos2d::Color4B(50, 50, 50, 255));
     addChild(background_);
 
-    listener_ = cocos2d::EventListenerTouchOneByOne::create();
-    listener_->onTouchBegan = std::bind(
+    touchListener_ = cocos2d::EventListenerTouchOneByOne::create();
+    touchListener_->onTouchBegan = std::bind(
         &Self::touchBegan, this, std::placeholders::_1, std::placeholders::_2);
-    getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener_,
+    touchListener_->onTouchMoved = std::bind(
+        &Self::touchMoved, this, std::placeholders::_1, std::placeholders::_2);
+    touchListener_->onTouchEnded = std::bind(
+        &Self::touchEnded, this, std::placeholders::_1, std::placeholders::_2);
+    getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener_,
                                                                  this);
 
     mouseListener_ = cocos2d::EventListenerMouse::create();
-    mouseListener_->onMouseUp = [](cocos2d::EventMouse* event) {
-        qDebug() << Q_FUNC_INFO;
-    };
+    mouseListener_->onMouseDown =
+        std::bind(&Self::mousePressed, this, std::placeholders::_1);
+    mouseListener_->onMouseMove =
+        std::bind(&Self::mouseMoved, this, std::placeholders::_1);
+    mouseListener_->onMouseUp =
+        std::bind(&Self::mouseReleased, this, std::placeholders::_1);
     getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener_,
                                                                  this);
 
@@ -84,6 +96,7 @@ void Self::onExit() {
 }
 
 void Self::update(float delta) {
+    Q_UNUSED(delta);
     updateSelection();
     updateGizmo();
 }
@@ -93,14 +106,14 @@ void Self::updateSelection() {
 }
 
 void Self::updateSelection(const SelectionTree& selection) {
-    unhighlightNodes();
-    std::size_t i = 0;
-    for (auto&& path : selection.getPaths()) {
-        auto node = path.find(rootNode_);
-        ensureHighlighters(i + 1);
-        highlightNode(highlighters_.at(i), node);
-        ++i;
-    }
+    //    unhighlightNodes();
+    //    std::size_t i = 0;
+    //    for (auto&& path : selection.getPaths()) {
+    //        auto node = path.find(rootNode_);
+    //        ensureHighlighters(i + 1);
+    //        highlightNode(highlighters_.at(i), node);
+    //        ++i;
+    //    }
 }
 
 void Self::updateGizmo() {
@@ -157,43 +170,6 @@ void Self::moveSelectionBy(const cocos2d::Vec2& delta) {
     }
 }
 
-void Self::highlightNodes(const std::vector<cocos2d::Node*>& nodes) {
-    for (auto i = nodes.size(); i < highlighters_.size(); ++i) {
-        unhighlightNode(highlighters_.at(i));
-    }
-}
-
-void Self::highlightNode(cocos2d::LayerColor* highlighter,
-                         const cocos2d::Node* node) {
-    highlighter->setVisible(true);
-
-    auto transform = node->getNodeToWorldTransform();
-    cocos2d::Rect rect(cocos2d::Point::ZERO, node->getContentSize());
-    auto worldRect = cocos2d::RectApplyTransform(rect, transform);
-    highlighter->setPosition(worldRect.origin);
-    highlighter->setContentSize(worldRect.size);
-}
-
-void Self::unhighlightNodes() {
-    for (auto&& highlighter : highlighters_) {
-        unhighlightNode(highlighter);
-    }
-}
-
-void Self::unhighlightNode(cocos2d::LayerColor* highlighter) {
-    highlighter->setVisible(false);
-}
-
-void Self::ensureHighlighters(std::size_t size) {
-    for (std::size_t i = highlighters_.size(); i < size; ++i) {
-        auto layer = cocos2d::LayerColor::create(cocos2d::Color4B::BLACK);
-        layer->setLocalZOrder(+999);
-        layer->setOpacity(0);
-        addChild(layer);
-        highlighters_.push_back(layer);
-    }
-}
-
 void Self::updateSelectionProperty(const NodeGraph& graph,
                                    const SelectionPath& path,
                                    const QString& propertyName,
@@ -216,7 +192,63 @@ void Self::updateSelectionProperty(cocos2d::Node* node,
 }
 
 bool Self::touchBegan(cocos2d::Touch* touch, cocos2d::Event* event) {
+    Q_UNUSED(touch);
+    Q_UNUSED(event);
     qDebug() << Q_FUNC_INFO;
     return false;
+}
+
+void Self::touchMoved(cocos2d::Touch* touch, cocos2d::Event* event) {
+    Q_UNUSED(touch);
+    Q_UNUSED(event);
+}
+
+void Self::touchEnded(cocos2d::Touch* touch, cocos2d::Event* event) {
+    Q_UNUSED(touch);
+    Q_UNUSED(event);
+}
+
+namespace {
+bool doRecursively(cocos2d::Node* node,
+                   const std::function<bool(cocos2d::Node* node)>& f) {
+    for (auto&& child : node->getChildren()) {
+        if (doRecursively(child, f)) {
+            return true;
+        }
+    }
+    if (f(node)) {
+        return true;
+    }
+    return false;
+}
+} // namespace
+
+void Self::mousePressed(cocos2d::EventMouse* event) {
+    Q_UNUSED(event);
+}
+
+void Self::mouseMoved(cocos2d::EventMouse* event) {
+    if (rootNode_ == nullptr) {
+        return;
+    }
+    auto&& position = event->getLocation();
+    auto handled =
+        doRecursively(rootNode_, [this, position](cocos2d::Node* node) {
+            auto box = cocos2d::Rect(0, 0, node->getContentSize().width,
+                                     node->getContentSize().height);
+            auto localPosition = node->convertToNodeSpace(position);
+            if (not box.containsPoint(localPosition)) {
+                return false;
+            }
+            highlighter_->hover(node);
+            return true;
+        });
+    if (not handled) {
+        highlighter_->unhover();
+    }
+}
+
+void Self::mouseReleased(cocos2d::EventMouse* event) {
+    Q_UNUSED(event);
 }
 } // namespace ee
