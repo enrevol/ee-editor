@@ -14,15 +14,20 @@ using Self = InspectorFloatXY;
 Self::InspectorFloatXY(QWidget* parent)
     : Super(parent)
     , ui_(new Ui::InspectorFloatXY)
-    , updating_(false) {
+    , updating_(false)
+    , valueDirty_(true) {
     ui_->setupUi(this);
 
     // http://www.qtcentre.org/threads/18787-QDoubleSpinBox-setValue()-performance-issue
     updater_ = new QTimer(this);
     updater_->setInterval(200);
     updater_->start();
-    connect(updater_, &QTimer::timeout,
-            [this] { setPropertyValue(valueX_, valueY_); });
+    connect(updater_, &QTimer::timeout, [this] {
+        if (valueDirty_) {
+            valueDirty_ = false;
+            setPropertyValue(valueX_, valueY_);
+        }
+    });
 
     connect(ui_->propertyXInput,
             static_cast<void (QDoubleSpinBox::*)(double)>(
@@ -104,6 +109,7 @@ void Self::setPropertyValue(float x, float y) {
 }
 
 void Self::setPropertyValueLazy(float x, float y) {
+    valueDirty_ = true;
     valueX_ = x;
     valueY_ = y;
 }

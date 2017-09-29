@@ -46,6 +46,7 @@ private:
     QTimer* updater_;
     float valueX_;
     float valueY_;
+    bool valueDirty_;
     std::unique_ptr<FloatPropertyGetter> propertyX_;
     std::unique_ptr<FloatPropertyGetter> propertyY_;
 };
