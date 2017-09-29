@@ -34,6 +34,25 @@ Self Self::fromIndex(const QModelIndex& index, const QModelIndex& ancestor) {
     return select(indices);
 }
 
+Self Self::fromNode(const cocos2d::Node* node, const cocos2d::Node* ancestor) {
+    if (node == ancestor) {
+        return selectRoot();
+    }
+    QVector<int> indices;
+    auto currentNode = node;
+    while (currentNode != ancestor) {
+        auto&& parent = currentNode->getParent();
+        auto&& children = parent->getChildren();
+        auto childIndex =
+            std::find(children.cbegin(), children.cend(), currentNode) -
+            children.cbegin();
+        indices.append(static_cast<int>(childIndex));
+        currentNode = parent;
+    }
+    std::reverse(indices.begin(), indices.end());
+    return select(indices);
+}
+
 Self::SelectionPath(bool root, const QVector<int>& indices)
     : root_(root)
     , indices_(indices) {}
@@ -99,5 +118,9 @@ NodeGraph& Self::find(NodeGraph& graph) const {
 
 const NodeGraph& Self::find(const NodeGraph& graph) const {
     return static_cast<const NodeGraph&>(find(const_cast<NodeGraph&>(graph)));
+}
+
+bool Self::operator==(const Self& other) const {
+    return std::tie(root_, indices_) == std::tie(other.root_, other.indices_);
 }
 } // namespace ee

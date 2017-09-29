@@ -22,6 +22,8 @@ public:
     static Self select(const QVector<int>& indices);
     static Self fromIndex(const QModelIndex& index,
                           const QModelIndex& ancestor = QModelIndex());
+    static Self fromNode(const cocos2d::Node* node,
+                         const cocos2d::Node* ancestor);
 
     bool isEmpty() const;
     bool isRoot() const;
@@ -42,6 +44,8 @@ public:
 
     /// Finds the node graph (const version).
     const NodeGraph& find(const NodeGraph& graph) const;
+
+    bool operator==(const Self& other) const;
 
 protected:
     explicit SelectionPath(bool root, const QVector<int>& indices);

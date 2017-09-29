@@ -22,6 +22,9 @@ public:
 
     Self& addPath(const SelectionPath& path);
 
+    bool operator==(const Self& other) const;
+    bool operator!=(const Self& other) const;
+
 protected:
     explicit SelectionTree(const std::vector<SelectionPath>& paths);
 

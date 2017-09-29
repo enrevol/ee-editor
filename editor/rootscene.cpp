@@ -74,6 +74,9 @@ bool Self::init() {
     getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener_,
                                                                  this);
 
+    mousePressing_ = false;
+    mouseMoved_ = false;
+
     scheduleUpdate();
 
     return true;
@@ -206,46 +209,80 @@ void Self::touchEnded(cocos2d::Touch* touch, cocos2d::Event* event) {
 }
 
 namespace {
-bool doRecursively(cocos2d::Node* node,
-                   const std::function<bool(cocos2d::Node* node)>& f) {
+cocos2d::Node*
+doRecursively(cocos2d::Node* node,
+              const std::function<bool(cocos2d::Node* node)>& f) {
     for (auto&& child : node->getChildren()) {
-        if (doRecursively(child, f)) {
-            return true;
+        auto handler = doRecursively(child, f);
+        if (handler != nullptr) {
+            return handler;
         }
     }
     if (f(node)) {
-        return true;
+        return node;
     }
-    return false;
+    return nullptr;
+}
+
+cocos2d::Node* findCapturedNode(cocos2d::Node* rootNode,
+                                const cocos2d::Point& position) {
+    return doRecursively(rootNode, [position](cocos2d::Node* node) {
+        auto box = cocos2d::Rect(0, 0, node->getContentSize().width,
+                                 node->getContentSize().height);
+        auto localPosition = node->convertToNodeSpace(position);
+        return box.containsPoint(localPosition);
+    });
 }
 } // namespace
 
 void Self::mousePressed(cocos2d::EventMouse* event) {
-    Q_UNUSED(event);
+    if (rootNode_ == nullptr) {
+        return;
+    }
+    auto&& position = event->getLocation();
+    mousePressing_ = true;
+    mouseMoved_ = false;
 }
 
 void Self::mouseMoved(cocos2d::EventMouse* event) {
     if (rootNode_ == nullptr) {
         return;
     }
+    mouseMoved_ = true;
     auto&& position = event->getLocation();
-    auto handled =
-        doRecursively(rootNode_, [this, position](cocos2d::Node* node) {
-            auto box = cocos2d::Rect(0, 0, node->getContentSize().width,
-                                     node->getContentSize().height);
-            auto localPosition = node->convertToNodeSpace(position);
-            if (not box.containsPoint(localPosition)) {
-                return false;
-            }
-            highlighter_->hover(node);
-            return true;
-        });
-    if (not handled) {
+    if (mousePressing_) {
         highlighter_->unhover();
+        // FIXME.
+    } else {
+        auto capturedNode = findCapturedNode(rootNode_, position);
+        if (capturedNode == nullptr) {
+            highlighter_->unhover();
+        } else {
+            highlighter_->hover(capturedNode);
+        }
     }
 }
 
 void Self::mouseReleased(cocos2d::EventMouse* event) {
-    Q_UNUSED(event);
+    if (rootNode_ == nullptr) {
+        return;
+    }
+    Q_ASSERT(mousePressing_);
+    mousePressing_ = false;
+    auto&& position = event->getLocation();
+    if (mouseMoved_) {
+        // FIXME.
+    } else {
+        auto selection = SelectionTree::emptySelection();
+        auto capturedNode = findCapturedNode(rootNode_, position);
+        if (capturedNode != nullptr) {
+            auto path = SelectionPath::fromNode(capturedNode, rootNode_);
+            selection.addPath(path);
+        }
+        if (selection != *selection_) {
+            setSelection(selection);
+            Q_EMIT selectionTreeChanged(selection);
+        }
+    }
 }
 } // namespace ee

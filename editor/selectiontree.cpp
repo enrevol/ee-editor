@@ -35,4 +35,12 @@ Self& Self::addPath(const SelectionPath& path) {
     paths_.push_back(path);
     return *this;
 }
+
+bool Self::operator==(const Self& other) const {
+    return paths_ == other.paths_;
+}
+
+bool Self::operator!=(const Self& other) const {
+    return not(*this == other);
+}
 } // namespace ee

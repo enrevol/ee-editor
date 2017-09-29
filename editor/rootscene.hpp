@@ -67,6 +67,8 @@ Q_SIGNALS:
                               const QString& propertyName,
                               const cocos2d::Value& value);
 
+    void selectionTreeChanged(const SelectionTree& selection);
+
 protected Q_SLOTS:
     void moveSelectionBy(const cocos2d::Vec2& delta);
 
@@ -106,6 +108,9 @@ private:
 
     Gizmo* gizmo_;
     NodeHighlighterLayer* highlighter_;
+
+    bool mousePressing_;
+    bool mouseMoved_;
 
     cocos2d::EventListenerTouchOneByOne* touchListener_;
     cocos2d::EventListenerMouse* mouseListener_;
