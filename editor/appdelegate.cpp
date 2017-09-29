@@ -50,6 +50,8 @@ bool Self::applicationDidFinishLaunching() {
     auto scene = RootScene::create();
     director->runWithScene(scene);
 
+    doneCocosContext();
+
     return true;
 }
 

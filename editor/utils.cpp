@@ -10,9 +10,28 @@ void makeCocosContext() {
     makeCocosContext(glView);
 }
 
+void doneCocosContext() {
+    auto director = cocos2d::Director::getInstance();
+    auto glView = director->getOpenGLView();
+    doneCocosContext(glView);
+}
+
 void makeCocosContext(cocos2d::GLView* view) {
     auto context = view->getOpenGLContext();
     context->makeCurrent(context->surface());
+}
+
+void doneCocosContext(cocos2d::GLView* view) {
+    auto context = view->getOpenGLContext();
+    context->doneCurrent();
+}
+
+bool isCurrentContextCocos() {
+    auto director = cocos2d::Director::getInstance();
+    auto glView = director->getOpenGLView();
+    auto context = glView->getOpenGLContext();
+    auto currentContext = QOpenGLContext::currentContext();
+    return context == currentContext;
 }
 
 QJsonValue convertToJson(const cocos2d::Value& value) {

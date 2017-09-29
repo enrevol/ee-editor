@@ -11,8 +11,12 @@ class GLView;
 
 namespace ee {
 void makeCocosContext();
+void doneCocosContext();
 
 void makeCocosContext(cocos2d::GLView* view);
+void doneCocosContext(cocos2d::GLView* view);
+
+bool isCurrentContextCocos();
 
 /// Converts from cocos2d::Value to QJsonValue.
 QJsonValue convertToJson(const cocos2d::Value& value);
