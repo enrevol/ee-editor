@@ -16,6 +16,7 @@
 #include <base/CCValue.h>
 
 namespace cocos2d {
+class EventListenerCustom;
 class EventListenerMouse;
 class EventListenerTouchOneByOne;
 class EventMouse;
@@ -100,6 +101,8 @@ private:
 
     void updateHighlighter();
 
+    void updateWindowSize();
+
     std::unique_ptr<NodeGraph> nodeGraph_;
     std::unique_ptr<SelectionTree> selection_;
 
@@ -114,6 +117,7 @@ private:
 
     cocos2d::EventListenerTouchOneByOne* touchListener_;
     cocos2d::EventListenerMouse* mouseListener_;
+    cocos2d::EventListenerCustom* windowResizedListener_;
 };
 } // namespace ee
 

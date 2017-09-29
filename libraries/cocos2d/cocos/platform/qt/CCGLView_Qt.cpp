@@ -170,6 +170,9 @@ EventKeyboard::KeyCode parseKey(Qt::Key key) {
 
 using Self = GLViewImpl;
 
+const std::string Self::EVENT_WINDOW_RESIZED =
+    "__qt_glview_event_window_resized";
+
 Self* Self::create(OpenGLWidget* view) {
     auto result = new (std::nothrow) Self();
     if (result != nullptr && result->initWithView(view)) {
@@ -402,6 +405,8 @@ void Self::resize(QResizeEvent* event) {
 void Self::resizeFrame(float width, float height) {
     setFrameSize(width, height);
     setDesignResolutionSize(width, height, ResolutionPolicy::EXACT_FIT);
+    Director::getInstance()->getEventDispatcher()->dispatchCustomEvent(
+        EVENT_WINDOW_RESIZED);
 }
 
 cocos2d::Point Self::parseCursorPosition(float x, float y) const {

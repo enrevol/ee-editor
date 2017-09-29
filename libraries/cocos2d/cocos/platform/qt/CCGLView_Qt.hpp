@@ -21,6 +21,8 @@ private:
     using Super = GLView;
 
 public:
+    static const std::string EVENT_WINDOW_RESIZED;
+
     static Self* create(OpenGLWidget* view);
 
     virtual ~GLViewImpl() override;

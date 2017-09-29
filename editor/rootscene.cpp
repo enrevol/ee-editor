@@ -16,11 +16,14 @@
 
 #include <2d/CCLayer.h>
 #include <2d/CCSprite.h>
+#include <base/CCDirector.h>
 #include <base/CCEventDispatcher.h>
+#include <base/CCEventListenerCustom.h>
 #include <base/CCEventListenerMouse.h>
 #include <base/CCEventListenerTouch.h>
 #include <base/CCRefPtr.h>
 #include <base/ccUTF8.h>
+#include <platform/qt/CCGLView_Qt.hpp>
 #include <renderer/CCGLProgram.h>
 
 #include <QDebug>
@@ -73,6 +76,12 @@ bool Self::init() {
         std::bind(&Self::mouseReleased, this, std::placeholders::_1);
     getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener_,
                                                                  this);
+
+    windowResizedListener_ = cocos2d::EventListenerCustom::create(
+        cocos2d::GLViewImpl::EVENT_WINDOW_RESIZED,
+        std::bind(&Self::updateWindowSize, this));
+    getEventDispatcher()->addEventListenerWithSceneGraphPriority(
+        windowResizedListener_, this);
 
     mousePressing_ = false;
     mouseMoved_ = false;
@@ -284,5 +293,10 @@ void Self::mouseReleased(cocos2d::EventMouse* event) {
             Q_EMIT selectionTreeChanged(selection);
         }
     }
+}
+
+void Self::updateWindowSize() {
+    auto&& winSize = _director->getWinSize();
+    background_->setContentSize(winSize);
 }
 } // namespace ee
