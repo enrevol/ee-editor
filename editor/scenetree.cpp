@@ -15,7 +15,8 @@ namespace ee {
 using Self = SceneTree;
 
 Self::SceneTree(QWidget* parent)
-    : Super(parent) {
+    : Super(parent)
+    , selecting_(false) {
     setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
 }
 
@@ -43,9 +44,27 @@ SelectionTree Self::currentSelection() const {
     return selection;
 }
 
+void Self::selectTree(const SelectionTree& selection) {
+    Q_ASSERT(not selecting_);
+    selecting_ = true;
+    QItemSelection itemSelection;
+    auto&& paths = selection.getPaths();
+    for (auto&& path : paths) {
+        auto modelIndex = path.find(*treeModel_);
+        itemSelection.select(modelIndex, modelIndex);
+    }
+    selectionModel()->select(
+        itemSelection, QItemSelectionModel::SelectionFlag::ClearAndSelect);
+    selecting_ = false;
+}
+
 void Self::selectionChanged(const QItemSelection& selected,
                             const QItemSelection& deselected) {
     Super::selectionChanged(selected, deselected);
+
+    if (selecting_) {
+        return;
+    }
 
     auto selectedModelIndices = selected.indexes();
     auto currentModelIndices = selectedIndexes();

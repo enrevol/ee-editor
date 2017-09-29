@@ -44,6 +44,9 @@ public:
                                  const QString& propertyName,
                                  const cocos2d::Value& value);
 
+public Q_SLOTS:
+    void selectTree(const SelectionTree& selection);
+
 Q_SIGNALS:
     void selectionTreeChanged(const SelectionTree& selection);
 
@@ -52,6 +55,7 @@ protected:
                                   const QItemSelection& deselected) override;
 
 private:
+    bool selecting_;
     std::unique_ptr<NodeGraph> nodeGraph_;
     std::unique_ptr<SceneTreeModel> treeModel_;
 };

@@ -177,6 +177,23 @@ Self::MainWindow(QWidget* parent)
                         sceneTree->getNodeGraph(),
                         sceneTree->currentSelection(), propertyName);
                 });
+
+        connect(rootScene, &RootScene::selectionTreeChanged,
+                [this](const SelectionTree& selection) {
+                    auto sceneTree = ui_->sceneTree;
+                    sceneTree->selectTree(selection);
+
+                    auto list = ui_->inspectorList;
+                    list->clearInspectors();
+
+                    if (selection.isEmpty()) {
+                        return;
+                    }
+                    list->addInspector(new NodeInspector());
+                    list->addInspector(new WidgetInspector());
+                    list->refreshPropertyValue(ui_->sceneTree->getNodeGraph(),
+                                               selection);
+                });
     });
 
     connect(&Config::getInstance(), &Config::interfaceLoaded,
