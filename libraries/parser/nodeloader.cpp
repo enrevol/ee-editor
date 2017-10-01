@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "nodeloader.hpp"
 #include "propertyreader.hpp"
 #include "propertywriter.hpp"

@@ -1,5 +1,7 @@
-#include "selectionpath.hpp"
+#include <ciso646>
+
 #include "scenetreemodel.hpp"
+#include "selectionpath.hpp"
 
 #include <parser/nodegraph.hpp>
 

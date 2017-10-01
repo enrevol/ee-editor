@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "inspectorfloatxy.hpp"
 #include "selectionpath.hpp"
 #include "selectiontree.hpp"

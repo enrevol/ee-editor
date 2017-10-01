@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "propertyreader.hpp"
 
 namespace ee {
