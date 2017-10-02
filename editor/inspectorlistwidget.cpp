@@ -1,6 +1,8 @@
-#include "inspectorlistwidget.hpp"
+#include <ciso646>
+
 #include "inspector.hpp"
 #include "inspectorgroup.hpp"
+#include "inspectorlistwidget.hpp"
 #include "inspectorloaderlibrary.hpp"
 #include "selectionpath.hpp"
 #include "selectiontree.hpp"

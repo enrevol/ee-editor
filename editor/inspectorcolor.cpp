@@ -1,5 +1,7 @@
-#include "inspectorcolor.hpp"
+#include <ciso646>
+
 #include "clickablewidget.hpp"
+#include "inspectorcolor.hpp"
 #include "selectionpath.hpp"
 #include "selectiontree.hpp"
 #include "ui_inspectorcolor.h"

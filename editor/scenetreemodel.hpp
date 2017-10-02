@@ -1,6 +1,8 @@
 #ifndef EE_EDITOR_SCENE_TREE_MODEL_HPP
 #define EE_EDITOR_SCENE_TREE_MODEL_HPP
 
+#include <memory>
+
 #include <QAbstractItemModel>
 
 namespace ee {

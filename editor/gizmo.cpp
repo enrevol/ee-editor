@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "gizmo.hpp"
 
 #include <2d/CCSprite.h>

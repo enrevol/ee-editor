@@ -19,6 +19,10 @@
 namespace ee {
 using Self = MainWindow;
 
+#ifdef interface // win32
+#undef interface
+#endif // interface
+
 namespace filter {
 constexpr auto project = "eeEditor Project File (*.eeeproj);;All Files (.*)";
 constexpr auto interface = "eeInterface File (*.eeei);;All Files (.*)";

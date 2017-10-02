@@ -1,5 +1,7 @@
-#include "scenetree.hpp"
+#include <ciso646>
+
 #include "config.hpp"
+#include "scenetree.hpp"
 #include "scenetreemodel.hpp"
 #include "selectionpath.hpp"
 #include "selectiontree.hpp"

@@ -1,3 +1,5 @@
+#include <ciso646>
+
 #include "nodehighlighter.hpp"
 
 #include <base/CCDirector.h>

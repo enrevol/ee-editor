@@ -17,14 +17,36 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += \
     ../libraries
 
-LIBS += \
-    -L$$OUT_PWD/../libraries/cocos2d -lcocos2d \
-    -L$$OUT_PWD/../libraries/parser -lparser
+mac {
+    LIBS += \
+        -L$$OUT_PWD/../libraries/cocos2d -lcocos2d \
+        -L$$OUT_PWD/../libraries/parser -lparser
 
-PRE_TARGETDEPS += \
-    $$OUT_PWD/../libraries/cocos2d/libcocos2d.a \
-    $$OUT_PWD/../libraries/parser/libparser.a
+    PRE_TARGETDEPS += \
+        $$OUT_PWD/../libraries/cocos2d/libcocos2d.a \
+        $$OUT_PWD/../libraries/parser/libparser.a
+}
 
+win32 {
+    CONFIG(debug, debug|release) {
+        LIBS += \
+            -L$$OUT_PWD/../libraries/cocos2d/debug -lcocos2d \
+            -L$$OUT_PWD/../libraries/parser/debug -lparser
+
+        PRE_TARGETDEPS += \
+            $$OUT_PWD/../libraries/cocos2d/debug/cocos2d.lib \
+            $$OUT_PWD/../libraries/parser/debug/parser.lib
+    }
+    CONFIG(release, debug|release) {
+        LIBS += \
+            -L$$OUT_PWD/../libraries/cocos2d/release -lcocos2d \
+            -L$$OUT_PWD/../libraries/parser/release -lparser
+
+        PRE_TARGETDEPS += \
+            $$OUT_PWD/../libraries/cocos2d/release/cocos2d.lib \
+            $$OUT_PWD/../libraries/parser/release/parser.lib
+    }
+}
 
 RESOURCES += \
     editor.qrc

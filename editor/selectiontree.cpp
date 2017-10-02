@@ -1,5 +1,7 @@
-#include "selectiontree.hpp"
+#include <ciso646>
+
 #include "selectionpath.hpp"
+#include "selectiontree.hpp"
 
 namespace ee {
 using Self = SelectionTree;

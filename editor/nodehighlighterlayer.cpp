@@ -1,5 +1,7 @@
-#include "nodehighlighterlayer.hpp"
+#include <ciso646>
+
 #include "nodehighlighter.hpp"
+#include "nodehighlighterlayer.hpp"
 
 namespace ee {
 using Self = NodeHighlighterLayer;
