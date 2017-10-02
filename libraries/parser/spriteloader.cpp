@@ -7,13 +7,12 @@
 namespace ee {
 using Self = SpriteLoader;
 
-const std::string Self::Property::BlendFuncDst = "blend_func_dst";
-const std::string Self::Property::BlendFuncSrc = "blend_func_src";
-const std::string Self::Property::FlippedX = "flipped_x";
-const std::string Self::Property::FlippedY = "flipped_y";
-const std::string Self::Property::SpriteFrame = "sprite_frame";
-const std::string Self::Property::StretchEnabled = "stretch_enabled";
-const std::string Self::Property::Texture = "texture";
+const PropertyBlend Self::Property::BlendFunc("blend_func");
+const PropertyBool Self::Property::FlippedX("flipped_x");
+const PropertyBool Self::Property::FlippedY("flipped_y");
+const PropertyString Self::Property::SpriteFrame("sprite_frame");
+const PropertyBool Self::Property::StretchEnabled("stretch_enabled");
+const PropertyString Self::Property::Texture("texture");
 
 NodeLoaderPtr Self::create() {
     auto result = std::unique_ptr<Self>(new Self());
@@ -28,127 +27,62 @@ Self::~SpriteLoader() {}
 void Self::addReadHandlers(PropertyHandler& handler) {
     Super::addReadHandlers(handler);
 
-    handler.addReadIntHandler(
-        Property::BlendFuncDst, [](const cocos2d::Node* node) {
-            auto sprite = dynamic_cast<const cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                CC_ASSERT(false);
-                return 0;
-            }
-            return static_cast<int>(sprite->getBlendFunc().dst);
-        });
+    using Node = cocos2d::Sprite;
 
-    handler.addReadIntHandler(
-        Property::BlendFuncSrc, [](const cocos2d::Node* node) {
-            auto sprite = dynamic_cast<const cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                CC_ASSERT(false);
-                return 0;
-            }
-            return static_cast<int>(sprite->getBlendFunc().src);
-        });
+    handler.addReadHandler<Node>(Property::BlendFunc, [](const Node* node) {
+        return node->getBlendFunc();
+    });
 
-    handler.addReadBoolHandler(
-        Property::FlippedX, [](const cocos2d::Node* node) {
-            auto sprite = dynamic_cast<const cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return sprite->isFlippedX();
-        });
+    handler.addReadHandler<Node>(Property::FlippedX, [](const Node* node) {
+        return node->isFlippedX();
+    });
 
-    handler.addReadBoolHandler(
-        Property::FlippedY, [](const cocos2d::Node* node) {
-            auto sprite = dynamic_cast<const cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return sprite->isFlippedY();
-        });
+    handler.addReadHandler<Node>(Property::FlippedY, [](const Node* node) {
+        return node->isFlippedY();
+    });
 
-    handler.addReadBoolHandler(
-        Property::StretchEnabled, [](const cocos2d::Node* node) {
-            auto sprite = dynamic_cast<const cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return sprite->isStretchEnabled();
-        });
+    handler.addReadHandler<Node>(
+        Property::StretchEnabled,
+        [](const Node* node) { return node->isStretchEnabled(); });
 
-    handler.addReadStringHandler(
-        Property::Texture, [](const cocos2d::Node* node) {
-            return NodeInfoReader(node).readString(Property::Texture, "");
-        });
+    handler.addReadHandler<Node>(Property::Texture, [](const Node* node) {
+        return NodeInfoReader(node).readString(Property::Texture.name(), "");
+    });
 }
 
 void Self::addWriteHandlers(PropertyHandler& handler) {
     Super::addWriteHandlers(handler);
 
-    handler.addWriteIntHandler(
-        Property::BlendFuncDst, [](cocos2d::Node* node, int value) {
-            auto sprite = dynamic_cast<cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                return false;
-            }
-            auto blendFunc = sprite->getBlendFunc();
-            blendFunc.dst = static_cast<GLenum>(value);
-            sprite->setBlendFunc(blendFunc);
+    using Node = cocos2d::Sprite;
+
+    handler.addWriteHandler<Node>(
+        Property::BlendFunc, [](Node* node, const cocos2d::BlendFunc& value) {
+            node->setBlendFunc(value);
             return true;
         });
 
-    handler.addWriteIntHandler(
-        Property::BlendFuncSrc, [](cocos2d::Node* node, int value) {
-            auto sprite = dynamic_cast<cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                return false;
-            }
-            auto blendFunc = sprite->getBlendFunc();
-            blendFunc.src = static_cast<GLenum>(value);
-            sprite->setBlendFunc(blendFunc);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::FlippedX,
+                                  [](Node* node, bool value) {
+                                      node->setFlippedX(value);
+                                      return true;
+                                  });
 
-    handler.addWriteBoolHandler(
-        Property::FlippedX, [](cocos2d::Node* node, bool value) {
-            auto sprite = dynamic_cast<cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                return false;
-            }
-            sprite->setFlippedX(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::FlippedY,
+                                  [](Node* node, bool value) {
+                                      node->setFlippedY(value);
+                                      return true;
+                                  });
 
-    handler.addWriteBoolHandler(
-        Property::FlippedY, [](cocos2d::Node* node, bool value) {
-            auto sprite = dynamic_cast<cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                return false;
-            }
-            sprite->setFlippedY(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::StretchEnabled,
+                                  [](Node* node, bool value) {
+                                      node->setStretchEnabled(value);
+                                      return true;
+                                  });
 
-    handler.addWriteBoolHandler(
-        Property::StretchEnabled, [](cocos2d::Node* node, bool value) {
-            auto sprite = dynamic_cast<cocos2d::Sprite*>(node);
-            if (sprite == nullptr) {
-                return false;
-            }
-            sprite->setStretchEnabled(value);
-            return true;
-        });
-
-    handler.addWriteStringHandler(
-        Property::Texture, [](cocos2d::Node* node_, const std::string& value) {
-            auto node = dynamic_cast<cocos2d::Sprite*>(node_);
-            if (node == nullptr) {
-                return false;
-            }
+    handler.addWriteHandler<Node>(
+        Property::Texture, [](Node* node, const std::string& value) {
             node->setTexture(value);
-            NodeInfoWriter(node).writeString(Property::Texture, value);
+            NodeInfoWriter(node).writeString(Property::Texture.name(), value);
             return true;
         });
 }

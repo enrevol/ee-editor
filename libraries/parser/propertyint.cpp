@@ -6,15 +6,15 @@
 namespace ee {
 using Self = PropertyInt;
 
-int Self::get(const PropertyReader& reader, const int& defaultValue) const {
+int Self::get(const PropertyReader& reader, const Value& defaultValue) const {
     return reader.getIntProperty(name(), defaultValue);
 }
 
-void Self::set(PropertyWriter& writer, const int& value) const {
+void Self::set(PropertyWriter& writer, const Value& value) const {
     writer.setProperty(name(), value);
 }
 
-bool Self::add(PropertyWriter& writer, const int& value) const {
+bool Self::add(PropertyWriter& writer, const Value& value) const {
     return writer.addProperty(name(), value);
 }
 

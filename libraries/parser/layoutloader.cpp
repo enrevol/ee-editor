@@ -6,35 +6,22 @@
 namespace ee {
 using Self = LayoutLoader;
 
-// clang-format off
-const std::string Self::Property::BackgroundColorR = "background_color_r";
-const std::string Self::Property::BackgroundColorG = "background_color_g";
-const std::string Self::Property::BackgroundColorB = "background_color_b";
-const std::string Self::Property::BackgroundColorOpacity = "background_color_opacity";
-const std::string Self::Property::BackgroundColorType = "background_color_type";
-const std::string Self::Property::BackgroundColorVectorX = "background_color_vector_x";
-const std::string Self::Property::BackgroundColorVectorY = "background_color_vector_y";
-const std::string Self::Property::BackgroundEndColorR = "background_end_color_r";
-const std::string Self::Property::BackgroundEndColorG = "background_end_color_g";
-const std::string Self::Property::BackgroundEndColorB = "background_end_color_b";
-const std::string Self::Property::BackgroundImageCapInsetsX = "background_image_cap_insets_x";
-const std::string Self::Property::BackgroundImageCapInsetsY = "background_image_cap_insets_y";
-const std::string Self::Property::BackgroundImageCapInsetsW = "background_image_cap_insets_width";
-const std::string Self::Property::BackgroundImageCapInsetsH = "background_image_cap_insets_height";
-const std::string Self::Property::BackgroundImageColorR = "background_image_color_r";
-const std::string Self::Property::BackgroundImageColorG = "background_image_color_g";
-const std::string Self::Property::BackgroundImageColorB = "background_image_color_b";
-const std::string Self::Property::BackgroundImageOpacity = "background_image_opacity";
-const std::string Self::Property::BackgroundImageName = "background_image_name";
-const std::string Self::Property::BackgroundImageTexType = "background_image_tex_type";
-const std::string Self::Property::BackgroundImageScale9Enabled = "background_image_scale_9_enabled";
-const std::string Self::Property::BackgroundStartColorR = "background_start_color_r";
-const std::string Self::Property::BackgroundStartColorG = "background_start_color_g";
-const std::string Self::Property::BackgroundStartColorB = "background_start_color_b";
-const std::string Self::Property::ClippingEnabled = "clipping_enabled";
-const std::string Self::Property::ClippingType = "clipping_type";
-const std::string Self::Property::LayoutType = "layout_type";
-// clang-format on
+const PropertyColor BackgroundColor("background_color");
+const PropertyInt BackgroundColorOpacity("background_color_opacity");
+const PropertyInt BackgroundColorType("background_color_type");
+const PropertyPoint BackgroundColorVector("background_color_vector");
+const PropertyColor BackgroundEndColor("background_end_color");
+const PropertyRect BackgroundImageCapInsets("background_image_cap_insets");
+const PropertyColor BackgroundImageColor("background_image_color");
+const PropertyInt BackgroundImageOpacity("background_image_opacity");
+const PropertyString BackgroundImageName("background_image_name");
+const PropertyInt BackgroundImageTexType("background_image_tex_type");
+const PropertyBool
+    BackgroundImageScale9Enabled("background_image_scale_9_enabled");
+const PropertyColor BackgroundStartColor("background_start_color");
+const PropertyBool ClippingEnabled("clipping_enabled");
+const PropertyInt ClippingType("clipping_type");
+const PropertyInt LayoutType("layout_type");
 
 const std::string Self::ClassName = "_Layout";
 

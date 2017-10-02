@@ -10,7 +10,7 @@ namespace ee {
 using Self = PropertyPoint;
 
 cocos2d::Point Self::get(const PropertyReader& reader,
-                         const cocos2d::Point& defaultValue) const {
+                         const Value& defaultValue) const {
     if (not reader.hasProperty(nameX())) {
         return defaultValue;
     }
@@ -19,15 +19,15 @@ cocos2d::Point Self::get(const PropertyReader& reader,
     }
     auto x = reader.getFloatProperty(nameX());
     auto y = reader.getFloatProperty(nameY());
-    return cocos2d::Point(x, y);
+    return Value(x, y);
 }
 
-void Self::set(PropertyWriter& writer, const cocos2d::Point& value) const {
+void Self::set(PropertyWriter& writer, const Value& value) const {
     writer.setProperty(nameX(), value.x);
     writer.setProperty(nameY(), value.y);
 }
 
-bool Self::add(PropertyWriter& writer, const cocos2d::Point& value) const {
+bool Self::add(PropertyWriter& writer, const Value& value) const {
     if (not writer.addProperty(nameX(), value.x)) {
         return false;
     }
@@ -39,16 +39,16 @@ bool Self::add(PropertyWriter& writer, const cocos2d::Point& value) const {
 
 bool Self::addReadHandler(PropertyHandler& propertyHandler,
                           const ReadHandler& handler) const {
-    auto xHandler = [handler](const cocos2d::Node* node) {
+    auto handlerX = [handler](const cocos2d::Node* node) {
         return handler(node).x;
     };
-    auto yHandler = [handler](const cocos2d::Node* node) {
+    auto handlerY = [handler](const cocos2d::Node* node) {
         return handler(node).y;
     };
-    if (not propertyHandler.addReadFloatHandler(nameX(), xHandler)) {
+    if (not propertyHandler.addReadFloatHandler(nameX(), handlerX)) {
         return false;
     }
-    if (not propertyHandler.addReadFloatHandler(nameY(), yHandler)) {
+    if (not propertyHandler.addReadFloatHandler(nameY(), handlerY)) {
         return false;
     }
     return true;
@@ -56,22 +56,20 @@ bool Self::addReadHandler(PropertyHandler& propertyHandler,
 
 bool Self::addWriteHandler(PropertyHandler& propertyHandler,
                            const WriteHandler& handler) const {
-    auto xName = nameX();
-    auto yName = nameY();
-    auto xHandler = [&propertyHandler, handler, yName](cocos2d::Node* node,
-                                                       float value) {
-        auto y = propertyHandler.readFloatProperty(node, yName);
+    auto handlerX = [thiz = *this, &propertyHandler,
+                     handler](cocos2d::Node * node, float value) {
+        auto y = propertyHandler.readFloatProperty(node, thiz.nameX());
         return handler(node, cocos2d::Point(value, y));
     };
-    auto yHandler = [&propertyHandler, handler, xName](cocos2d::Node* node,
-                                                       float value) {
-        auto x = propertyHandler.readFloatProperty(node, xName);
+    auto handlerY = [thiz = *this, &propertyHandler,
+                     handler](cocos2d::Node * node, float value) {
+        auto x = propertyHandler.readFloatProperty(node, thiz.nameY());
         return handler(node, cocos2d::Point(x, value));
     };
-    if (not propertyHandler.addWriteFloatHandler(nameX(), xHandler)) {
+    if (not propertyHandler.addWriteFloatHandler(nameX(), handlerX)) {
         return false;
     }
-    if (not propertyHandler.addWriteFloatHandler(nameY(), yHandler)) {
+    if (not propertyHandler.addWriteFloatHandler(nameY(), handlerY)) {
         return false;
     }
     return true;

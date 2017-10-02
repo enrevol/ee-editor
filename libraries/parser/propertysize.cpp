@@ -9,71 +9,67 @@
 namespace ee {
 using Self = PropertySize;
 
-cocos2d::Size PropertySize::get(const PropertyReader& reader,
-                                const cocos2d::Size& defaultValue) const {
-    if (not reader.hasProperty(nameX())) {
+cocos2d::Size Self::get(const PropertyReader& reader,
+                        const Value& defaultValue) const {
+    if (not reader.hasProperty(nameW())) {
         return defaultValue;
     }
-    if (not reader.hasProperty(nameY())) {
+    if (not reader.hasProperty(nameH())) {
         return defaultValue;
     }
-    auto x = reader.getFloatProperty(nameX());
-    auto y = reader.getFloatProperty(nameY());
-    return cocos2d::Size(x, y);
+    auto w = reader.getFloatProperty(nameW());
+    auto h = reader.getFloatProperty(nameH());
+    return Value(w, h);
 }
 
-void PropertySize::set(PropertyWriter& writer,
-                       const cocos2d::Size& value) const {
-    writer.setProperty(nameX(), value.width);
-    writer.setProperty(nameY(), value.height);
+void Self::set(PropertyWriter& writer, const Value& value) const {
+    writer.setProperty(nameW(), value.width);
+    writer.setProperty(nameH(), value.height);
 }
 
-bool PropertySize::add(PropertyWriter& writer,
-                       const cocos2d::Size& value) const {
-    if (not writer.addProperty(nameX(), value.width)) {
+bool Self::add(PropertyWriter& writer, const Value& value) const {
+    if (not writer.addProperty(nameW(), value.width)) {
         return false;
     }
-    if (not writer.addProperty(nameY(), value.height)) {
+    if (not writer.addProperty(nameH(), value.height)) {
         return false;
     }
     return true;
 }
 
-bool PropertySize::addReadHandler(PropertyHandler& propertyHandler,
-                                  const ReadHandler& handler) const {
-    auto xHandler = [handler](const cocos2d::Node* node) {
+bool Self::addReadHandler(PropertyHandler& propertyHandler,
+                          const ReadHandler& handler) const {
+    auto handlerW = [handler](const cocos2d::Node* node) {
         return handler(node).width;
     };
-    auto yHandler = [handler](const cocos2d::Node* node) {
+    auto handlerH = [handler](const cocos2d::Node* node) {
         return handler(node).height;
     };
-    if (not propertyHandler.addReadFloatHandler(nameX(), xHandler)) {
+    if (not propertyHandler.addReadFloatHandler(nameW(), handlerW)) {
         return false;
     }
-    if (not propertyHandler.addReadFloatHandler(nameY(), yHandler)) {
+    if (not propertyHandler.addReadFloatHandler(nameH(), handlerH)) {
         return false;
     }
     return true;
 }
 
-bool PropertySize::addWriteHandler(PropertyHandler& propertyHandler,
-                                   const WriteHandler& handler) const {
-    auto xName = nameX();
-    auto yName = nameY();
-    auto xHandler = [&propertyHandler, handler, yName](cocos2d::Node* node,
-                                                       float value) {
-        auto y = propertyHandler.readFloatProperty(node, yName);
-        return handler(node, cocos2d::Size(value, y));
+bool Self::addWriteHandler(PropertyHandler& propertyHandler,
+                           const WriteHandler& handler) const {
+    auto handlerW = [thiz = *this, &propertyHandler,
+                     handler](cocos2d::Node * node, float value) {
+        auto h = propertyHandler.readFloatProperty(node, thiz.nameH());
+        return handler(node, Value(value, h));
     };
-    auto yHandler = [&propertyHandler, handler, xName](cocos2d::Node* node,
-                                                       float value) {
-        auto x = propertyHandler.readFloatProperty(node, xName);
-        return handler(node, cocos2d::Size(x, value));
+    auto handlerH = [thiz = *this, &propertyHandler,
+                     handler](cocos2d::Node * node, float value) {
+        auto w = propertyHandler.readFloatProperty(node, thiz.nameW());
+        return handler(node, Value(w, value));
     };
-    if (not propertyHandler.addWriteFloatHandler(nameX(), xHandler)) {
+    if (not propertyHandler.addWriteFloatHandler(nameW(), handlerW)) {
         return false;
     }
-    if (not propertyHandler.addWriteFloatHandler(nameY(), yHandler)) {
+    if (not propertyHandler.addWriteFloatHandler(nameH(), handlerH)) {
         return false;
     }
     return true;

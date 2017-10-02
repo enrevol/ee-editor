@@ -38,7 +38,9 @@ HEADERS += \
     propertystring.hpp \
     propertypoint.hpp \
     propertysize.hpp \
-    propertycolor.hpp
+    propertycolor.hpp \
+    propertyrect.hpp \
+    propertyblend.hpp
 
 SOURCES += \
     nodeloader.cpp \
@@ -61,4 +63,6 @@ SOURCES += \
     propertystring.cpp \
     propertypoint.cpp \
     propertysize.cpp \
-    propertycolor.cpp
+    propertycolor.cpp \
+    propertyrect.cpp \
+    propertyblend.cpp

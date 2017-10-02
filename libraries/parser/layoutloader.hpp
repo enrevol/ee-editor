@@ -1,6 +1,12 @@
 #ifndef EE_PARSER_LAYOUT_LOADER_HPP
 #define EE_PARSER_LAYOUT_LOADER_HPP
 
+#include "propertybool.hpp"
+#include "propertycolor.hpp"
+#include "propertyint.hpp"
+#include "propertypoint.hpp"
+#include "propertyrect.hpp"
+#include "propertystring.hpp"
 #include "widgetloader.hpp"
 
 namespace ee {
@@ -11,33 +17,21 @@ private:
 
 public:
     struct Property {
-        static const std::string BackgroundColorR;
-        static const std::string BackgroundColorG;
-        static const std::string BackgroundColorB;
-        static const std::string BackgroundColorOpacity;
-        static const std::string BackgroundColorType;
-        static const std::string BackgroundColorVectorX;
-        static const std::string BackgroundColorVectorY;
-        static const std::string BackgroundEndColorR;
-        static const std::string BackgroundEndColorG;
-        static const std::string BackgroundEndColorB;
-        static const std::string BackgroundImageCapInsetsX;
-        static const std::string BackgroundImageCapInsetsY;
-        static const std::string BackgroundImageCapInsetsW;
-        static const std::string BackgroundImageCapInsetsH;
-        static const std::string BackgroundImageColorR;
-        static const std::string BackgroundImageColorG;
-        static const std::string BackgroundImageColorB;
-        static const std::string BackgroundImageOpacity;
-        static const std::string BackgroundImageName;
-        static const std::string BackgroundImageTexType;
-        static const std::string BackgroundImageScale9Enabled;
-        static const std::string BackgroundStartColorR;
-        static const std::string BackgroundStartColorG;
-        static const std::string BackgroundStartColorB;
-        static const std::string ClippingEnabled;
-        static const std::string ClippingType;
-        static const std::string LayoutType;
+        static const PropertyColor BackgroundColor;
+        static const PropertyInt BackgroundColorOpacity;
+        static const PropertyInt BackgroundColorType;
+        static const PropertyPoint BackgroundColorVector;
+        static const PropertyColor BackgroundEndColor;
+        static const PropertyRect BackgroundImageCapInsets;
+        static const PropertyColor BackgroundImageColor;
+        static const PropertyInt BackgroundImageOpacity;
+        static const PropertyString BackgroundImageName;
+        static const PropertyInt BackgroundImageTexType;
+        static const PropertyBool BackgroundImageScale9Enabled;
+        static const PropertyColor BackgroundStartColor;
+        static const PropertyBool ClippingEnabled;
+        static const PropertyInt ClippingType;
+        static const PropertyInt LayoutType;
     };
 
     static const std::string ClassName;

@@ -1,26 +1,26 @@
-#ifndef EE_PARSER_PROPERTY_SIZE_HPP
-#define EE_PARSER_PROPERTY_SIZE_HPP
+#ifndef EE_PARSER_PROPERTY_BLEND_HPP
+#define EE_PARSER_PROPERTY_BLEND_HPP
 
 #include <string>
 
 #include "property.hpp"
 
 namespace cocos2d {
-class Size;
+struct BlendFunc;
 } // namespace cocos2d
 
 namespace ee {
-class PropertySize : public Property<cocos2d::Size> {
+class PropertyBlend : public Property<cocos2d::BlendFunc> {
 private:
-    using Self = PropertySize;
+    using Self = PropertyBlend;
     using Super = Property;
 
 public:
-    explicit PropertySize(const std::string& name)
+    explicit PropertyBlend(const std::string& name)
         : name_(name) {}
 
-    std::string nameW() const { return name_ + "_width"; }
-    std::string nameH() const { return name_ + "_height"; }
+    std::string nameSrc() const { return name_ + "_src"; }
+    std::string nameDst() const { return name_ + "_dst"; }
 
     virtual bool addReadHandler(PropertyHandler& propertyHandler,
                                 const ReadHandler& handler) const override;
@@ -40,4 +40,4 @@ private:
 };
 } // namespace ee
 
-#endif // EE_PARSER_PROPERTY_SIZE_HPP
+#endif // EE_PARSER_PROPERTY_BLEND_HPP

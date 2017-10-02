@@ -1,24 +1,26 @@
-#ifndef EE_PARSER_PROPERTY_SIZE_HPP
-#define EE_PARSER_PROPERTY_SIZE_HPP
+#ifndef EE_PARSER_PROPERTY_RECT_HPP
+#define EE_PARSER_PROPERTY_RECT_HPP
 
 #include <string>
 
 #include "property.hpp"
 
 namespace cocos2d {
-class Size;
+class Rect;
 } // namespace cocos2d
 
 namespace ee {
-class PropertySize : public Property<cocos2d::Size> {
+class PropertyRect : public Property<cocos2d::Rect> {
 private:
-    using Self = PropertySize;
+    using Self = PropertyRect;
     using Super = Property;
 
 public:
-    explicit PropertySize(const std::string& name)
+    explicit PropertyRect(const std::string& name)
         : name_(name) {}
 
+    std::string nameX() const { return name_ + "_x"; }
+    std::string nameY() const { return name_ + "_y"; }
     std::string nameW() const { return name_ + "_width"; }
     std::string nameH() const { return name_ + "_height"; }
 
@@ -40,4 +42,4 @@ private:
 };
 } // namespace ee
 
-#endif // EE_PARSER_PROPERTY_SIZE_HPP
+#endif // EE_PARSER_PROPERTY_RECT_HPP

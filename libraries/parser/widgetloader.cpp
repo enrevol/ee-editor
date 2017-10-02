@@ -40,285 +40,141 @@ Self::~WidgetLoader() {}
 void Self::addReadHandlers(PropertyHandler& handler) {
     Super::addReadHandlers(handler);
 
-    handler.addReadHandler(Property::Bright, [](const cocos2d::Node* node) {
-        auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-        if (widget == nullptr) {
-            CC_ASSERT(false);
-            return false;
-        }
-        return widget->isBright();
+    using Node = cocos2d::ui::Widget;
+
+    handler.addReadHandler<Node>(
+        Property::Bright, [](const Node* node) { return node->isBright(); });
+
+    handler.addReadHandler<Node>(
+        Property::Enabled, [](const Node* node) { return node->isEnabled(); });
+
+    handler.addReadHandler<Node>(Property::FlippedX, [](const Node* node) {
+        return node->isFlippedX();
     });
 
-    handler.addReadHandler(Property::Enabled, [](const cocos2d::Node* node) {
-        auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-        if (widget == nullptr) {
-            CC_ASSERT(false);
-            return false;
-        }
-        return widget->isEnabled();
+    handler.addReadHandler<Node>(Property::FlippedY, [](const Node* node) {
+        return node->isFlippedY();
     });
 
-    handler.addReadHandler(Property::FlippedX, [](const cocos2d::Node* node) {
-        auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-        if (widget == nullptr) {
-            CC_ASSERT(false);
-            return false;
-        }
-        return widget->isFlippedX();
+    handler.addReadHandler<Node>(Property::Highlighted, [](const Node* node) {
+        return node->isHighlighted();
     });
 
-    handler.addReadHandler(Property::FlippedY, [](const cocos2d::Node* node) {
-        auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-        if (widget == nullptr) {
-            CC_ASSERT(false);
-            return false;
-        }
-        return widget->isFlippedY();
+    handler.addReadHandler<Node>(
+        Property::IgnoreContentAdaptWithSize,
+        [](const Node* node) { return node->isIgnoreContentAdaptWithSize(); });
+
+    handler.addReadHandler<Node>(
+        Property::LayoutComponentEnabled,
+        [](const Node* node) { return node->isLayoutComponentEnabled(); });
+
+    handler.addReadHandler<Node>(
+        Property::PositionPercent, [](const Node* node) {
+            return const_cast<Node*>(node)->getPositionPercent();
+        });
+
+    handler.addReadHandler<Node>(
+        Property::PropagateTouchEvents,
+        [](const Node* node) { return node->isPropagateTouchEvents(); });
+
+    handler.addReadHandler<Node>(Property::SizePercent, [](const Node* node) {
+        return const_cast<Node*>(node)->getSizePercent();
     });
 
-    handler.addReadHandler(
-        Property::Highlighted, [](const cocos2d::Node* node) {
-            auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return widget->isHighlighted();
-        });
+    handler.addReadHandler<Node>(
+        Property::SwallowTouches,
+        [](const Node* node) { return node->isSwallowTouches(); });
 
-    handler.addReadHandler(
-        Property::IgnoreContentAdaptWithSize, [](const cocos2d::Node* node) {
-            auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return widget->isIgnoreContentAdaptWithSize();
-        });
+    handler.addReadHandler<Node>(Property::TouchEnabled, [](const Node* node) {
+        return node->isTouchEnabled();
+    });
 
-    handler.addReadHandler(
-        Property::LayoutComponentEnabled, [](const cocos2d::Node* node) {
-            auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return widget->isLayoutComponentEnabled();
-        });
-
-    handler.addReadHandler(
-        Property::PositionPercent, [](const cocos2d::Node* node) {
-            // FIXME: non-const getter.
-            auto widget = const_cast<cocos2d::ui::Widget*>(
-                dynamic_cast<const cocos2d::ui::Widget*>(node));
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return cocos2d::Vec2::ZERO;
-            }
-            return widget->getPositionPercent();
-        });
-
-    handler.addReadHandler(
-        Property::PropagateTouchEvents, [](const cocos2d::Node* node) {
-            auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return widget->isPropagateTouchEvents();
-        });
-
-    handler.addReadHandler(
-        Property::SizePercent, [](const cocos2d::Node* node) {
-            // FIXME: non-const getter.
-            auto widget = const_cast<cocos2d::ui::Widget*>(
-                dynamic_cast<const cocos2d::ui::Widget*>(node));
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return cocos2d::Vec2::ZERO;
-            }
-            return widget->getSizePercent();
-        });
-
-    handler.addReadHandler(
-        Property::SwallowTouches, [](const cocos2d::Node* node) {
-            auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return widget->isSwallowTouches();
-        });
-
-    handler.addReadHandler(
-        Property::TouchEnabled, [](const cocos2d::Node* node) {
-            auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return widget->isTouchEnabled();
-        });
-
-    handler.addReadHandler(
-        Property::UnifySizeEnabled, [](const cocos2d::Node* node) {
-            auto widget = dynamic_cast<const cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            return widget->isUnifySizeEnabled();
-        });
+    handler.addReadHandler<Node>(
+        Property::UnifySizeEnabled,
+        [](const Node* node) { return node->isUnifySizeEnabled(); });
 }
 
 void Self::addWriteHandlers(PropertyHandler& handler) {
     Super::addWriteHandlers(handler);
 
-    handler.addWriteHandler(
-        Property::Bright, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setBright(value);
-            return true;
-        });
+    using Node = cocos2d::ui::Widget;
 
-    handler.addWriteHandler(
-        Property::Enabled, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setEnabled(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::Bright, [](Node* node, bool value) {
+        node->setBright(value);
+        return true;
+    });
 
-    handler.addWriteHandler(
-        Property::FlippedX, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setFlippedX(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::Enabled,
+                                  [](Node* node, bool value) {
+                                      node->setEnabled(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(
-        Property::FlippedY, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setFlippedY(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::FlippedX,
+                                  [](Node* node, bool value) {
+                                      node->setFlippedX(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(
-        Property::Highlighted, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setHighlighted(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::FlippedY,
+                                  [](Node* node, bool value) {
+                                      node->setFlippedY(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(Property::IgnoreContentAdaptWithSize,
-                            [](cocos2d::Node* node, bool value) {
-                                auto widget =
-                                    dynamic_cast<cocos2d::ui::Widget*>(node);
-                                if (widget == nullptr) {
-                                    CC_ASSERT(false);
-                                    return false;
-                                }
-                                widget->ignoreContentAdaptWithSize(value);
-                                return true;
-                            });
+    handler.addWriteHandler<Node>(Property::Highlighted,
+                                  [](Node* node, bool value) {
+                                      node->setHighlighted(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(
-        Property::LayoutComponentEnabled, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setLayoutComponentEnabled(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::IgnoreContentAdaptWithSize,
+                                  [](Node* node, bool value) {
+                                      node->ignoreContentAdaptWithSize(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(
-        Property::PositionPercent,
-        [](cocos2d::Node* node, const cocos2d::Vec2& value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setPositionPercent(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::LayoutComponentEnabled,
+                                  [](Node* node, bool value) {
+                                      node->setLayoutComponentEnabled(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(
-        Property::PropagateTouchEvents, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setPropagateTouchEvents(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::PositionPercent,
+                                  [](Node* node, const cocos2d::Vec2& value) {
+                                      node->setPositionPercent(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(
-        Property::SizePercent,
-        [](cocos2d::Node* node, const cocos2d::Vec2& value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setSizePercent(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::PropagateTouchEvents,
+                                  [](Node* node, bool value) {
+                                      node->setPropagateTouchEvents(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(
-        Property::SwallowTouches, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setSwallowTouches(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::SizePercent,
+                                  [](Node* node, const cocos2d::Vec2& value) {
+                                      node->setSizePercent(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(
-        Property::TouchEnabled, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setTouchEnabled(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::SwallowTouches,
+                                  [](Node* node, bool value) {
+                                      node->setSwallowTouches(value);
+                                      return true;
+                                  });
 
-    handler.addWriteHandler(
-        Property::UnifySizeEnabled, [](cocos2d::Node* node, bool value) {
-            auto widget = dynamic_cast<cocos2d::ui::Widget*>(node);
-            if (widget == nullptr) {
-                CC_ASSERT(false);
-                return false;
-            }
-            widget->setUnifySizeEnabled(value);
-            return true;
-        });
+    handler.addWriteHandler<Node>(Property::TouchEnabled,
+                                  [](Node* node, bool value) {
+                                      node->setTouchEnabled(value);
+                                      return true;
+                                  });
+
+    handler.addWriteHandler<Node>(Property::UnifySizeEnabled,
+                                  [](Node* node, bool value) {
+                                      node->setUnifySizeEnabled(value);
+                                      return true;
+                                  });
 }
 
 void Self::addDefaultProperties(PropertyWriter& writer) {

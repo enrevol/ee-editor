@@ -12,7 +12,7 @@ namespace ee {
 using Self = PropertyColor;
 
 cocos2d::Color3B Self::get(const PropertyReader& reader,
-                           const cocos2d::Color3B& defaultValue) const {
+                           const Value& defaultValue) const {
     if (not reader.hasProperty(nameR())) {
         return defaultValue;
     }
@@ -28,13 +28,13 @@ cocos2d::Color3B Self::get(const PropertyReader& reader,
     return cocos2d::Color3B(r, g, b);
 }
 
-void Self::set(PropertyWriter& writer, const cocos2d::Color3B& value) const {
+void Self::set(PropertyWriter& writer, const Value& value) const {
     writer.setProperty(nameR(), value.r);
     writer.setProperty(nameG(), value.g);
     writer.setProperty(nameB(), value.b);
 }
 
-bool Self::add(PropertyWriter& writer, const cocos2d::Color3B& value) const {
+bool Self::add(PropertyWriter& writer, const Value& value) const {
     if (not writer.addProperty(nameR(), value.r)) {
         return false;
     }
@@ -49,22 +49,22 @@ bool Self::add(PropertyWriter& writer, const cocos2d::Color3B& value) const {
 
 bool Self::addReadHandler(PropertyHandler& propertyHandler,
                           const ReadHandler& handler) const {
-    auto rHandler = [handler](const cocos2d::Node* node) {
+    auto handlerR = [handler](const cocos2d::Node* node) {
         return static_cast<int>(handler(node).r);
     };
-    auto gHandler = [handler](const cocos2d::Node* node) {
+    auto handlerG = [handler](const cocos2d::Node* node) {
         return static_cast<int>(handler(node).g);
     };
-    auto bHandler = [handler](const cocos2d::Node* node) {
+    auto handlerB = [handler](const cocos2d::Node* node) {
         return static_cast<int>(handler(node).b);
     };
-    if (not propertyHandler.addReadIntHandler(nameR(), rHandler)) {
+    if (not propertyHandler.addReadIntHandler(nameR(), handlerR)) {
         return false;
     }
-    if (not propertyHandler.addReadIntHandler(nameG(), gHandler)) {
+    if (not propertyHandler.addReadIntHandler(nameG(), handlerG)) {
         return false;
     }
-    if (not propertyHandler.addReadIntHandler(nameB(), bHandler)) {
+    if (not propertyHandler.addReadIntHandler(nameB(), handlerB)) {
         return false;
     }
     return true;
@@ -86,32 +86,40 @@ bool isInColorRange(int value) {
 
 bool Self::addWriteHandler(PropertyHandler& propertyHandler,
                            const WriteHandler& handler) const {
-    auto rHandler = [handler](cocos2d::Node* node, int value) {
+    auto handlerR = [thiz = *this, &propertyHandler,
+                     handler](cocos2d::Node * node, int value) {
         CC_ASSERT(isInColorRange(value));
-        auto&& color = node->getColor();
+        auto g = propertyHandler.readIntProperty(node, thiz.nameG());
+        auto b = propertyHandler.readIntProperty(node, thiz.nameB());
         return handler(node, cocos2d::Color3B(static_cast<GLubyte>(value),
-                                              color.g, color.b));
+                                              static_cast<GLubyte>(g),
+                                              static_cast<GLubyte>(b)));
     };
-    auto gHandler = [handler](cocos2d::Node* node, int value) {
+    auto handlerG = [thiz = *this, &propertyHandler,
+                     handler](cocos2d::Node * node, int value) {
         CC_ASSERT(isInColorRange(value));
-        auto&& color = node->getColor();
-        return handler(
-            node,
-            cocos2d::Color3B(color.r, static_cast<GLubyte>(value), color.b));
+        auto r = propertyHandler.readIntProperty(node, thiz.nameR());
+        auto b = propertyHandler.readIntProperty(node, thiz.nameB());
+        return handler(node, cocos2d::Color3B(static_cast<GLubyte>(r),
+                                              static_cast<GLubyte>(value),
+                                              static_cast<GLubyte>(b)));
     };
-    auto bHandler = [handler](cocos2d::Node* node, int value) {
+    auto handlerB = [thiz = *this, &propertyHandler,
+                     handler](cocos2d::Node * node, int value) {
         CC_ASSERT(isInColorRange(value));
-        auto&& color = node->getColor();
-        return handler(node, cocos2d::Color3B(color.r, color.g,
+        auto r = propertyHandler.readIntProperty(node, thiz.nameR());
+        auto g = propertyHandler.readIntProperty(node, thiz.nameG());
+        return handler(node, cocos2d::Color3B(static_cast<GLubyte>(r),
+                                              static_cast<GLubyte>(g),
                                               static_cast<GLubyte>(value)));
     };
-    if (not propertyHandler.addWriteIntHandler(nameR(), rHandler)) {
+    if (not propertyHandler.addWriteIntHandler(nameR(), handlerR)) {
         return false;
     }
-    if (not propertyHandler.addWriteIntHandler(nameG(), gHandler)) {
+    if (not propertyHandler.addWriteIntHandler(nameG(), handlerG)) {
         return false;
     }
-    if (not propertyHandler.addWriteIntHandler(nameB(), bHandler)) {
+    if (not propertyHandler.addWriteIntHandler(nameB(), handlerB)) {
         return false;
     }
     return true;

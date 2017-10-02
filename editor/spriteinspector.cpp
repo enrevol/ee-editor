@@ -12,12 +12,12 @@ Self::SpriteInspector(QWidget* parent)
 
     addInspector((new InspectorBool())
                      ->setPropertyName(QString::fromStdString(
-                         SpriteLoader::Property::FlippedX))
+                         SpriteLoader::Property::FlippedX.name()))
                      ->setPropertyDisplayName("Flipped X"));
 
     addInspector((new InspectorBool())
                      ->setPropertyName(QString::fromStdString(
-                         SpriteLoader::Property::FlippedY))
+                         SpriteLoader::Property::FlippedY.name()))
                      ->setPropertyDisplayName("Flipped Y"));
 }
 } // namespace ee

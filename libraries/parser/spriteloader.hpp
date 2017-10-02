@@ -2,6 +2,10 @@
 #define EE_PARSER_SPRITE_LOADER_HPP
 
 #include "nodeloader.hpp"
+#include "propertyblend.hpp"
+#include "propertybool.hpp"
+#include "propertyint.hpp"
+#include "propertystring.hpp"
 
 namespace ee {
 class SpriteLoader : public NodeLoader {
@@ -11,13 +15,12 @@ private:
 
 public:
     struct Property {
-        static const std::string BlendFuncDst;
-        static const std::string BlendFuncSrc;
-        static const std::string FlippedX;
-        static const std::string FlippedY;
-        static const std::string SpriteFrame;
-        static const std::string StretchEnabled;
-        static const std::string Texture;
+        static const PropertyBlend BlendFunc;
+        static const PropertyBool FlippedX;
+        static const PropertyBool FlippedY;
+        static const PropertyString SpriteFrame;
+        static const PropertyBool StretchEnabled;
+        static const PropertyString Texture;
     };
 
     static NodeLoaderPtr create();

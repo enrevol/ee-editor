@@ -109,6 +109,35 @@ public:
         return property.addWriteHandler(*this, handler);
     }
 
+    template <class Node, class Property,
+              class Value = typename Property::Value,
+              class Handler = std::function<Value(const Node* node)>>
+    bool addReadHandler(const Property& property, const Handler& handler) {
+        return addReadHandler(property, [handler](const cocos2d::Node* node) {
+            auto v = dynamic_cast<const Node*>(node);
+            if (v == nullptr) {
+                CC_ASSERT(false);
+                return Value();
+            }
+            return handler(v);
+        });
+    }
+
+    template <
+        class Node, class Property, class Value = typename Property::Value,
+        class Handler = std::function<bool(Node* node, const Value& value)>>
+    bool addWriteHandler(const Property& property, const Handler& handler) {
+        return addWriteHandler(
+            property, [handler](cocos2d::Node* node, const Value& value) {
+                auto v = dynamic_cast<Node*>(node);
+                if (v == nullptr) {
+                    CC_ASSERT(false);
+                    return false;
+                }
+                return handler(v, value);
+            });
+    }
+
 private:
     std::unordered_map<std::string, ReadHandler> readHandlers_;
     std::unordered_map<std::string, WriteHandler> writeHandlers_;

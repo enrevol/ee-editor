@@ -6,15 +6,15 @@
 namespace ee {
 using Self = PropertyBool;
 
-bool Self::get(const PropertyReader& reader, const bool& defaultValue) const {
+bool Self::get(const PropertyReader& reader, const Value& defaultValue) const {
     return reader.getBoolProperty(name(), defaultValue);
 }
 
-void Self::set(PropertyWriter& writer, const bool& value) const {
+void Self::set(PropertyWriter& writer, const Value& value) const {
     writer.setProperty(name(), value);
 }
 
-bool Self::add(PropertyWriter& writer, const bool& value) const {
+bool Self::add(PropertyWriter& writer, const Value& value) const {
     return writer.addProperty(name(), value);
 }
 

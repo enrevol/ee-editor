@@ -42,9 +42,9 @@ Self::NodeInspector(QWidget* parent)
     addInspector(
         (new InspectorFloatXY())
             ->setPropertyName(QString::fromStdString(
-                                  NodeLoader::Property::ContentSize.nameX()),
+                                  NodeLoader::Property::ContentSize.nameW()),
                               QString::fromStdString(
-                                  NodeLoader::Property::ContentSize.nameY()))
+                                  NodeLoader::Property::ContentSize.nameH()))
             ->setPropertyDisplayName("Content size")
             ->setSubPropertyDisplayName("W", "H")
             ->setSingleStep(1.0f)

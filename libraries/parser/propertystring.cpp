@@ -7,15 +7,15 @@ namespace ee {
 using Self = PropertyString;
 
 std::string Self::get(const PropertyReader& reader,
-                      const std::string& defaultValue) const {
+                      const Value& defaultValue) const {
     return reader.getStringProperty(name(), defaultValue);
 }
 
-void Self::set(PropertyWriter& writer, const std::string& value) const {
+void Self::set(PropertyWriter& writer, const Value& value) const {
     writer.setProperty(name(), value);
 }
 
-bool Self::add(PropertyWriter& writer, const std::string& value) const {
+bool Self::add(PropertyWriter& writer, const Value& value) const {
     return writer.addProperty(name(), value);
 }
 
