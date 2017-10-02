@@ -61,6 +61,7 @@ void Self::addResources(const ProjectSettings& settings) {
     std::vector<std::string> searchPaths;
     for (auto&& directory : directories) {
         searchPaths.push_back(directory.absolutePath().toStdString());
+        qDebug() << "Add search path: " << directory.absolutePath();
         listFiles(directory, [](const QFileInfo& info) {
             if (not info.isDir() && info.suffix() == "png") {
                 auto cache =

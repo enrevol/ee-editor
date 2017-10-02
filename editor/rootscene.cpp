@@ -137,6 +137,7 @@ void Self::updateGizmo() {
 }
 
 void Self::setNodeGraph(const NodeGraph& graph) {
+    qDebug() << Q_FUNC_INFO;
     nodeGraph_ = std::make_unique<NodeGraph>(graph);
 
     if (rootNode_ != nullptr) {
@@ -152,6 +153,7 @@ void Self::setNodeGraph(const NodeGraph& graph) {
 }
 
 void Self::setSelection(const SelectionTree& selection) {
+    qDebug() << Q_FUNC_INFO;
     selection_ = std::make_unique<SelectionTree>(selection);
 }
 
@@ -185,6 +187,8 @@ void Self::updateSelectionProperty(const NodeGraph& graph,
                                    const SelectionPath& path,
                                    const QString& propertyName,
                                    const cocos2d::Value& value) {
+    qDebug() << "Root scene: update property " << propertyName << " = "
+             << QString::fromStdString(value.asString());
     Q_ASSERT(not path.isEmpty());
     NodeLoaderLibrary library;
     library.addDefaultLoaders();
@@ -205,7 +209,6 @@ void Self::updateSelectionProperty(cocos2d::Node* node,
 bool Self::touchBegan(cocos2d::Touch* touch, cocos2d::Event* event) {
     Q_UNUSED(touch);
     Q_UNUSED(event);
-    qDebug() << Q_FUNC_INFO;
     return false;
 }
 
