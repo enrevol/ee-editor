@@ -43,19 +43,17 @@ Self::InspectorBlend(QWidget* parent)
     }
 
     connect(ui_->premultipliedAlphaButton, &QPushButton::clicked, [this] {
-        auto src =
-            static_cast<int>(cocos2d::BlendFunc::ALPHA_PREMULTIPLIED.src);
-        auto dst =
-            static_cast<int>(cocos2d::BlendFunc::ALPHA_PREMULTIPLIED.dst);
+        auto&& blend = cocos2d::BlendFunc::ALPHA_PREMULTIPLIED;
+        auto src = static_cast<int>(blend.src);
+        auto dst = static_cast<int>(blend.dst);
         setPropertyValue(src, dst);
         Q_EMIT propertyValueChanged(propertySrc_->name(), cocos2d::Value(src));
         Q_EMIT propertyValueChanged(propertyDst_->name(), cocos2d::Value(dst));
     });
     connect(ui_->straightAlphaButton, &QPushButton::clicked, [this] {
-        auto src =
-            static_cast<int>(cocos2d::BlendFunc::ALPHA_NON_PREMULTIPLIED.src);
-        auto dst =
-            static_cast<int>(cocos2d::BlendFunc::ALPHA_NON_PREMULTIPLIED.dst);
+        auto&& blend = cocos2d::BlendFunc::ALPHA_NON_PREMULTIPLIED;
+        auto src = static_cast<int>(blend.src);
+        auto dst = static_cast<int>(blend.dst);
         setPropertyValue(src, dst);
         Q_EMIT propertyValueChanged(propertySrc_->name(), cocos2d::Value(src));
         Q_EMIT propertyValueChanged(propertyDst_->name(), cocos2d::Value(dst));
