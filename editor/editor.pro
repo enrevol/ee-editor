@@ -110,7 +110,8 @@ SOURCES += \
     inspectorloaderlibrary.cpp \
     layercolorinspectorloader.cpp \
     spriteinspectorloader.cpp \
-    projectresources.cpp
+    projectresources.cpp \
+    inspectorblend.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -164,7 +165,8 @@ HEADERS += \
     inspectorloaderlibrary.hpp \
     layercolorinspectorloader.hpp \
     spriteinspectorloader.hpp \
-    projectresources.hpp
+    projectresources.hpp \
+    inspectorblend.hpp
 
 FORMS += \
     mainwindow.ui \
@@ -178,4 +180,5 @@ FORMS += \
     inspectorcolor.ui \
     inspectorgroup.ui \
     inspectorstring.ui \
-    inspectorintslider.ui
+    inspectorintslider.ui \
+    inspectorblend.ui

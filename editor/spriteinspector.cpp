@@ -1,4 +1,5 @@
 #include "spriteinspector.hpp"
+#include "inspectorblend.hpp"
 #include "inspectorbool.hpp"
 
 #include <parser/spriteloader.hpp>
@@ -19,5 +20,17 @@ Self::SpriteInspector(QWidget* parent)
                      ->setPropertyName(QString::fromStdString(
                          SpriteLoader::Property::FlippedY.name()))
                      ->setPropertyDisplayName("Flipped Y"));
+
+    addInspector((new InspectorBool())
+                     ->setPropertyName(QString::fromStdString(
+                         SpriteLoader::Property::StretchEnabled.name()))
+                     ->setPropertyDisplayName("Stretch enabled"));
+
+    addInspector((new InspectorBlend())
+                     ->setPropertyName(
+                         QString::fromStdString(
+                             SpriteLoader::Property::BlendFunc.nameSrc()),
+                         QString::fromStdString(
+                             SpriteLoader::Property::BlendFunc.nameDst())));
 }
 } // namespace ee

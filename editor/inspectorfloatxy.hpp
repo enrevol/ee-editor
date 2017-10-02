@@ -4,8 +4,6 @@
 #include "inspector.hpp"
 #include "propertygetter.hpp"
 
-#include <QWidget>
-
 namespace Ui {
 class InspectorFloatXY;
 } // namespace Ui

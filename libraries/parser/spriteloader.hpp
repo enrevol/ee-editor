@@ -30,6 +30,8 @@ public:
 
     virtual cocos2d::Node* createNode() const override;
 
+    virtual std::string getClassName() const override;
+
 protected:
     /// Constructs a sprite loader.
     SpriteLoader();

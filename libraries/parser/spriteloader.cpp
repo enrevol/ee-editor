@@ -109,6 +109,10 @@ cocos2d::Node* Self::createNode() const {
     return cocos2d::Sprite::create();
 }
 
+std::string Self::getClassName() const {
+    return ClassName;
+}
+
 Self* Self::cloneRaw() const {
     return new Self();
 }
