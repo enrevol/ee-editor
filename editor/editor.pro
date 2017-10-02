@@ -108,7 +108,9 @@ SOURCES += \
     inspectorloader.cpp \
     widgetinspectorloader.cpp \
     inspectorloaderlibrary.cpp \
-    layercolorinspectorloader.cpp
+    layercolorinspectorloader.cpp \
+    spriteinspectorloader.cpp \
+    projectresources.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -160,7 +162,9 @@ HEADERS += \
     inspectorloader.hpp \
     widgetinspectorloader.hpp \
     inspectorloaderlibrary.hpp \
-    layercolorinspectorloader.hpp
+    layercolorinspectorloader.hpp \
+    spriteinspectorloader.hpp \
+    projectresources.hpp
 
 FORMS += \
     mainwindow.ui \

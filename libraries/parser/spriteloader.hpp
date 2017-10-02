@@ -18,7 +18,6 @@ public:
         static const PropertyBlend BlendFunc;
         static const PropertyBool FlippedX;
         static const PropertyBool FlippedY;
-        static const PropertyString SpriteFrame;
         static const PropertyBool StretchEnabled;
         static const PropertyString Texture;
     };

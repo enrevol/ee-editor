@@ -1,6 +1,7 @@
 #include "spriteloader.hpp"
 #include "nodeinforeader.hpp"
 #include "nodeinfowriter.hpp"
+#include "propertywriter.hpp"
 
 #include <2d/CCSprite.h>
 
@@ -10,7 +11,6 @@ using Self = SpriteLoader;
 const PropertyBlend Self::Property::BlendFunc("blend_func");
 const PropertyBool Self::Property::FlippedX("flipped_x");
 const PropertyBool Self::Property::FlippedY("flipped_y");
-const PropertyString Self::Property::SpriteFrame("sprite_frame");
 const PropertyBool Self::Property::StretchEnabled("stretch_enabled");
 const PropertyString Self::Property::Texture("texture");
 
@@ -89,6 +89,18 @@ void Self::addWriteHandlers(PropertyHandler& handler) {
 
 void Self::addDefaultProperties(PropertyWriter& writer) {
     Super::addDefaultProperties(writer);
+
+    writer.setProperty(NodeLoader::Property::AnchorPoint,
+                       cocos2d::Vec2::ANCHOR_MIDDLE);
+
+    bool flag = true;
+    flag &= writer.addProperty(Property::BlendFunc,
+                               cocos2d::BlendFunc::ALPHA_PREMULTIPLIED);
+    flag &= writer.addProperty(Property::FlippedX, false);
+    flag &= writer.addProperty(Property::FlippedY, false);
+    flag &= writer.addProperty(Property::StretchEnabled, true);
+    flag &= writer.addProperty(Property::Texture, std::string());
+    Q_ASSERT(flag);
 }
 
 cocos2d::Node* Self::createNode() const {

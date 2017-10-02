@@ -1,6 +1,7 @@
 #include "inspectorloaderlibrary.hpp"
 #include "layercolorinspectorloader.hpp"
 #include "nodeinspectorloader.hpp"
+#include "spriteinspectorloader.hpp"
 #include "widgetinspectorloader.hpp"
 
 namespace ee {
@@ -10,8 +11,9 @@ Self::InspectorLoaderLibrary() {}
 Self::~InspectorLoaderLibrary() {}
 
 void Self::addDefaultLoaders() {
-    addLoader(NodeInspectorLoader::create());
     addLoader(LayerColorInspectorLoader::create());
+    addLoader(NodeInspectorLoader::create());
+    addLoader(SpriteInspectorLoader::create());
     addLoader(WidgetInspectorLoader::create());
 }
 
