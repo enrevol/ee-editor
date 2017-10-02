@@ -22,6 +22,8 @@ public:
         static const PropertyString Texture;
     };
 
+    static const std::string ClassName;
+
     static NodeLoaderPtr create();
 
     virtual ~SpriteLoader() override;

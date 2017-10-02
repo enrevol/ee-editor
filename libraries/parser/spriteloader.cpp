@@ -14,6 +14,8 @@ const PropertyBool Self::Property::FlippedY("flipped_y");
 const PropertyBool Self::Property::StretchEnabled("stretch_enabled");
 const PropertyString Self::Property::Texture("texture");
 
+const std::string Self::ClassName = "_Sprite";
+
 NodeLoaderPtr Self::create() {
     auto result = std::unique_ptr<Self>(new Self());
     result->initialize();
