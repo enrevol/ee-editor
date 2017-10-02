@@ -19,8 +19,13 @@ Self::Config() {}
 
 Self::~Config() {}
 
-const std::optional<ProjectSettings>& Self::getProjectSettings() const {
-    return projectSettings_;
+bool Self::hasOpenedProject() const {
+    return projectSettings_.has_value();
+}
+
+const ProjectSettings& Self::getProjectSettings() const {
+    Q_ASSERT(hasOpenedProject());
+    return projectSettings_.value();
 }
 
 void Self::setProjectSettings(const ProjectSettings& settings) {
@@ -32,6 +37,9 @@ bool Self::loadProject(const QFileInfo& path) {
     if (not settings.read()) {
         return false;
     }
+    if (hasOpenedProject()) {
+        Q_EMIT projectClosed(getProjectSettings().getProjectPath());
+    }
     setProjectSettings(settings);
     auto&& watcher = FileSystemWatcher::getInstance();
     watcher.setDirectories(settings.getResourceDirectories());
@@ -40,11 +48,11 @@ bool Self::loadProject(const QFileInfo& path) {
 }
 
 bool Self::saveProject() const {
-    auto&& settings = getProjectSettings();
-    if (not settings.has_value()) {
+    if (not hasOpenedProject()) {
         return false;
     }
-    return settings->write();
+    auto&& settings = getProjectSettings();
+    return settings.write();
 }
 
 bool Self::createProject(const QFileInfo& path) {

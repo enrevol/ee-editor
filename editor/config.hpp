@@ -17,9 +17,11 @@ private:
 public:
     static Self& getInstance();
 
+    /// Checks whether there is any opened project.
+    bool hasOpenedProject() const;
+
     /// Gets the current project settings.
-    /// @return std::nullopt if there is not any loaded project.
-    const std::optional<ProjectSettings>& getProjectSettings() const;
+    const ProjectSettings& getProjectSettings() const;
 
     /// Sets the project settings.
     /// @param settings The desired project settings.
@@ -54,6 +56,7 @@ public:
 Q_SIGNALS:
     void interfaceLoaded(const QFileInfo& path);
     void projectLoaded(const QFileInfo& path);
+    void projectClosed(const QFileInfo& path);
 
 protected:
     Config();

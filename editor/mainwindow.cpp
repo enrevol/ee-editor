@@ -4,6 +4,7 @@
 #include "filesystemwatcher.hpp"
 #include "mainwindow.hpp"
 #include "nodeinspector.hpp"
+#include "projectresources.hpp"
 #include "projectsettings.hpp"
 #include "projectsettingsdialog.hpp"
 #include "rootscene.hpp"
@@ -92,12 +93,22 @@ Self::MainWindow(QWidget* parent)
         newSettings.write();
     });
 
+    connect(&Config::getInstance(), &Config::projectClosed,
+            [this](const QFileInfo& path) {
+                Q_UNUSED(path);
+                ProjectResources::getInstance().removeResources(
+                    Config::getInstance().getProjectSettings());
+            });
+
     connect(&Config::getInstance(), &Config::projectLoaded,
             [this](const QFileInfo& path) {
                 Q_UNUSED(path);
                 ui_->actionProject_Settings->setEnabled(true);
                 ui_->actionInterface_File->setEnabled(true);
                 ui_->resourceTree->setListenToFileChangeEvents(true);
+
+                ProjectResources::getInstance().addResources(
+                    Config::getInstance().getProjectSettings());
             });
 
     connect(&Config::getInstance(), &Config::interfaceLoaded,
@@ -110,7 +121,7 @@ Self::MainWindow(QWidget* parent)
         auto&& config = Config::getInstance();
         auto path = QFileDialog::getSaveFileName(
             this, "New Interface",
-            config.getProjectSettings()->getProjectDirectory().absolutePath(),
+            config.getProjectSettings().getProjectDirectory().absolutePath(),
             filter::interface);
         if (path.isEmpty()) {
             return;
@@ -231,10 +242,10 @@ void Self::onProjectSettingsButtonPressed() {
     qDebug() << Q_FUNC_INFO;
 
     auto&& config = Config::getInstance();
+    Q_ASSERT(config.hasOpenedProject());
     auto&& settings = config.getProjectSettings();
-    Q_ASSERT(settings.has_value());
 
-    auto dialog = new ProjectSettingsDialog(this, settings.value());
+    auto dialog = new ProjectSettingsDialog(this, settings);
     connect(dialog, &ProjectSettingsDialog::accepted, [this, dialog, &config] {
         config.setProjectSettings(dialog->getProjectSettings());
         config.saveProject();
