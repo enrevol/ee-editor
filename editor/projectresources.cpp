@@ -3,6 +3,7 @@
 #include "utils.hpp"
 
 #include <base/CCDirector.h>
+#include <platform/CCFileUtils.h>
 #include <renderer/CCTextureCache.h>
 
 namespace ee {
@@ -49,13 +50,17 @@ void Self::removeResources(const ProjectSettings& settings) {
             }
         });
     }
+    auto fileUtils = cocos2d::FileUtils::getInstance();
+    fileUtils->setSearchPaths({});
     // doneCocosContext();
 }
 
 void Self::addResources(const ProjectSettings& settings) {
     makeCocosContext();
     auto&& directories = settings.getResourceDirectories();
+    std::vector<std::string> searchPaths;
     for (auto&& directory : directories) {
+        searchPaths.push_back(directory.absolutePath().toStdString());
         listFiles(directory, [](const QFileInfo& info) {
             if (not info.isDir() && info.suffix() == "png") {
                 auto cache =
@@ -66,6 +71,8 @@ void Self::addResources(const ProjectSettings& settings) {
             }
         });
     }
+    auto fileUtils = cocos2d::FileUtils::getInstance();
+    fileUtils->setSearchPaths({});
     // doneCocosContext();
 }
 } // namespace ee
