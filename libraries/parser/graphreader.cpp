@@ -1,5 +1,6 @@
 #include "graphreader.hpp"
 #include "nodegraph.hpp"
+#include "nodeinfo.hpp"
 #include "nodeloader.hpp"
 #include "propertyhandler.hpp"
 #include "propertyreader.hpp"
@@ -26,6 +27,7 @@ cocos2d::Node* Self::readDictionary(const cocos2d::ValueMap& dict) const {
 cocos2d::Node* Self::readNodeGraph(const NodeGraph& graph) const {
     auto&& loader = getNodeLoader(graph);
     auto node = loader->createNode();
+    node->setUserObject(NodeInfo::create());
     auto&& propertyHandler = loader->getPropertyHandler();
     for (auto&& elt : graph.getProperties()) {
         auto&& key = elt.first;

@@ -8,7 +8,7 @@ namespace ee {
 class NodeInfoReader;
 class NodeInfoWriter;
 
-class NodeInfo final : cocos2d::Ref {
+class NodeInfo final : public cocos2d::Ref {
 private:
     using Self = NodeInfo;
 
