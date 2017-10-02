@@ -10,31 +10,26 @@
 namespace ee {
 using Self = NodeLoader;
 
-const std::string Self::Property::AnchorPointX = "anchor_point_x";
-const std::string Self::Property::AnchorPointY = "anchor_point_y";
-const std::string Self::Property::CascadeColorEnabled = "cascade_color_enabled";
-const std::string Self::Property::CascadeOpacityEnabled =
-    "cascade_opacity_enabled";
-const std::string Self::Property::ColorR = "color_r";
-const std::string Self::Property::ColorG = "color_g";
-const std::string Self::Property::ColorB = "color_b";
-const std::string Self::Property::ContentSizeHeight = "content_size_height";
-const std::string Self::Property::ContentSizeWidth = "content_size_width";
-const std::string Self::Property::IgnoreAnchorPointForPosition =
-    "ignore_anchor_point_for_position";
-const std::string Self::Property::LocalZOrder = "local_z_order";
-const std::string Self::Property::Name = "name";
-const std::string Self::Property::Opacity = "opacity";
-const std::string Self::Property::OpacityModifyRGB = "opacity_modify_rgb";
-const std::string Self::Property::PositionX = "position_x";
-const std::string Self::Property::PositionY = "position_y";
-const std::string Self::Property::Rotation = "rotation";
-const std::string Self::Property::ScaleX = "scale_x";
-const std::string Self::Property::ScaleY = "scale_y";
-const std::string Self::Property::SkewX = "skew_x";
-const std::string Self::Property::SkewY = "skew_y";
-const std::string Self::Property::Tag = "tag";
-const std::string Self::Property::Visible = "visible";
+const PropertyPoint Self::Property::AnchorPoint("anchor_point");
+const PropertyBool Self::Property::CascadeColorEnabled("cascade_color_enabled");
+const PropertyBool
+    Self::Property::CascadeOpacityEnabled("cascade_opacity_enabled");
+const PropertyColor Self::Property::Color("color");
+const PropertySize Self::Property::ContentSize("content_size");
+const PropertyBool Self::Property::IgnoreAnchorPointForPosition(
+    "ignore_anchor_point_for_position");
+const PropertyInt Self::Property::LocalZOrder("local_z_order");
+const PropertyString Self::Property::Name("name");
+const PropertyInt Self::Property::Opacity("opacity");
+const PropertyBool Self::Property::OpacityModifyRGB("opacity_modify_rgb");
+const PropertyPoint Self::Property::Position("position");
+const PropertyFloat Self::Property::Rotation("rotation");
+const PropertyFloat Self::Property::ScaleX("scale_x");
+const PropertyFloat Self::Property::ScaleY("scale_y");
+const PropertyFloat Self::Property::SkewX("skew_x");
+const PropertyFloat Self::Property::SkewY("skew_y");
+const PropertyInt Self::Property::Tag("tag");
+const PropertyBool Self::Property::Visible("visible");
 
 const std::string Self::ClassName = "_Node";
 
@@ -87,300 +82,217 @@ PropertyReader Self::getDefaultPropertyReader() const {
 }
 
 void Self::addReadHandlers(PropertyHandler& handler) {
-    handler.addReadFloatHandler(
-        Property::AnchorPointX,
-        [](const cocos2d::Node* node) { return node->getAnchorPoint().x; });
+    handler.addReadHandler(
+        Property::AnchorPoint,
+        [](const cocos2d::Node* node) { return node->getAnchorPoint(); });
 
-    handler.addReadFloatHandler(
-        Property::AnchorPointY,
-        [](const cocos2d::Node* node) { return node->getAnchorPoint().y; });
+    handler.addReadHandler(Property::CascadeColorEnabled,
+                           [](const cocos2d::Node* node) {
+                               return node->isCascadeColorEnabled();
+                           });
 
-    handler.addReadBoolHandler(Property::CascadeColorEnabled,
-                               [](const cocos2d::Node* node) {
-                                   return node->isCascadeColorEnabled();
-                               });
+    handler.addReadHandler(Property::CascadeOpacityEnabled,
+                           [](const cocos2d::Node* node) {
+                               return node->isCascadeOpacityEnabled();
+                           });
 
-    handler.addReadBoolHandler(Property::CascadeOpacityEnabled,
-                               [](const cocos2d::Node* node) {
-                                   return node->isCascadeOpacityEnabled();
-                               });
-
-    handler.addReadIntHandler(Property::ColorB, [](const cocos2d::Node* node) {
-        return static_cast<int>(node->getColor().b);
+    handler.addReadHandler(Property::Color, [](const cocos2d::Node* node) {
+        return node->getColor();
     });
 
-    handler.addReadIntHandler(Property::ColorG, [](const cocos2d::Node* node) {
-        return static_cast<int>(node->getColor().g);
-    });
+    handler.addReadHandler(
+        Property::ContentSize,
+        [](const cocos2d::Node* node) { return node->getContentSize(); });
 
-    handler.addReadIntHandler(Property::ColorR, [](const cocos2d::Node* node) {
-        return static_cast<int>(node->getColor().r);
-    });
+    handler.addReadHandler(Property::IgnoreAnchorPointForPosition,
+                           [](const cocos2d::Node* node) {
+                               return node->isIgnoreAnchorPointForPosition();
+                           });
 
-    handler.addReadFloatHandler(Property::ContentSizeHeight,
-                                [](const cocos2d::Node* node) {
-                                    return node->getContentSize().height;
-                                });
-
-    handler.addReadFloatHandler(
-        Property::ContentSizeWidth,
-        [](const cocos2d::Node* node) { return node->getContentSize().width; });
-
-    handler.addReadBoolHandler(
-        Property::IgnoreAnchorPointForPosition, [](const cocos2d::Node* node) {
-            return node->isIgnoreAnchorPointForPosition();
-        });
-
-    handler.addReadIntHandler(
+    handler.addReadHandler(
         Property::LocalZOrder,
         [](const cocos2d::Node* node) { return node->getLocalZOrder(); });
 
-    handler.addReadStringHandler(Property::Name, [](const cocos2d::Node* node) {
+    handler.addReadHandler(Property::Name, [](const cocos2d::Node* node) {
         return node->getName();
     });
 
-    handler.addReadIntHandler(Property::Opacity, [](const cocos2d::Node* node) {
+    handler.addReadHandler(Property::Opacity, [](const cocos2d::Node* node) {
         return static_cast<int>(node->getOpacity());
     });
 
-    handler.addReadBoolHandler(
+    handler.addReadHandler(
         Property::OpacityModifyRGB,
         [](const cocos2d::Node* node) { return node->isOpacityModifyRGB(); });
 
-    handler.addReadFloatHandler(
-        Property::PositionX,
-        [](const cocos2d::Node* node) { return node->getPosition().x; });
+    handler.addReadHandler(Property::Position, [](const cocos2d::Node* node) {
+        return node->getPosition();
+    });
 
-    handler.addReadFloatHandler(
-        Property::PositionY,
-        [](const cocos2d::Node* node) { return node->getPosition().y; });
+    handler.addReadHandler(Property::Rotation, [](const cocos2d::Node* node) {
+        return node->getRotation();
+    });
 
-    handler.addReadFloatHandler(
-        Property::Rotation,
-        [](const cocos2d::Node* node) { return node->getRotation(); });
+    handler.addReadHandler(Property::ScaleX, [](const cocos2d::Node* node) {
+        return node->getScaleX();
+    });
 
-    handler.addReadFloatHandler(
-        Property::ScaleX,
-        [](const cocos2d::Node* node) { return node->getScaleX(); });
+    handler.addReadHandler(Property::ScaleY, [](const cocos2d::Node* node) {
+        return node->getScaleY();
+    });
 
-    handler.addReadFloatHandler(
-        Property::ScaleY,
-        [](const cocos2d::Node* node) { return node->getScaleY(); });
-
-    handler.addReadFloatHandler(Property::SkewX, [](const cocos2d::Node* node) {
+    handler.addReadHandler(Property::SkewX, [](const cocos2d::Node* node) {
         return node->getSkewX();
     });
 
-    handler.addReadFloatHandler(Property::SkewY, [](const cocos2d::Node* node) {
+    handler.addReadHandler(Property::SkewY, [](const cocos2d::Node* node) {
         return node->getSkewY();
     });
 
-    handler.addReadIntHandler(Property::Tag, [](const cocos2d::Node* node) {
+    handler.addReadHandler(Property::Tag, [](const cocos2d::Node* node) {
         return node->getTag();
     });
 
-    handler.addReadBoolHandler(
-        Property::Visible,
-        [](const cocos2d::Node* node) { return node->isVisible(); });
+    handler.addReadHandler(Property::Visible, [](const cocos2d::Node* node) {
+        return node->isVisible();
+    });
 }
 
 void Self::addWriteHandlers(PropertyHandler& handler) {
-    handler.addWriteFloatHandler(Property::AnchorPointX,
-                                 [](cocos2d::Node* node, float value) {
-                                     auto anchor = node->getAnchorPoint();
-                                     anchor.x = value;
-                                     node->setAnchorPoint(anchor);
-                                     return true;
-                                 });
-
-    handler.addWriteFloatHandler(Property::AnchorPointY,
-                                 [](cocos2d::Node* node, float value) {
-                                     auto anchor = node->getAnchorPoint();
-                                     anchor.y = value;
-                                     node->setAnchorPoint(anchor);
-                                     return true;
-                                 });
-
-    handler.addWriteBoolHandler(Property::CascadeColorEnabled,
-                                [](cocos2d::Node* node, bool value) {
-                                    node->setCascadeColorEnabled(value);
-                                    return true;
-                                });
-
-    handler.addWriteBoolHandler(Property::CascadeOpacityEnabled,
-                                [](cocos2d::Node* node, bool value) {
-                                    node->setCascadeOpacityEnabled(value);
-                                    return true;
-                                });
-
-    handler.addWriteIntHandler(Property::ColorB,
-                               [](cocos2d::Node* node, int value) {
-                                   if (not isInColorRange(value)) {
-                                       return false;
-                                   }
-                                   auto color = node->getColor();
-                                   color.b = static_cast<GLubyte>(value);
-                                   node->setColor(color);
-                                   return true;
-                               });
-
-    handler.addWriteIntHandler(Property::ColorG,
-                               [](cocos2d::Node* node, int value) {
-                                   if (not isInColorRange(value)) {
-                                       return false;
-                                   }
-                                   auto color = node->getColor();
-                                   color.g = static_cast<GLubyte>(value);
-                                   node->setColor(color);
-                                   return true;
-                               });
-
-    handler.addWriteIntHandler(Property::ColorR,
-                               [](cocos2d::Node* node, int value) {
-                                   if (not isInColorRange(value)) {
-                                       return false;
-                                   }
-                                   auto color = node->getColor();
-                                   color.r = static_cast<GLubyte>(value);
-                                   node->setColor(color);
-                                   return true;
-                               });
-
-    handler.addWriteFloatHandler(Property::ContentSizeHeight,
-                                 [](cocos2d::Node* node, float value) {
-                                     auto size = node->getContentSize();
-                                     size.height = value;
-                                     node->setContentSize(size);
-                                     return true;
-                                 });
-
-    handler.addWriteFloatHandler(Property::ContentSizeWidth,
-                                 [](cocos2d::Node* node, float value) {
-                                     auto size = node->getContentSize();
-                                     size.width = value;
-                                     node->setContentSize(size);
-                                     return true;
-                                 });
-
-    handler.addWriteBoolHandler(Property::IgnoreAnchorPointForPosition,
-                                [](cocos2d::Node* node, bool value) {
-                                    node->setIgnoreAnchorPointForPosition(
-                                        value);
-                                    return true;
-                                });
-
-    handler.addWriteIntHandler(Property::LocalZOrder,
-                               [](cocos2d::Node* node, int value) {
-                                   node->setLocalZOrder(value);
-                                   return true;
-                               });
-
-    handler.addWriteStringHandler(
-        Property::Name, [](cocos2d::Node* node, const std::string& name) {
-            node->setName(name);
+    handler.addWriteHandler(
+        Property::AnchorPoint,
+        [](cocos2d::Node* node, const cocos2d::Vec2& value) {
+            node->setAnchorPoint(value);
             return true;
         });
 
-    handler.addWriteIntHandler(
-        Property::Opacity, [](cocos2d::Node* node, int value) {
-            if (not isInColorRange(value)) {
-                return false;
-            }
-            node->setOpacity(static_cast<GLubyte>(value));
+    handler.addWriteHandler(Property::CascadeColorEnabled,
+                            [](cocos2d::Node* node, bool value) {
+                                node->setCascadeColorEnabled(value);
+                                return true;
+                            });
+
+    handler.addWriteHandler(Property::CascadeOpacityEnabled,
+                            [](cocos2d::Node* node, bool value) {
+                                node->setCascadeOpacityEnabled(value);
+                                return true;
+                            });
+
+    handler.addWriteHandler(Property::Color, [](cocos2d::Node* node,
+                                                const cocos2d::Color3B& value) {
+        node->setColor(value);
+        return true;
+    });
+
+    handler.addWriteHandler(
+        Property::ContentSize,
+        [](cocos2d::Node* node, const cocos2d::Size& value) {
+            node->setContentSize(value);
             return true;
         });
 
-    handler.addWriteBoolHandler(Property::OpacityModifyRGB,
-                                [](cocos2d::Node* node, bool value) {
-                                    node->setOpacityModifyRGB(value);
-                                    return true;
-                                });
+    handler.addWriteHandler(Property::IgnoreAnchorPointForPosition,
+                            [](cocos2d::Node* node, bool value) {
+                                node->setIgnoreAnchorPointForPosition(value);
+                                return true;
+                            });
 
-    handler.addWriteFloatHandler(Property::PositionX,
-                                 [](cocos2d::Node* node, float value) {
-                                     auto position = node->getPosition();
-                                     position.x = value;
-                                     node->setPosition(position);
-                                     return true;
-                                 });
+    handler.addWriteHandler(Property::LocalZOrder,
+                            [](cocos2d::Node* node, int value) {
+                                node->setLocalZOrder(value);
+                                return true;
+                            });
 
-    handler.addWriteFloatHandler(Property::PositionY,
-                                 [](cocos2d::Node* node, float value) {
-                                     auto position = node->getPosition();
-                                     position.y = value;
-                                     node->setPosition(position);
-                                     return true;
-                                 });
+    handler.addWriteHandler(Property::Name,
+                            [](cocos2d::Node* node, const std::string& name) {
+                                node->setName(name);
+                                return true;
+                            });
 
-    handler.addWriteFloatHandler(Property::Rotation,
-                                 [](cocos2d::Node* node, float value) {
-                                     node->setRotation(value);
-                                     return true;
-                                 });
+    handler.addWriteHandler(Property::Opacity,
+                            [](cocos2d::Node* node, int value) {
+                                if (not isInColorRange(value)) {
+                                    return false;
+                                }
+                                node->setOpacity(static_cast<GLubyte>(value));
+                                return true;
+                            });
 
-    handler.addWriteFloatHandler(Property::ScaleX,
-                                 [](cocos2d::Node* node, float value) {
-                                     node->setScaleX(value);
-                                     return true;
-                                 });
+    handler.addWriteHandler(Property::OpacityModifyRGB,
+                            [](cocos2d::Node* node, bool value) {
+                                node->setOpacityModifyRGB(value);
+                                return true;
+                            });
 
-    handler.addWriteFloatHandler(Property::ScaleY,
-                                 [](cocos2d::Node* node, float value) {
-                                     node->setScaleY(value);
-                                     return true;
-                                 });
+    handler.addWriteHandler(
+        Property::Position,
+        [](cocos2d::Node* node, const cocos2d::Point& value) {
+            node->setPosition(value);
+            return true;
+        });
 
-    handler.addWriteFloatHandler(Property::SkewX,
-                                 [](cocos2d::Node* node, float value) {
-                                     node->setSkewX(value);
-                                     return true;
-                                 });
+    handler.addWriteHandler(Property::Rotation,
+                            [](cocos2d::Node* node, float value) {
+                                node->setRotation(value);
+                                return true;
+                            });
 
-    handler.addWriteFloatHandler(Property::SkewY,
-                                 [](cocos2d::Node* node, float value) {
-                                     node->setSkewY(value);
-                                     return true;
-                                 });
+    handler.addWriteHandler(Property::ScaleX,
+                            [](cocos2d::Node* node, float value) {
+                                node->setScaleX(value);
+                                return true;
+                            });
 
-    handler.addWriteIntHandler(Property::Tag,
-                               [](cocos2d::Node* node, int value) {
-                                   node->setTag(value);
-                                   return true;
-                               });
+    handler.addWriteHandler(Property::ScaleY,
+                            [](cocos2d::Node* node, float value) {
+                                node->setScaleY(value);
+                                return true;
+                            });
 
-    handler.addWriteBoolHandler(Property::Visible,
-                                [](cocos2d::Node* node, bool value) {
-                                    node->setVisible(value);
-                                    return true;
-                                });
+    handler.addWriteHandler(Property::SkewX,
+                            [](cocos2d::Node* node, float value) {
+                                node->setSkewX(value);
+                                return true;
+                            });
+
+    handler.addWriteHandler(Property::SkewY,
+                            [](cocos2d::Node* node, float value) {
+                                node->setSkewY(value);
+                                return true;
+                            });
+
+    handler.addWriteHandler(Property::Tag, [](cocos2d::Node* node, int value) {
+        node->setTag(value);
+        return true;
+    });
+
+    handler.addWriteHandler(Property::Visible,
+                            [](cocos2d::Node* node, bool value) {
+                                node->setVisible(value);
+                                return true;
+                            });
 }
 
 void Self::addDefaultProperties(PropertyWriter& writer) {
     bool flag = true;
-    flag &= writer.addProperty(Property::AnchorPointX, 0.0f);
-    flag &= writer.addProperty(Property::AnchorPointY, 0.0f);
+    flag &= writer.addProperty(Property::AnchorPoint, cocos2d::Vec2::ZERO);
     flag &= writer.addProperty(Property::CascadeColorEnabled, false);
     flag &= writer.addProperty(Property::CascadeOpacityEnabled, false);
-    flag &= writer.addProperty(Property::ColorB, cocos2d::Color3B::WHITE.b);
-    flag &= writer.addProperty(Property::ColorG, cocos2d::Color3B::WHITE.g);
-    flag &= writer.addProperty(Property::ColorR, cocos2d::Color3B::WHITE.r);
-    flag &= writer.addProperty(Property::ContentSizeHeight,
-                               cocos2d::Size::ZERO.height);
-    flag &= writer.addProperty(Property::ContentSizeWidth,
-                               cocos2d::Size::ZERO.width);
+    flag &= writer.addProperty(Property::Color, cocos2d::Color3B::WHITE);
+    flag &= writer.addProperty(Property::ContentSize, cocos2d::Size::ZERO);
     flag &= writer.addProperty(Property::IgnoreAnchorPointForPosition, false);
     flag &= writer.addProperty(Property::LocalZOrder, 0);
     flag &= writer.addProperty(Property::Name, std::string());
     flag &= writer.addProperty(Property::Opacity, 255);
     flag &= writer.addProperty(Property::OpacityModifyRGB, false);
-    flag &= writer.addProperty(Property::PositionX, 0.0f);
-    flag &= writer.addProperty(Property::PositionY, 0.0f);
+    flag &= writer.addProperty(Property::Position, cocos2d::Point::ZERO);
     flag &= writer.addProperty(Property::Rotation, 0.0f);
     flag &= writer.addProperty(Property::ScaleX, 1.0f);
     flag &= writer.addProperty(Property::ScaleY, 1.0f);
     flag &= writer.addProperty(Property::SkewX, 0.0f);
     flag &= writer.addProperty(Property::SkewY, 0.0f);
-    flag &= writer.addProperty(Property::Tag, cocos2d::Node::INVALID_TAG);
+    flag &=
+        writer.addProperty(Property::Tag, -1); // cocos2d::Node::INVALID_TAG);
     flag &= writer.addProperty(Property::Visible, true);
     Q_ASSERT(flag);
 }

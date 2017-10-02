@@ -2,7 +2,14 @@
 #define EE_PARSER_NODE_LOADER_HPP
 
 #include "parserfwd.hpp"
+#include "propertybool.hpp"
+#include "propertycolor.hpp"
+#include "propertyfloat.hpp"
 #include "propertyhandler.hpp"
+#include "propertyint.hpp"
+#include "propertypoint.hpp"
+#include "propertysize.hpp"
+#include "propertystring.hpp"
 
 namespace cocos2d {
 class Node;
@@ -18,29 +25,24 @@ private:
 
 public:
     struct Property {
-        static const std::string AnchorPointX;
-        static const std::string AnchorPointY;
-        static const std::string CascadeColorEnabled;
-        static const std::string CascadeOpacityEnabled;
-        static const std::string ColorB;
-        static const std::string ColorG;
-        static const std::string ColorR;
-        static const std::string ContentSizeHeight;
-        static const std::string ContentSizeWidth;
-        static const std::string IgnoreAnchorPointForPosition;
-        static const std::string LocalZOrder;
-        static const std::string Name;
-        static const std::string Opacity;
-        static const std::string OpacityModifyRGB;
-        static const std::string PositionX;
-        static const std::string PositionY;
-        static const std::string Rotation;
-        static const std::string ScaleX;
-        static const std::string ScaleY;
-        static const std::string SkewX;
-        static const std::string SkewY;
-        static const std::string Tag;
-        static const std::string Visible;
+        static const PropertyPoint AnchorPoint;
+        static const PropertyBool CascadeColorEnabled;
+        static const PropertyBool CascadeOpacityEnabled;
+        static const PropertyColor Color;
+        static const PropertySize ContentSize;
+        static const PropertyBool IgnoreAnchorPointForPosition;
+        static const PropertyInt LocalZOrder;
+        static const PropertyString Name;
+        static const PropertyInt Opacity;
+        static const PropertyBool OpacityModifyRGB;
+        static const PropertyPoint Position;
+        static const PropertyFloat Rotation;
+        static const PropertyFloat ScaleX;
+        static const PropertyFloat ScaleY;
+        static const PropertyFloat SkewX;
+        static const PropertyFloat SkewY;
+        static const PropertyInt Tag;
+        static const PropertyBool Visible;
     };
 
     static const std::string ClassName;

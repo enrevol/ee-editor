@@ -1,13 +1,10 @@
 #ifndef EE_PARSER_PROPERTY_HPP
 #define EE_PARSER_PROPERTY_HPP
 
-#include <string>
+#include <functional>
 
 namespace cocos2d {
-class Vec2;
-using Point = Vec2;
-struct Color3B;
-class Size;
+class Node;
 } // namespace cocos2d
 
 namespace ee {
@@ -15,38 +12,35 @@ class PropertyHandler;
 class PropertyReader;
 class PropertyWriter;
 
-class PropertyBase {
-public:
-    void addReadHandler(PropertyHandler& handler) const;
-    void addWriterHandler(PropertyHandler& handler) const;
-};
+namespace detail {
+class PropertyBase {};
+} // namespace detail
 
-template <class T> class Property : public PropertyBase {
+template <class T> class Property : detail::PropertyBase {
 public:
     using Value = T;
+    using ReadHandler = std::function<Value(const cocos2d::Node* node)>;
+    using WriteHandler =
+        std::function<bool(cocos2d::Node* node, const Value& value)>;
 
-    Property(const std::string& name);
+    virtual ~Property() = default;
 
-    const std::string& name() const;
+    virtual bool addReadHandler(PropertyHandler& propertyHandler,
+                                const ReadHandler& handler) const = 0;
 
-    Value get(const PropertyReader& reader, const Value& defaultValue) const;
-    void set(PropertyWriter& writer, const Value& value) const;
-    bool add(PropertyWriter& writer, const Value& value) const;
+    virtual bool addWriteHandler(PropertyHandler& propertyHandler,
+                                 const WriteHandler& handler) const = 0;
 
-private:
-    std::string name_;
+    virtual Value get(const PropertyReader& reader,
+                      const Value& defaultValue) const = 0;
+
+    virtual void set(PropertyWriter& writer, const Value& value) const = 0;
+
+    virtual bool add(PropertyWriter& writer, const Value& value) const = 0;
 };
 
-template <class T> struct IsProperty : std::false_type {};
-template <class T> struct IsProperty<Property<T>> : std::true_type {};
-
-using BoolProperty = Property<bool>;
-using IntProperty = Property<int>;
-using FloatProperty = Property<float>;
-using StringProperty = Property<std::string>;
-using PointProperty = Property<cocos2d::Point>;
-using SizeProperty = Property<cocos2d::Size>;
-using ColorProperty = Property<cocos2d::Color3B>;
+template <class T>
+struct IsProperty : std::is_base_of<detail::PropertyBase, T> {};
 } // namespace ee
 
 #endif // EE_PARSER_PROPERTY_HPP

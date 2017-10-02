@@ -25,15 +25,15 @@ public:
     bool addProperty(const std::string& name, float value);
     bool addProperty(const std::string& name, const std::string& value);
 
-    template <class T, class V = typename T::Value,
-              std::enable_if_t<IsProperty<T>::value, int> = 0>
-    void setProperty(const T& property, const V& value) {
+    template <class Property, class Value = typename Property::Value,
+              std::enable_if_t<IsProperty<Property>::value, int> = 0>
+    void setProperty(const Property& property, const Value& value) {
         property.set(*this, value);
     }
 
-    template <class T, class V = typename T::Value,
-              std::enable_if_t<IsProperty<T>::value, int> = 0>
-    bool addProperty(const T& property, const V& value) {
+    template <class Property, class Value = typename Property::Value,
+              std::enable_if_t<IsProperty<Property>::value, int> = 0>
+    bool addProperty(const Property& property, const Value& value) {
         return property.add(*this, value);
     }
 

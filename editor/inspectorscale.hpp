@@ -1,6 +1,8 @@
 #ifndef EE_EDITOR_INSPECTOR_SCALE_HPP
 #define EE_EDITOR_INSPECTOR_SCALE_HPP
 
+/*
+
 #include "inspector.hpp"
 #include "propertygetter.hpp"
 
@@ -39,5 +41,7 @@ private:
     FloatPropertyGetter scaleYProperty_;
 };
 } // namespace ee
+
+*/
 
 #endif // EE_EDITOR_INSPECTOR_SCALE_HPP

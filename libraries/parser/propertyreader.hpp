@@ -27,9 +27,10 @@ public:
     std::string getStringProperty(const std::string& name,
                                   const std::string& defaultValue) const;
 
-    template <class T, class V = typename T::Value,
-              std::enable_if_t<IsProperty<T>::value, int> = 0>
-    V getProperty(const T& property, const V& defaultValue) const {
+    template <class Property, class Value = typename Property::Value,
+              std::enable_if_t<IsProperty<Property>::value, int> = 0>
+    Value getProperty(const Property& property,
+                      const Value& defaultValue) const {
         return property.get(*this, defaultValue);
     }
 

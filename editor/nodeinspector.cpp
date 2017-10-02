@@ -18,20 +18,20 @@ Self::NodeInspector(QWidget* parent)
     setDisplayName("Node");
 
     addInspector((new InspectorBool())
-                     ->setPropertyName(
-                         QString::fromStdString(NodeLoader::Property::Visible))
+                     ->setPropertyName(QString::fromStdString(
+                         NodeLoader::Property::Visible.name()))
                      ->setPropertyDisplayName("Visible"));
 
     addInspector((new InspectorString())
-                     ->setPropertyName(
-                         QString::fromStdString(NodeLoader::Property::Name))
+                     ->setPropertyName(QString::fromStdString(
+                         NodeLoader::Property::Name.name()))
                      ->setPropertyDisplayName("Name"));
 
     addInspector(
         (new InspectorFloatXY())
             ->setPropertyName(
-                QString::fromStdString(NodeLoader::Property::PositionX),
-                QString::fromStdString(NodeLoader::Property::PositionY))
+                QString::fromStdString(NodeLoader::Property::Position.nameX()),
+                QString::fromStdString(NodeLoader::Property::Position.nameY()))
             ->setPropertyDisplayName("Position")
             ->setSubPropertyDisplayName("X", "Y")
             ->setSingleStep(1.0f)
@@ -41,9 +41,10 @@ Self::NodeInspector(QWidget* parent)
 
     addInspector(
         (new InspectorFloatXY())
-            ->setPropertyName(
-                QString::fromStdString(NodeLoader::Property::ContentSizeWidth),
-                QString::fromStdString(NodeLoader::Property::ContentSizeHeight))
+            ->setPropertyName(QString::fromStdString(
+                                  NodeLoader::Property::ContentSize.nameX()),
+                              QString::fromStdString(
+                                  NodeLoader::Property::ContentSize.nameY()))
             ->setPropertyDisplayName("Content size")
             ->setSubPropertyDisplayName("W", "H")
             ->setSingleStep(1.0f)
@@ -53,9 +54,10 @@ Self::NodeInspector(QWidget* parent)
 
     addInspector(
         (new InspectorFloatXY())
-            ->setPropertyName(
-                QString::fromStdString(NodeLoader::Property::AnchorPointX),
-                QString::fromStdString(NodeLoader::Property::AnchorPointY))
+            ->setPropertyName(QString::fromStdString(
+                                  NodeLoader::Property::AnchorPoint.nameX()),
+                              QString::fromStdString(
+                                  NodeLoader::Property::AnchorPoint.nameY()))
             ->setPropertyDisplayName("Anchor point")
             ->setSubPropertyDisplayName("X", "Y")
             ->setSingleStep(0.05f)
@@ -63,55 +65,58 @@ Self::NodeInspector(QWidget* parent)
             ->setMinimumValue(-99.999f)
             ->setMaximumValue(+99.999f));
 
-    addInspector((new InspectorFloatXY())
-                     ->setPropertyName(
-                         QString::fromStdString(NodeLoader::Property::ScaleX),
-                         QString::fromStdString(NodeLoader::Property::ScaleY))
-                     ->setPropertyDisplayName("Scale")
-                     ->setSubPropertyDisplayName("X", "Y")
-                     ->setSingleStep(0.05f)
-                     ->setValuePrecision(3)
-                     ->setMinimumValue(-99.999f)
-                     ->setMaximumValue(+99.999f));
+    addInspector(
+        (new InspectorFloatXY())
+            ->setPropertyName(
+                QString::fromStdString(NodeLoader::Property::ScaleX.name()),
+                QString::fromStdString(NodeLoader::Property::ScaleY.name()))
+            ->setPropertyDisplayName("Scale")
+            ->setSubPropertyDisplayName("X", "Y")
+            ->setSingleStep(0.05f)
+            ->setValuePrecision(3)
+            ->setMinimumValue(-99.999f)
+            ->setMaximumValue(+99.999f));
 
     addInspector((new InspectorFloat())
-                     ->setPropertyName(
-                         QString::fromStdString(NodeLoader::Property::Rotation))
+                     ->setPropertyName(QString::fromStdString(
+                         NodeLoader::Property::Rotation.name()))
                      ->setPropertyDisplayName("Rotation")
                      ->setSingleStep(1.0f)
                      ->setValuePrecision(2)
                      ->setMinimumValue(-359.99f)
                      ->setMaximumValue(+359.99f));
 
-    addInspector((new InspectorFloatXY())
-                     ->setPropertyName(
-                         QString::fromStdString(NodeLoader::Property::SkewX),
-                         QString::fromStdString(NodeLoader::Property::SkewY))
-                     ->setPropertyDisplayName("Skew")
-                     ->setSubPropertyDisplayName("X", "Y")
-                     ->setSingleStep(0.05f)
-                     ->setValuePrecision(3)
-                     ->setMinimumValue(-99.999f)
-                     ->setMaximumValue(+99.999f));
+    addInspector(
+        (new InspectorFloatXY())
+            ->setPropertyName(
+                QString::fromStdString(NodeLoader::Property::SkewX.name()),
+                QString::fromStdString(NodeLoader::Property::SkewY.name()))
+            ->setPropertyDisplayName("Skew")
+            ->setSubPropertyDisplayName("X", "Y")
+            ->setSingleStep(0.05f)
+            ->setValuePrecision(3)
+            ->setMinimumValue(-99.999f)
+            ->setMaximumValue(+99.999f));
+
+    addInspector((new InspectorInt())
+                     ->setPropertyName(QString::fromStdString(
+                         NodeLoader::Property::Tag.name()))
+                     ->setPropertyDisplayName("Tag")
+                     ->setSingleStep(1)
+                     ->setMinimumValue(-1)
+                     ->setMaximumValue(+9999));
 
     addInspector(
-        (new InspectorInt())
-            ->setPropertyName(QString::fromStdString(NodeLoader::Property::Tag))
-            ->setPropertyDisplayName("Tag")
-            ->setSingleStep(1)
-            ->setMinimumValue(-1)
-            ->setMaximumValue(+9999));
-
-    addInspector((new InspectorColor)
-                     ->setPropertyName(
-                         QString::fromStdString(NodeLoader::Property::ColorR),
-                         QString::fromStdString(NodeLoader::Property::ColorG),
-                         QString::fromStdString(NodeLoader::Property::ColorB))
-                     ->setPropertyDisplayName("Color"));
+        (new InspectorColor)
+            ->setPropertyName(
+                QString::fromStdString(NodeLoader::Property::Color.nameR()),
+                QString::fromStdString(NodeLoader::Property::Color.nameG()),
+                QString::fromStdString(NodeLoader::Property::Color.nameB()))
+            ->setPropertyDisplayName("Color"));
 
     addInspector((new InspectorIntSlider())
-                     ->setPropertyName(
-                         QString::fromStdString(NodeLoader::Property::Opacity))
+                     ->setPropertyName(QString::fromStdString(
+                         NodeLoader::Property::Opacity.name()))
                      ->setPropertyDisplayName("Opacity")
                      ->setSingleStep(1)
                      ->setMinimumValue(+0)
@@ -119,23 +124,23 @@ Self::NodeInspector(QWidget* parent)
 
     addInspector((new InspectorBool())
                      ->setPropertyName(QString::fromStdString(
-                         NodeLoader::Property::CascadeColorEnabled))
+                         NodeLoader::Property::CascadeColorEnabled.name()))
                      ->setPropertyDisplayName("Cascade color enabled"));
 
     addInspector((new InspectorBool())
                      ->setPropertyName(QString::fromStdString(
-                         NodeLoader::Property::CascadeOpacityEnabled))
+                         NodeLoader::Property::CascadeOpacityEnabled.name()))
                      ->setPropertyDisplayName("Cascade opacity enabled"));
 
     addInspector((new InspectorBool())
                      ->setPropertyName(QString::fromStdString(
-                         NodeLoader::Property::OpacityModifyRGB))
+                         NodeLoader::Property::OpacityModifyRGB.name()))
                      ->setPropertyDisplayName("Opacity modify RGB"));
 
     addInspector(
         (new InspectorBool())
             ->setPropertyName(QString::fromStdString(
-                NodeLoader::Property::IgnoreAnchorPointForPosition))
+                NodeLoader::Property::IgnoreAnchorPointForPosition.name()))
             ->setPropertyDisplayName("Ignore anchor point for position"));
 }
 } // namespace ee

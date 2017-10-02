@@ -357,8 +357,8 @@ void Self::addWriteHandlers(PropertyHandler& handler) {
 void Self::addDefaultProperties(PropertyWriter& writer) {
     Super::addDefaultProperties(writer);
 
-    writer.setProperty(NodeLoader::Property::AnchorPointX, 0.5f);
-    writer.setProperty(NodeLoader::Property::AnchorPointY, 0.5f);
+    writer.setProperty(NodeLoader::Property::AnchorPoint,
+                       cocos2d::Vec2::ANCHOR_MIDDLE);
 
     bool flag = true;
     flag &= writer.addProperty(Property::Bright, true);

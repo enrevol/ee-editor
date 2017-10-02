@@ -1,3 +1,5 @@
+/*
+
 #include <ciso646>
 
 #include "inspectorscale.hpp"
@@ -75,3 +77,5 @@ bool Self::refreshPropertyValue(const NodeGraph& graph,
     return false;
 }
 } // namespace ee
+
+*/

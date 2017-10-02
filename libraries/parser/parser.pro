@@ -31,7 +31,14 @@ HEADERS += \
     graphreader.hpp \
     widgetloader.hpp \
     layoutloader.hpp \
-    property.hpp
+    property.hpp \
+    propertybool.hpp \
+    propertyint.hpp \
+    propertyfloat.hpp \
+    propertystring.hpp \
+    propertypoint.hpp \
+    propertysize.hpp \
+    propertycolor.hpp
 
 SOURCES += \
     nodeloader.cpp \
@@ -48,4 +55,10 @@ SOURCES += \
     graphreader.cpp \
     widgetloader.cpp \
     layoutloader.cpp \
-    property.cpp
+    propertybool.cpp \
+    propertyint.cpp \
+    propertyfloat.cpp \
+    propertystring.cpp \
+    propertypoint.cpp \
+    propertysize.cpp \
+    propertycolor.cpp

@@ -4,6 +4,8 @@
 #include <functional>
 #include <string>
 
+#include "property.hpp"
+
 #include <base/CCValue.h>
 
 namespace ee {
@@ -94,6 +96,18 @@ public:
 
     bool addWriteStringHandler(const std::string& name,
                                const WriteStringHandler& handler);
+
+    template <class Property, class Handler = typename Property::ReadHandler,
+              std::enable_if_t<IsProperty<Property>::value, int> = 0>
+    bool addReadHandler(const Property& property, const Handler& handler) {
+        return property.addReadHandler(*this, handler);
+    }
+
+    template <class Property, class Handler = typename Property::WriteHandler,
+              std::enable_if_t<IsProperty<Property>::value, int> = 0>
+    bool addWriteHandler(const Property& property, const Handler& handler) {
+        return property.addWriteHandler(*this, handler);
+    }
 
 private:
     std::unordered_map<std::string, ReadHandler> readHandlers_;
