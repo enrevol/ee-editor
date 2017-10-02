@@ -59,9 +59,11 @@ void Self::addResources(const ProjectSettings& settings) {
     makeCocosContext();
     auto&& directories = settings.getResourceDirectories();
     std::vector<std::string> searchPaths;
+    for (auto&& path : defaultSearchPaths_) {
+        searchPaths.push_back(path.toStdString());
+    }
     for (auto&& directory : directories) {
         searchPaths.push_back(directory.absolutePath().toStdString());
-        qDebug() << "Add search path: " << directory.absolutePath();
         listFiles(directory, [](const QFileInfo& info) {
             if (not info.isDir() && info.suffix() == "png") {
                 auto cache =
@@ -73,7 +75,14 @@ void Self::addResources(const ProjectSettings& settings) {
         });
     }
     auto fileUtils = cocos2d::FileUtils::getInstance();
-    fileUtils->setSearchPaths({});
+    fileUtils->setSearchPaths(searchPaths);
+    for (auto&& path : searchPaths) {
+        qDebug() << "Add search path: " << QString::fromStdString(path);
+    }
     // doneCocosContext();
+}
+
+void Self::addDefaultSearchPath(const QString& path) {
+    defaultSearchPaths_.append(path);
 }
 } // namespace ee

@@ -1,4 +1,5 @@
 #include "appdelegate.hpp"
+#include "projectresources.hpp"
 #include "rootscene.hpp"
 #include "utils.hpp"
 
@@ -46,6 +47,7 @@ bool Self::applicationDidFinishLaunching() {
 
     auto fileUtils = cocos2d::FileUtils::getInstance();
     fileUtils->addSearchPath("cocos_images");
+    ProjectResources::getInstance().addDefaultSearchPath("cocos_images");
 
     auto scene = RootScene::create();
     director->runWithScene(scene);

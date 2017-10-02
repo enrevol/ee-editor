@@ -17,6 +17,8 @@ public:
     void removeResources(const ProjectSettings& settings);
     void addResources(const ProjectSettings& settings);
 
+    void addDefaultSearchPath(const QString& path);
+
 private:
     ProjectResources();
     ~ProjectResources();
@@ -24,6 +26,7 @@ private:
     ProjectResources(const Self&) = delete;
     Self& operator=(const Self&) = delete;
 
+    QVector<QString> defaultSearchPaths_;
     QVector<QString> loadedResources_;
 };
 } // namespace ee
