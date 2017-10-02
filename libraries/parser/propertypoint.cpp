@@ -58,12 +58,12 @@ bool Self::addWriteHandler(PropertyHandler& propertyHandler,
                            const WriteHandler& handler) const {
     auto handlerX = [thiz = *this, &propertyHandler,
                      handler](cocos2d::Node * node, float value) {
-        auto y = propertyHandler.readFloatProperty(node, thiz.nameX());
+        auto y = propertyHandler.readFloatProperty(node, thiz.nameY());
         return handler(node, cocos2d::Point(value, y));
     };
     auto handlerY = [thiz = *this, &propertyHandler,
                      handler](cocos2d::Node * node, float value) {
-        auto x = propertyHandler.readFloatProperty(node, thiz.nameY());
+        auto x = propertyHandler.readFloatProperty(node, thiz.nameX());
         return handler(node, cocos2d::Point(x, value));
     };
     if (not propertyHandler.addWriteFloatHandler(nameX(), handlerX)) {
