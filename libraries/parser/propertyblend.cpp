@@ -45,10 +45,10 @@ bool Self::addReadHandler(PropertyHandler& propertyHandler,
     auto handlerDst = [handler](const cocos2d::Node* node) {
         return static_cast<int>(handler(node).dst);
     };
-    if (not propertyHandler.addReadFloatHandler(nameSrc(), handlerSrc)) {
+    if (not propertyHandler.addReadIntHandler(nameSrc(), handlerSrc)) {
         return false;
     }
-    if (not propertyHandler.addReadFloatHandler(nameDst(), handlerDst)) {
+    if (not propertyHandler.addReadIntHandler(nameDst(), handlerDst)) {
         return false;
     }
     return true;
@@ -68,10 +68,10 @@ bool Self::addWriteHandler(PropertyHandler& propertyHandler,
         return handler(node,
                        {static_cast<GLenum>(src), static_cast<GLenum>(value)});
     };
-    if (not propertyHandler.addWriteFloatHandler(nameSrc(), handlerSrc)) {
+    if (not propertyHandler.addWriteIntHandler(nameSrc(), handlerSrc)) {
         return false;
     }
-    if (not propertyHandler.addWriteFloatHandler(nameDst(), handlerDst)) {
+    if (not propertyHandler.addWriteIntHandler(nameDst(), handlerDst)) {
         return false;
     }
     return true;
