@@ -26,6 +26,9 @@ PRE_TARGETDEPS += \
     $$OUT_PWD/../libraries/parser/libparser.a
 
 
+RESOURCES += \
+    editor.qrc
+
 mac {
     cocos_images.path = Contents/Resources/cocos_images
     cocos_images.files = $$files($$PWD/res/*.png)
