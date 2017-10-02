@@ -171,10 +171,12 @@ void Self::moveSelectionBy(const cocos2d::Vec2& delta) {
             node->getParent()->convertToNodeSpace(newWorldPosition);
         node->setPosition(newPosition);
         Q_EMIT propertyValueChanged(
-            path, QString::fromStdString(NodeLoader::Property::PositionX),
+            path,
+            QString::fromStdString(NodeLoader::Property::Position.nameX()),
             cocos2d::Value(newPosition.x));
         Q_EMIT propertyValueChanged(
-            path, QString::fromStdString(NodeLoader::Property::PositionY),
+            path,
+            QString::fromStdString(NodeLoader::Property::Position.nameY()),
             cocos2d::Value(newPosition.y));
     }
 }

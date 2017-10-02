@@ -2,6 +2,8 @@
 #define EE_PARSER_WIDGET_LOADER_HPP
 
 #include "nodeloader.hpp"
+#include "propertybool.hpp"
+#include "propertypoint.hpp"
 
 namespace ee {
 class WidgetLoader : public NodeLoader {
@@ -11,23 +13,21 @@ private:
 
 public:
     struct Property {
-        static const std::string Bright;
-        static const std::string Enabled;
-        static const std::string FlippedX;
-        static const std::string FlippedY;
-        static const std::string Highlighted;
-        static const std::string IgnoreContentAdaptWithSize;
-        static const std::string LayoutComponentEnabled;
-        static const std::string PositionPercentX;
-        static const std::string PositionPercentY;
-        static const std::string PositionType;
-        static const std::string PropagateTouchEvents;
-        static const std::string SizePercentX;
-        static const std::string SizePercentY;
-        static const std::string SizeType;
-        static const std::string SwallowTouches;
-        static const std::string TouchEnabled;
-        static const std::string UnifySizeEnabled;
+        static const PropertyBool Bright;
+        static const PropertyBool Enabled;
+        static const PropertyBool FlippedX;
+        static const PropertyBool FlippedY;
+        static const PropertyBool Highlighted;
+        static const PropertyBool IgnoreContentAdaptWithSize;
+        static const PropertyBool LayoutComponentEnabled;
+        static const PropertyPoint PositionPercent;
+        static const PropertyInt PositionType;
+        static const PropertyBool PropagateTouchEvents;
+        static const PropertyPoint SizePercent;
+        static const PropertyInt SizeType;
+        static const PropertyBool SwallowTouches;
+        static const PropertyBool TouchEnabled;
+        static const PropertyBool UnifySizeEnabled;
     };
 
     static const std::string ClassName;
