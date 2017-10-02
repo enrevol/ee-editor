@@ -197,7 +197,8 @@ void Self::updateSelectionProperty(const NodeGraph& graph,
     library.addDefaultLoaders();
     GraphReader reader(library);
     auto node = path.find(rootNode_);
-    updateSelectionProperty(node, reader.getNodeLoader(graph), propertyName,
+    auto subGraph = path.find(graph);
+    updateSelectionProperty(node, reader.getNodeLoader(subGraph), propertyName,
                             value);
 }
 
