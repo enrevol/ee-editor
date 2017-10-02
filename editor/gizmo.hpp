@@ -23,6 +23,8 @@ private:
 public:
     CREATE_FUNC(Self)
 
+    void setMovable(bool movable);
+
 Q_SIGNALS:
     void moveBy(const cocos2d::Vec2& delta);
 

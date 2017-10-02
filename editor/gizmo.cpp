@@ -104,6 +104,10 @@ void Self::onExit() {
     Super::onExit();
 }
 
+void Self::setMovable(bool movable) {
+    mouseListener_->setEnabled(movable);
+}
+
 void Self::resetImages() {
     box_->setTexture(images::box);
     axisX_->setTexture(images::x_axis);

@@ -48,6 +48,7 @@ bool Self::init() {
 
     gizmo_ = Gizmo::create();
     gizmo_->setVisible(false);
+    gizmo_->setMovable(false);
     addChild(gizmo_, +2);
     connect(gizmo_, &Gizmo::moveBy, this, &Self::moveSelectionBy);
 
@@ -128,8 +129,10 @@ void Self::updateSelection(const SelectionTree& selection) {
 void Self::updateGizmo() {
     if (selection_->isEmpty()) {
         gizmo_->setVisible(false);
+        gizmo_->setMovable(false);
     } else {
         gizmo_->setVisible(true);
+        gizmo_->setMovable(true);
         auto&& path = selection_->getPaths().front();
         auto node = path.find(rootNode_);
         gizmo_->setPosition(node->convertToWorldSpaceAR(cocos2d::Point::ZERO));
