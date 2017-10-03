@@ -111,7 +111,10 @@ SOURCES += \
     layercolorinspectorloader.cpp \
     spriteinspectorloader.cpp \
     projectresources.cpp \
-    inspectorblend.cpp
+    inspectorblend.cpp \
+    inspectorselect.cpp \
+    scale9spriteinspector.cpp \
+    scale9spriteinspectorloader.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -166,7 +169,10 @@ HEADERS += \
     layercolorinspectorloader.hpp \
     spriteinspectorloader.hpp \
     projectresources.hpp \
-    inspectorblend.hpp
+    inspectorblend.hpp \
+    inspectorselect.hpp \
+    scale9spriteinspector.hpp \
+    scale9spriteinspectorloader.hpp
 
 FORMS += \
     mainwindow.ui \
@@ -181,4 +187,5 @@ FORMS += \
     inspectorgroup.ui \
     inspectorstring.ui \
     inspectorintslider.ui \
-    inspectorblend.ui
+    inspectorblend.ui \
+    inspectorselect.ui

@@ -1,6 +1,7 @@
 #include "inspectorloaderlibrary.hpp"
 #include "layercolorinspectorloader.hpp"
 #include "nodeinspectorloader.hpp"
+#include "scale9spriteinspectorloader.hpp"
 #include "spriteinspectorloader.hpp"
 #include "widgetinspectorloader.hpp"
 
@@ -14,6 +15,7 @@ void Self::addDefaultLoaders() {
     addLoader(LayerColorInspectorLoader::create());
     addLoader(NodeInspectorLoader::create());
     addLoader(SpriteInspectorLoader::create());
+    addLoader(Scale9SpriteInspectorLoader::create());
     addLoader(WidgetInspectorLoader::create());
 }
 

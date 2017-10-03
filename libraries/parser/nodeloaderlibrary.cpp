@@ -3,6 +3,7 @@
 #include "layercolorloader.hpp"
 #include "nodeloader.hpp"
 #include "nodeloaderlibrary.hpp"
+#include "scale9spriteloader.hpp"
 #include "spriteloader.hpp"
 #include "widgetloader.hpp"
 
@@ -20,10 +21,11 @@ Self::NodeLoaderLibrary(const Self& other) {
 }
 
 void Self::addDefaultLoaders() {
-    addLoader("_Node", NodeLoader::create());
-    addLoader("_Sprite", SpriteLoader::create());
-    addLoader("_Widget", WidgetLoader::create());
-    addLoader("_LayerColor", LayerColorLoader::create());
+    addLoader(NodeLoader::create());
+    addLoader(Scale9SpriteLoader::create());
+    addLoader(SpriteLoader::create());
+    addLoader(WidgetLoader::create());
+    addLoader(LayerColorLoader::create());
 }
 
 cocos2d::Node* Self::createNode(const std::string& name) const {
