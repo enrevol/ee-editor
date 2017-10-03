@@ -6,6 +6,7 @@
 
 #include <QDebug>
 #include <QHeaderView>
+#include <QMimeData>
 #include <QStack>
 
 namespace ee {
@@ -18,6 +19,8 @@ using Self = ResourceTree;
 Self::ResourceTree(QWidget* parent)
     : Super(parent) {
     header()->close();
+    setDragEnabled(true);
+    setDragDropMode(QAbstractItemView::DragDropMode::DragOnly);
 
     connect(this, &Self::currentItemChanged, [this](QTreeWidgetItem* item) {
         if (item == nullptr) {
@@ -157,5 +160,25 @@ void Self::restoreSelectedItem(QStack<QString> names) {
     }
 
     setCurrentItem(currentItem);
+}
+
+QMimeData* Self::mimeData(const QList<QTreeWidgetItem*> items) const {
+    Q_ASSERT(items.size() > 0);
+    auto item = items.front();
+    QStringList components;
+    while (item->parent() != nullptr) {
+        components << item->text(0);
+        item = item->parent();
+    }
+    auto path = components.join(QDir::separator());
+    auto data = new QMimeData();
+    data->setData(mimeTypes().at(0), path.toUtf8());
+    return data;
+}
+
+QStringList Self::mimeTypes() const {
+    QStringList types;
+    types << "ee-editor/resources–path";
+    return types;
 }
 } // namespace ee

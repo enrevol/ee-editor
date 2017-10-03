@@ -30,7 +30,11 @@ public:
                                   const SelectionTree& selection) override;
 
 protected:
-    void setPropertyValue(const QString& value);
+    void setPropertyValue(const QString& value, bool notify);
+
+    virtual void dragEnterEvent(QDragEnterEvent* event) override;
+    virtual void dragMoveEvent(QDragMoveEvent* event) override;
+    virtual void dropEvent(QDropEvent* event) override;
 
 private:
     Ui::InspectorTexture* ui_;

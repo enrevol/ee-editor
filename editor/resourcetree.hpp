@@ -24,6 +24,11 @@ Q_SIGNALS:
 protected:
     void updateResourcePath(QTreeWidgetItem* item, const QFileInfo& info);
 
+    virtual QMimeData*
+    mimeData(const QList<QTreeWidgetItem*> items) const override;
+
+    virtual QStringList mimeTypes() const override;
+
 private:
     QSet<QString> saveExpandedItems();
     void restoreExpandedItems(const QSet<QString>& expandedItems);
