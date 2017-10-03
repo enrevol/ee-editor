@@ -8,6 +8,9 @@
 #include <parser/nodegraph.hpp>
 #include <parser/propertyreader.hpp>
 
+#include <base/CCDirector.h>
+#include <renderer/CCTextureCache.h>
+
 #include <QDebug>
 #include <QDragEnterEvent>
 #include <QMimeData>
@@ -27,16 +30,36 @@ Self::InspectorTexture(QWidget* parent)
                     return;
                 }
                 Q_EMIT propertyValueChanged(
-                    property_->name(), cocos2d::Value(value.toStdString()));
+                    propertyTex_->name(), cocos2d::Value(value.toStdString()));
             });
+    connect(ui_->clearButton, &QPushButton::clicked,
+            [this] { setPropertyValue("", true); });
+    connect(ui_->resetSizeButton, &QPushButton::clicked, [this] {
+        auto cache = cocos2d::Director::getInstance()->getTextureCache();
+        auto texture =
+            cache->getTextureForKey(ui_->propertyInput->text().toStdString());
+        if (texture != nullptr) {
+            Q_EMIT propertyValueChanged(
+                propertyW_->name(),
+                cocos2d::Value(texture->getContentSize().width));
+            Q_EMIT propertyValueChanged(
+                propertyH_->name(),
+                cocos2d::Value(texture->getContentSize().height));
+            Q_EMIT propertyNeedRefreshed(propertyW_->name());
+            Q_EMIT propertyNeedRefreshed(propertyH_->name());
+        }
+    });
 }
 
 Self::~InspectorTexture() {
     delete ui_;
 }
 
-Self* Self::setPropertyName(const QString& name) {
-    property_ = std::make_unique<StringPropertyGetter>(name);
+Self* Self::setPropertyName(const QString& tex, const QString& w,
+                            const QString& h) {
+    propertyTex_ = std::make_unique<StringPropertyGetter>(tex);
+    propertyW_ = std::make_unique<FloatPropertyGetter>(w);
+    propertyH_ = std::make_unique<FloatPropertyGetter>(h);
     return this;
 }
 
@@ -57,7 +80,7 @@ void Self::setPropertyValue(const QString& value, bool notify) {
 }
 
 bool Self::doesHandleProperty(const QString& propertyName) const {
-    if (propertyName != property_->name()) {
+    if (propertyName != propertyTex_->name()) {
         return false;
     }
     return true;
@@ -68,7 +91,7 @@ void Self::refreshInspector(const NodeGraph& graph,
     Q_ASSERT(not selection.isEmpty());
     auto&& paths = selection.getPaths();
     auto&& path = paths.front();
-    auto value = property_->get(path.find(graph));
+    auto value = propertyTex_->get(path.find(graph));
     setPropertyValue(value, false);
 }
 

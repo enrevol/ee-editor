@@ -27,10 +27,15 @@ Self::SpriteInspector(QWidget* parent)
                          SpriteLoader::Property::StretchEnabled.name()))
                      ->setPropertyDisplayName("Stretch enabled"));
 
-    addInspector((new InspectorTexture())
-                     ->setPropertyName(QString::fromStdString(
-                         SpriteLoader::Property::Texture.name()))
-                     ->setPropertyDisplayName("Texture"));
+    addInspector(
+        (new InspectorTexture())
+            ->setPropertyName(
+                QString::fromStdString(SpriteLoader::Property::Texture.name()),
+                QString::fromStdString(
+                    NodeLoader::Property::ContentSize.nameW()),
+                QString::fromStdString(
+                    NodeLoader::Property::ContentSize.nameH()))
+            ->setPropertyDisplayName("Texture"));
 
     addInspector((new InspectorBlend())
                      ->setPropertyName(

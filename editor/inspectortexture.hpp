@@ -19,7 +19,8 @@ public:
 
     virtual ~InspectorTexture() override;
 
-    Self* setPropertyName(const QString& name);
+    Self* setPropertyName(const QString& tex, const QString& w,
+                          const QString& h);
     Self* setPropertyDisplayName(const QString& name);
 
     /// @see Super.
@@ -39,7 +40,9 @@ protected:
 private:
     Ui::InspectorTexture* ui_;
     bool updating_;
-    std::unique_ptr<StringPropertyGetter> property_;
+    std::unique_ptr<StringPropertyGetter> propertyTex_;
+    std::unique_ptr<FloatPropertyGetter> propertyW_;
+    std::unique_ptr<FloatPropertyGetter> propertyH_;
 };
 } // namespace ee
 
