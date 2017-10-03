@@ -1,6 +1,7 @@
 #include "spriteinspector.hpp"
 #include "inspectorblend.hpp"
 #include "inspectorbool.hpp"
+#include "inspectortexture.hpp"
 
 #include <parser/spriteloader.hpp>
 
@@ -25,6 +26,11 @@ Self::SpriteInspector(QWidget* parent)
                      ->setPropertyName(QString::fromStdString(
                          SpriteLoader::Property::StretchEnabled.name()))
                      ->setPropertyDisplayName("Stretch enabled"));
+
+    addInspector((new InspectorTexture())
+                     ->setPropertyName(QString::fromStdString(
+                         SpriteLoader::Property::Texture.name()))
+                     ->setPropertyDisplayName("Texture"));
 
     addInspector((new InspectorBlend())
                      ->setPropertyName(
