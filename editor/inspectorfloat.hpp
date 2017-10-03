@@ -26,12 +26,12 @@ public:
     Self* setMinimumValue(float value);
     Self* setMaximumValue(float value);
 
-    virtual void refreshPropertyValue(const NodeGraph& graph,
-                                      const SelectionTree& selection) override;
+    /// @see Super.
+    virtual bool doesHandleProperty(const QString& propertyName) const override;
 
-    virtual bool refreshPropertyValue(const NodeGraph& graph,
-                                      const SelectionTree& selection,
-                                      const QString& propertyName) override;
+    /// @see Super.
+    virtual void refreshInspector(const NodeGraph& graph,
+                                  const SelectionTree& selection) override;
 
 protected:
     void setPropertyValue(float value);

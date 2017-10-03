@@ -171,18 +171,18 @@ Self::MainWindow(QWidget* parent)
     QTimer::singleShot(1, [this] {
         auto rootScene = dynamic_cast<RootScene*>(
             cocos2d::Director::getInstance()->getRunningScene());
-        connect(rootScene, &RootScene::propertyValueChanged,
-                [this](const SelectionPath& path, const QString& propertyName,
-                       const cocos2d::Value& value) {
-                    qDebug() << "root scene change property " << propertyName;
-                    auto sceneTree = ui_->sceneTree;
-                    auto inspectorList = ui_->inspectorList;
-                    sceneTree->updateSelectionProperty(path, propertyName,
-                                                       value);
-                    inspectorList->refreshPropertyValue(
-                        sceneTree->getNodeGraph(),
-                        sceneTree->currentSelection(), propertyName);
-                });
+        connect(
+            rootScene, &RootScene::propertyValueChanged,
+            [this](const SelectionPath& path, const QString& propertyName,
+                   const cocos2d::Value& value) {
+                qDebug() << "root scene change property " << propertyName;
+                auto sceneTree = ui_->sceneTree;
+                auto inspectorList = ui_->inspectorList;
+                sceneTree->updateSelectionProperty(path, propertyName, value);
+                inspectorList->refreshProperty(sceneTree->getNodeGraph(),
+                                               sceneTree->currentSelection(),
+                                               propertyName);
+            });
 
         connect(rootScene, &RootScene::selectionTreeChanged,
                 [this](const SelectionTree& selection) {

@@ -29,12 +29,11 @@ public:
 
     void setSelection(const NodeGraph& graph, const SelectionTree& selection);
 
-    void refreshPropertyValue(const NodeGraph& graph,
-                              const SelectionTree& selection);
+    void refreshInspector(const NodeGraph& graph,
+                          const SelectionTree& selection);
 
-    bool refreshPropertyValue(const NodeGraph& graph,
-                              const SelectionTree& selection,
-                              const QString& propertyName);
+    bool refreshProperty(const NodeGraph& graph, const SelectionTree& selection,
+                         const QString& propertyName);
 
 Q_SIGNALS:
     void propertyValueChanged(const SelectionPath& path,

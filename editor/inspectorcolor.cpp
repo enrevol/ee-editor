@@ -70,8 +70,17 @@ void Self::changeColor(const QColor& color) {
     Q_EMIT propertyValueChanged(propertyB_->name(), cocos2d::Value(b));
 }
 
-void Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection) {
+bool Self::doesHandleProperty(const QString& propertyName) const {
+    if (propertyName != propertyR_->name() &&
+        propertyName != propertyG_->name() &&
+        propertyName != propertyB_->name()) {
+        return false;
+    }
+    return true;
+}
+
+void Self::refreshInspector(const NodeGraph& graph,
+                            const SelectionTree& selection) {
     Q_ASSERT(not selection.isEmpty());
     auto&& paths = selection.getPaths();
     auto&& path = paths.front();
@@ -79,17 +88,5 @@ void Self::refreshPropertyValue(const NodeGraph& graph,
     auto g = propertyG_->get(path.find(graph));
     auto b = propertyB_->get(path.find(graph));
     setPropertyValue(r, g, b);
-}
-
-bool Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection,
-                                const QString& propertyName) {
-    if (propertyName != propertyR_->name() &&
-        propertyName != propertyG_->name() &&
-        propertyName != propertyB_->name()) {
-        return false;
-    }
-    refreshPropertyValue(graph, selection);
-    return true;
 }
 } // namespace ee

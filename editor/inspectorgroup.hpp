@@ -21,12 +21,16 @@ public:
     void setDisplayName(const QString& name);
 
     /// @see Super.
-    virtual void refreshPropertyValue(const NodeGraph& graph,
-                                      const SelectionTree& selection) override;
+    virtual bool doesHandleProperty(const QString& propertyName) const override;
 
-    virtual bool refreshPropertyValue(const NodeGraph& graph,
-                                      const SelectionTree& selection,
-                                      const QString& propertyName) override;
+    /// @see Super.
+    virtual void refreshInspector(const NodeGraph& graph,
+                                  const SelectionTree& selection) override;
+
+    /// @see Super.
+    virtual bool refreshProperty(const NodeGraph& graph,
+                                 const SelectionTree& selection,
+                                 const QString& propertyName) override;
 
 protected:
     void addInspector(Inspector* inspector);

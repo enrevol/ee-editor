@@ -37,21 +37,37 @@ void Self::addInspector(Inspector* inspector) {
             });
 }
 
-void Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection) {
+bool Self::doesHandleProperty(const QString& propertyName) const {
     for (auto&& inspector : inspectors_) {
-        inspector->refreshPropertyValue(graph, selection);
-    }
-}
-
-bool Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection,
-                                const QString& propertyName) {
-    for (auto&& inspector : inspectors_) {
-        if (inspector->refreshPropertyValue(graph, selection, propertyName)) {
+        if (inspector->doesHandleProperty(propertyName)) {
             return true;
         }
     }
     return false;
+}
+
+void Self::refreshInspector(const NodeGraph& graph,
+                            const SelectionTree& selection) {
+    for (auto&& inspector : inspectors_) {
+        inspector->refreshInspector(graph, selection);
+    }
+}
+
+bool Self::refreshProperty(const NodeGraph& graph,
+                           const SelectionTree& selection,
+                           const QString& propertyName) {
+    int counter = 0;
+    for (auto&& inspector : inspectors_) {
+        if (inspector->doesHandleProperty(propertyName)) {
+            inspector->refreshInspector(graph, selection);
+            Q_ASSERT(counter == 0);
+            ++counter;
+        }
+    }
+    if (counter == 0) {
+        Q_ASSERT(false);
+        return false;
+    }
+    return true;
 }
 } // namespace ee

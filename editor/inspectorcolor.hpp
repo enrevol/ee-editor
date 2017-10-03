@@ -22,12 +22,12 @@ public:
     Self* setPropertyName(const QString& r, const QString& g, const QString& b);
     Self* setPropertyDisplayName(const QString& name);
 
-    virtual void refreshPropertyValue(const NodeGraph& graph,
-                                      const SelectionTree& selection) override;
+    /// @see Super.
+    virtual bool doesHandleProperty(const QString& propertyName) const override;
 
-    virtual bool refreshPropertyValue(const NodeGraph& graph,
-                                      const SelectionTree& selection,
-                                      const QString& propertyName) override;
+    /// @see Super.
+    virtual void refreshInspector(const NodeGraph& graph,
+                                  const SelectionTree& selection) override;
 
 protected:
     void setPropertyValue(int r, int g, int b);

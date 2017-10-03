@@ -116,24 +116,21 @@ void Self::setPropertyValueLazy(float x, float y) {
     valueY_ = y;
 }
 
-void Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection) {
+bool Self::doesHandleProperty(const QString& propertyName) const {
+    if (propertyName != propertyX_->name() &&
+        propertyName != propertyY_->name()) {
+        return false;
+    }
+    return true;
+}
+
+void Self::refreshInspector(const NodeGraph& graph,
+                            const SelectionTree& selection) {
     Q_ASSERT(not selection.isEmpty());
     auto&& paths = selection.getPaths();
     auto&& path = paths.front();
     auto x = propertyX_->get(path.find(graph));
     auto y = propertyY_->get(path.find(graph));
     setPropertyValueLazy(x, y);
-}
-
-bool Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection,
-                                const QString& propertyName) {
-    if (propertyName != propertyX_->name() &&
-        propertyName != propertyY_->name()) {
-        return false;
-    }
-    refreshPropertyValue(graph, selection);
-    return true;
 }
 } // namespace ee

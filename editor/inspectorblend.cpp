@@ -107,24 +107,21 @@ void Self::setPropertyValue(int src, int dst) {
     updating_ = false;
 }
 
-void Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection) {
+bool Self::doesHandleProperty(const QString& propertyName) const {
+    if (propertyName != propertySrc_->name() &&
+        propertyName != propertyDst_->name()) {
+        return false;
+    }
+    return true;
+}
+
+void Self::refreshInspector(const NodeGraph& graph,
+                            const SelectionTree& selection) {
     Q_ASSERT(not selection.isEmpty());
     auto&& paths = selection.getPaths();
     auto&& path = paths.front();
     auto src = propertySrc_->get(path.find(graph));
     auto dst = propertyDst_->get(path.find(graph));
     setPropertyValue(src, dst);
-}
-
-bool Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection,
-                                const QString& propertyName) {
-    if (propertyName != propertySrc_->name() &&
-        propertyName != propertyDst_->name()) {
-        return false;
-    }
-    refreshPropertyValue(graph, selection);
-    return true;
 }
 } // namespace ee

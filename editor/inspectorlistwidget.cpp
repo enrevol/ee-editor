@@ -78,24 +78,30 @@ void Self::setSelection(const NodeGraph& graph,
         addInspector(inspector);
     }
 
-    refreshPropertyValue(graph, selection);
+    refreshInspector(graph, selection);
 }
 
-void Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection) {
+void Self::refreshInspector(const NodeGraph& graph,
+                            const SelectionTree& selection) {
     for (auto&& inspector : inspectors_) {
-        inspector->refreshPropertyValue(graph, selection);
+        inspector->refreshInspector(graph, selection);
     }
 }
 
-bool Self::refreshPropertyValue(const NodeGraph& graph,
-                                const SelectionTree& selection,
-                                const QString& propertyName) {
+bool Self::refreshProperty(const NodeGraph& graph,
+                           const SelectionTree& selection,
+                           const QString& propertyName) {
     Q_ASSERT(not selection.isEmpty());
+    int counter = 0;
     for (auto&& inspector : inspectors_) {
-        if (inspector->refreshPropertyValue(graph, selection, propertyName)) {
-            return true;
+        if (inspector->refreshProperty(graph, selection, propertyName)) {
+            Q_ASSERT(counter == 0);
+            ++counter;
         }
+    }
+    if (counter == 0) {
+        Q_ASSERT(false);
+        return false;
     }
     return false;
 }
