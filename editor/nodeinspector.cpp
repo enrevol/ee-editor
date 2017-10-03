@@ -106,6 +106,14 @@ Self::NodeInspector(QWidget* parent)
                      ->setMinimumValue(-1)
                      ->setMaximumValue(+9999));
 
+    addInspector((new InspectorInt())
+                     ->setPropertyName(QString::fromStdString(
+                         NodeLoader::Property::LocalZOrder.name()))
+                     ->setPropertyDisplayName("Local z-order")
+                     ->setSingleStep(1)
+                     ->setMinimumValue(-9999)
+                     ->setMaximumValue(+9999));
+
     addInspector(
         (new InspectorColor)
             ->setPropertyName(
