@@ -1,29 +1,25 @@
-#ifndef EE_PARSER_SPRITE_LOADER_HPP
-#define EE_PARSER_SPRITE_LOADER_HPP
+#ifndef EE_PARSER_SCALE_9_SPRITE_LOADER_HPP
+#define EE_PARSER_SCALE_9_SPRITE_LOADER_HPP
 
-#include "nodeloader.hpp"
-#include "propertyblend.hpp"
+#include "spriteloader.hpp"
 
 namespace ee {
-class SpriteLoader : public NodeLoader {
+class Scale9SpriteLoader : public SpriteLoader {
 private:
-    using Self = SpriteLoader;
-    using Super = NodeLoader;
+    using Self = Scale9SpriteLoader;
+    using Super = SpriteLoader;
 
 public:
     struct Property {
-        static const PropertyBlend BlendFunc;
-        static const PropertyBool FlippedX;
-        static const PropertyBool FlippedY;
-        static const PropertyBool StretchEnabled;
-        static const PropertyString Texture;
+        static const PropertyInt State;
+        static const PropertyInt RenderingType;
     };
 
     static const std::string ClassName;
 
     static NodeLoaderPtr create();
 
-    virtual ~SpriteLoader() override;
+    virtual ~Scale9SpriteLoader() override;
 
     virtual cocos2d::Node* createNode() const override;
 
@@ -31,7 +27,7 @@ public:
 
 protected:
     /// Constructs a sprite loader.
-    SpriteLoader();
+    Scale9SpriteLoader();
 
     virtual void addReadHandlers(PropertyHandler& handler) override;
     virtual void addWriteHandlers(PropertyHandler& handler) override;
@@ -41,4 +37,4 @@ protected:
 };
 } // namespace ee
 
-#endif // SPRITELOADER_HPP
+#endif // EE_PARSER_SCALE_9_SPRITE_LOADER_HPP

@@ -40,7 +40,8 @@ HEADERS += \
     propertysize.hpp \
     propertycolor.hpp \
     propertyrect.hpp \
-    propertyblend.hpp
+    propertyblend.hpp \
+    scale9spriteloader.hpp
 
 SOURCES += \
     nodeloader.cpp \
@@ -65,4 +66,5 @@ SOURCES += \
     propertysize.cpp \
     propertycolor.cpp \
     propertyrect.cpp \
-    propertyblend.cpp
+    propertyblend.cpp \
+    scale9spriteloader.cpp
