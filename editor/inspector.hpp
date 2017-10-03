@@ -53,15 +53,10 @@ Q_SIGNALS:
     void propertyValueChanged(const QString& propertyName,
                               const cocos2d::Value& value);
 
-    /// Occurs when the inspector properties values have changed and the
-    /// specified property needs to be reassigned.
-    /// @param propertyName The property name.
-    void propertyNeedReassign(const QString& propertyName);
-
     /// Occurs when the inspector properties values have changed and affects the
     /// specified property.
     /// @param propertyName The property name.
-    void propertyNeedRefresh(const QString& propertyName);
+    void propertyNeedRefreshed(const QString& propertyName);
 };
 } // namespace ee
 

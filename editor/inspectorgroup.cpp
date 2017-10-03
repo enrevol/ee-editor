@@ -35,6 +35,10 @@ void Self::addInspector(Inspector* inspector) {
             [this](const QString& propertyName, const cocos2d::Value& value) {
                 Q_EMIT propertyValueChanged(propertyName, value);
             });
+    connect(inspector, &Inspector::propertyNeedRefreshed,
+            [this](const QString& propertyName) {
+                Q_EMIT propertyNeedRefreshed(propertyName);
+            });
 }
 
 bool Self::doesHandleProperty(const QString& propertyName) const {
@@ -65,7 +69,6 @@ bool Self::refreshProperty(const NodeGraph& graph,
         }
     }
     if (counter == 0) {
-        Q_ASSERT(false);
         return false;
     }
     return true;

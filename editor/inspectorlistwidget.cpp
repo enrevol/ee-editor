@@ -51,6 +51,14 @@ void Self::addInspector(Inspector* inspector) {
                 Q_EMIT propertyValueChanged(selection_->getPaths().front(),
                                             propertyName, value);
             });
+    connect(inspector, &Inspector::propertyNeedRefreshed,
+            [this](const QString& propertyName) {
+                if (selection_->isEmpty()) {
+                    return;
+                }
+                Q_ASSERT(nodeGraph_ != nullptr);
+                refreshProperty(*nodeGraph_, *selection_, propertyName);
+            });
     inspectors_.append(inspector);
 }
 
