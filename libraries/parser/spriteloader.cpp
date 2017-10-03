@@ -83,7 +83,11 @@ void Self::addWriteHandlers(PropertyHandler& handler) {
 
     handler.addWriteHandler<Node>(
         Property::Texture, [](Node* node, const std::string& value) {
+            auto contentSize = node->getContentSize();
+            auto blendFunc = node->getBlendFunc();
             node->setTexture(value);
+            node->setContentSize(contentSize);
+            node->setBlendFunc(blendFunc);
             NodeInfoWriter(node).writeString(Property::Texture.name(), value);
             return true;
         });
