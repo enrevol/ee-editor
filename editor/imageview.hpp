@@ -35,7 +35,7 @@ protected:
     void displayImage(const QString& imagePath);
     void displaySpriteFrame(const QString& spriteFrameName);
     void displayTexture(const cocos2d::Texture2D* texture,
-                        const cocos2d::Rect& rect);
+                        const cocos2d::Rect& rect, bool rotated);
 
 private:
     enum class Display { None, Image, SpriteFrame };

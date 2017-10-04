@@ -69,7 +69,7 @@ void Self::displayImage(const QString& imagePath) {
     cocos2d::Rect rect;
     rect.origin = cocos2d::Point::ZERO;
     rect.size = texture->getContentSize();
-    displayTexture(texture, rect);
+    displayTexture(texture, rect, false);
 }
 
 void Self::displaySpriteFrame(const QString& spriteFrameName) {
@@ -77,12 +77,12 @@ void Self::displaySpriteFrame(const QString& spriteFrameName) {
     auto spriteFrame =
         cache->getSpriteFrameByName(spriteFrameName.toStdString());
     auto texture = spriteFrame->getTexture();
-    auto&& rect = spriteFrame->getRect();
-    displayTexture(texture, rect);
+    auto rect = spriteFrame->getRect();
+    displayTexture(texture, rect, spriteFrame->isRotated());
 }
 
 void Self::displayTexture(const cocos2d::Texture2D* texture,
-                          const cocos2d::Rect& rect) {
+                          const cocos2d::Rect& rect, bool rotated) {
     auto f = getGLFunctions(this);
 
     auto width = size().width();
@@ -90,6 +90,12 @@ void Self::displayTexture(const cocos2d::Texture2D* texture,
 
     auto textureWidth = texture->getContentSize().width;
     auto textureHeight = texture->getContentSize().height;
+
+    // Without rotation.
+    auto frameRect = rect;
+    if (rotated) {
+        std::swap(frameRect.size.width, frameRect.size.height);
+    }
 
     auto scaleX = width / rect.size.width;
     auto scaleY = height / rect.size.height;
@@ -114,28 +120,50 @@ void Self::displayTexture(const cocos2d::Texture2D* texture,
 
     f->glBegin(GL_QUADS);
 
-    Q_ASSERT(0 <= rect.getMinX() && rect.getMaxX() <= textureWidth);
-    Q_ASSERT(0 <= rect.getMinY() && rect.getMaxY() <= textureHeight);
+    Q_ASSERT(0 <= frameRect.getMinX() && frameRect.getMaxX() <= textureWidth);
+    Q_ASSERT(0 <= frameRect.getMinY() && frameRect.getMaxY() <= textureHeight);
 
-    // Bottom-left.
-    f->glTexCoord2f(rect.getMinX() / textureWidth,
-                    rect.getMinY() / textureHeight);
-    f->glVertex2f(paddingX, paddingY);
+    cocos2d::Rect texRect(frameRect.getMinX() / textureWidth,
+                          frameRect.getMinY() / textureHeight,
+                          frameRect.size.width / textureWidth,
+                          frameRect.size.height / textureHeight);
 
-    // Top-left.
-    f->glTexCoord2f(rect.getMinX() / textureWidth,
-                    rect.getMaxY() / textureHeight);
-    f->glVertex2f(paddingX, height - paddingY);
+    cocos2d::Rect vertRect(paddingX, paddingY, rect.size.width,
+                           rect.size.height);
 
-    // Top-right.
-    f->glTexCoord2f(rect.getMaxX() / textureWidth,
-                    rect.getMaxY() / textureHeight);
-    f->glVertex2f(width - paddingX, height - paddingY);
+    if (rotated) {
+        // Bottom-left.
+        f->glTexCoord2f(texRect.getMaxX(), texRect.getMinY());
+        f->glVertex2f(vertRect.getMinX(), vertRect.getMinY());
 
-    // Bottom-right.
-    f->glTexCoord2f(rect.getMaxX() / textureWidth,
-                    rect.getMinY() / textureHeight);
-    f->glVertex2f(width - paddingX, paddingY);
+        // Top-left.
+        f->glTexCoord2f(texRect.getMinX(), texRect.getMinY());
+        f->glVertex2f(vertRect.getMinX(), vertRect.getMaxY());
+
+        // Top-right.
+        f->glTexCoord2f(texRect.getMinX(), texRect.getMaxY());
+        f->glVertex2f(vertRect.getMaxX(), vertRect.getMaxY());
+
+        // Bottom-right.
+        f->glTexCoord2f(texRect.getMaxX(), texRect.getMaxY());
+        f->glVertex2f(vertRect.getMaxX(), vertRect.getMinY());
+    } else {
+        // Bottom-left.
+        f->glTexCoord2f(texRect.getMinX(), texRect.getMinY());
+        f->glVertex2f(vertRect.getMinX(), vertRect.getMinY());
+
+        // Top-left.
+        f->glTexCoord2f(texRect.getMinX(), texRect.getMaxY());
+        f->glVertex2f(vertRect.getMinX(), vertRect.getMaxY());
+
+        // Top-right.
+        f->glTexCoord2f(texRect.getMaxX(), texRect.getMaxY());
+        f->glVertex2f(vertRect.getMaxX(), vertRect.getMaxY());
+
+        // Bottom-right.
+        f->glTexCoord2f(texRect.getMaxX(), texRect.getMinY());
+        f->glVertex2f(vertRect.getMaxX(), vertRect.getMinY());
+    }
 
     f->glEnd();
 
