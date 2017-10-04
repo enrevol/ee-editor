@@ -38,6 +38,27 @@ void Self::paintGL() {
     auto texture = textureCache->getTextureForKey(imagePath_.toStdString());
     Q_ASSERT(texture != nullptr);
 
+    auto width = size().width();
+    auto height = size().height();
+
+    auto imageWidth = texture->getContentSize().width;
+    auto imageHeight = texture->getContentSize().height;
+
+    auto scaleX = width / imageWidth;
+    auto scaleY = height / imageHeight;
+
+    // Keep aspect ratio.
+    auto scale = std::min(scaleX, scaleY);
+    imageWidth *= scale;
+    imageHeight *= scale;
+
+    auto paddingX = (width - imageWidth) / 2;
+    auto paddingY = (height - imageHeight) / 2;
+
+    f->glMatrixMode(GL_PROJECTION);
+    f->glLoadIdentity();
+    f->glOrtho(0, width, height, 0, 0, 1);
+
     f->glEnable(GL_TEXTURE_2D);
     f->glEnable(GL_DEPTH_TEST);
     f->glEnable(GL_BLEND);
@@ -45,23 +66,21 @@ void Self::paintGL() {
 
     f->glBegin(GL_QUADS);
 
-    auto invert = [](float y) { return 1.0f - y; };
-
     // Bottom-left.
-    f->glTexCoord2f(0, invert(0));
-    f->glVertex2f(-1, -1);
+    f->glTexCoord2f(0, 0);
+    f->glVertex2f(paddingX, paddingY);
 
     // Top-left.
-    f->glTexCoord2f(0, invert(1));
-    f->glVertex2f(-1, 1);
+    f->glTexCoord2f(0, 1);
+    f->glVertex2f(paddingX, imageHeight + paddingY);
 
     // Top-right.
-    f->glTexCoord2f(1, invert(1));
-    f->glVertex2f(1, 1);
+    f->glTexCoord2f(1, 1);
+    f->glVertex2f(paddingX + imageWidth, paddingY + imageHeight);
 
     // Bottom-right.
-    f->glTexCoord2f(1, invert(0));
-    f->glVertex2f(1, -1);
+    f->glTexCoord2f(1, 0);
+    f->glVertex2f(paddingX + imageWidth, paddingY);
 
     f->glEnd();
 
@@ -78,8 +97,6 @@ void Self::paintGL() {
 void Self::resizeGL(int w, int h) {
     qDebug() << QString::asprintf("resize image view: width = %d height = %d",
                                   w, h);
-    auto f = context()->versionFunctions<QOpenGLFunctions_2_1>();
-    f->glViewport(0, 0, w, w);
 }
 
 void Self::setImagePath(const QString& path) {
