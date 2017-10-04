@@ -15,6 +15,7 @@ include(cocos/renderer/renderer.pri)
 include(cocos/ui/ui.pri)
 
 QT += opengl
+QT += xml
 
 TARGET = cocos2d
 TEMPLATE = lib
@@ -38,7 +39,8 @@ INCLUDEPATH += \
     external/tinydir \
     external/tinyxml2 \
     external/unzip \
-    external/xxhash
+    external/xxhash \
+    ..
 
 macx:INCLUDEPATH += \
     external/freetype2/include/mac/freetype2 \

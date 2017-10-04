@@ -1,6 +1,7 @@
 include(../libraries/cocos2d/cocos2d.pri)
 
 QT += opengl
+QT += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -20,11 +21,13 @@ INCLUDEPATH += \
 mac {
     LIBS += \
         -L$$OUT_PWD/../libraries/cocos2d -lcocos2d \
-        -L$$OUT_PWD/../libraries/parser -lparser
+        -L$$OUT_PWD/../libraries/parser -lparser \
+        -L$$OUT_PWD/../libraries/qtplist -lqtplist
 
     PRE_TARGETDEPS += \
         $$OUT_PWD/../libraries/cocos2d/libcocos2d.a \
-        $$OUT_PWD/../libraries/parser/libparser.a
+        $$OUT_PWD/../libraries/parser/libparser.a \
+        $$OUT_PWD/../libraries/qtplist/libqtplist.a
 }
 
 win32 {

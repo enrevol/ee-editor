@@ -14,13 +14,16 @@ CONFIG += c++1z
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SUBDIRS = \
+    qtplist \
     cocos2d \
     parser \
     editor
 
-editor.subdir = editor
+qtplist.subdir = libraries/qtplist
 cocos2d.subdir = libraries/cocos2d
 parser.subdir = libraries/parser
+editor.subdir = editor
 
+cocos2d.depends = qtplist
 parser.depends = cocos2d
 editor.depends = cocos2d parser

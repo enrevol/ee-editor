@@ -1,3 +1,6 @@
 [submodule "optional"]
 	path = libraries/optional
 	url = https://github.com/akrzemi1/Optional
+[submodule "libraries/qtplist"]
+	path = libraries/qtplist
+	url = https://github.com/reillywatson/qtplist
