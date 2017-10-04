@@ -170,6 +170,7 @@ QMimeData* Self::mimeData(const QList<QTreeWidgetItem*> items) const {
         components << item->text(0);
         item = item->parent();
     }
+    std::reverse(components.begin(), components.end());
     auto path = components.join(QDir::separator());
     auto data = new QMimeData();
     data->setData(mimeTypes().at(0), path.toUtf8());
