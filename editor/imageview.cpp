@@ -28,7 +28,7 @@ void Self::initializeGL() {
 
 void Self::paintGL() {
     auto f = context()->versionFunctions<QOpenGLFunctions_2_1>();
-    f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    f->glClear(GL_COLOR_BUFFER_BIT);
     if (imagePath_.isEmpty()) {
         return;
     }
@@ -59,9 +59,10 @@ void Self::paintGL() {
     f->glLoadIdentity();
     f->glOrtho(0, width, height, 0, 0, 1);
 
-    f->glEnable(GL_TEXTURE_2D);
-    f->glEnable(GL_DEPTH_TEST);
     f->glEnable(GL_BLEND);
+    f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    f->glEnable(GL_TEXTURE_2D);
     f->glBindTexture(GL_TEXTURE_2D, texture->getName());
 
     f->glBegin(GL_QUADS);
@@ -85,7 +86,6 @@ void Self::paintGL() {
     f->glEnd();
 
     f->glDisable(GL_TEXTURE_2D);
-    f->glDisable(GL_DEPTH_TEST);
     f->glDisable(GL_BLEND);
 
     GLenum error;
