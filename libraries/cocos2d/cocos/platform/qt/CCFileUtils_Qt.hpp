@@ -16,6 +16,20 @@ public:
     virtual bool isFileExistInternal(const std::string& path) const override;
 
     virtual bool isAbsolutePath(const std::string& path) const override;
+
+    virtual ValueMap getValueMapFromFile(const std::string& filename) override;
+
+    virtual ValueMap getValueMapFromData(const char* fileData,
+                                         int fileSize) override;
+
+    virtual ValueVector
+    getValueVectorFromFile(const std::string& filename) override;
+
+    virtual bool writeToFile(const ValueMap& dict,
+                             const std::string& fullPath) override;
+
+protected:
+    Value getValueFromData(const char* data, int size);
 };
 NS_CC_END
 

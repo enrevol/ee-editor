@@ -117,7 +117,9 @@ SOURCES += \
     inspectorselect.cpp \
     scale9spriteinspector.cpp \
     scale9spriteinspectorloader.cpp \
-    imageview.cpp
+    imageview.cpp \
+    spritesheet.cpp \
+    fileclassifier.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -175,7 +177,9 @@ HEADERS += \
     inspectorselect.hpp \
     scale9spriteinspector.hpp \
     scale9spriteinspectorloader.hpp \
-    imageview.hpp
+    imageview.hpp \
+    spritesheet.hpp \
+    fileclassifier.hpp
 
 FORMS += \
     mainwindow.ui \

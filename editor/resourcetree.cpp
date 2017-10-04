@@ -1,8 +1,13 @@
 #include <ciso646>
 
 #include "config.hpp"
+#include "fileclassifier.hpp"
 #include "filesystemwatcher.hpp"
 #include "resourcetree.hpp"
+#include "spritesheet.hpp"
+
+#include <2d/CCSpriteFrameCache.h>
+#include <platform/CCFileUtils.h>
 
 #include <QDebug>
 #include <QHeaderView>
@@ -12,7 +17,18 @@
 namespace ee {
 namespace role {
 constexpr auto full_file_path = 123456;
+
 } // namespace role
+
+namespace {
+void setFullFilePath(QTreeWidgetItem* item, const QString& path) {
+    item->setData(0, role::full_file_path, path);
+}
+
+QString getFullFilePath(const QTreeWidgetItem* item) {
+    return item->data(0, role::full_file_path).toString();
+}
+} // namespace
 
 using Self = ResourceTree;
 
@@ -27,21 +43,32 @@ Self::ResourceTree(QWidget* parent)
             // FIXME.
             return;
         }
-        auto filePath = item->data(0, role::full_file_path).toString();
+        auto filePath = getFullFilePath(item);
         qDebug() << "select item: " << filePath;
-        fileSelected(filePath);
+        FileClassifier classifier(filePath);
+        Q_EMIT noneSelected();
+        if (classifier.isImage()) {
+            Q_EMIT imageSelected(filePath);
+            return;
+        }
+        auto parent = item->parent();
+        if (parent != nullptr) {
+            auto parentPath = getFullFilePath(parent);
+            if (FileClassifier(parentPath).isSpriteSheet()) {
+                Q_EMIT spriteFrameSelected(item->text(0));
+                return;
+            }
+        }
     });
 
     connect(this, &Self::itemDoubleClicked,
             [this](QTreeWidgetItem* item, int column) {
                 Q_UNUSED(column);
-                auto filePath = item->data(0, role::full_file_path).toString();
+                auto filePath = getFullFilePath(item);
                 QFileInfo fileInfo(filePath);
-                if (fileInfo.suffix() == "eeei" ||
-                    fileInfo.suffix() == "json") {
-                    // Interface files.
-                    qDebug() << "open interface: " << filePath;
-                    Config::getInstance().loadInterface(fileInfo);
+                FileClassifier classifier(filePath);
+                if (classifier.isInterface()) {
+                    Q_EMIT interfaceSelected(filePath);
                 }
             });
 }
@@ -66,13 +93,26 @@ void Self::updateResourceDirectories() {
 
 void Self::updateResourcePath(QTreeWidgetItem* item, const QFileInfo& info) {
     item->setText(0, info.fileName());
-    item->setData(0, role::full_file_path, info.absoluteFilePath());
+    auto fullPath = info.absoluteFilePath();
+    setFullFilePath(item, fullPath);
     if (info.isDir()) {
         QDir dir(info.absoluteFilePath());
         for (const QFileInfo& entry : dir.entryInfoList(
                  QDir::Filter::NoDotAndDotDot | QDir::Filter::AllEntries)) {
             auto childItem = new QTreeWidgetItem(item);
             updateResourcePath(childItem, entry);
+        }
+    } else {
+        FileClassifier classifier(fullPath);
+        if (classifier.isSpriteSheet()) {
+            auto path = getPath(item);
+            auto fileUtils = cocos2d::FileUtils::getInstance();
+            auto content = fileUtils->getStringFromFile(path.toStdString());
+            SpriteSheet sheet(QString::fromStdString(content));
+            for (auto&& frame : sheet.getFrames()) {
+                auto childItem = new QTreeWidgetItem(item);
+                childItem->setText(0, frame);
+            }
         }
     }
 }
@@ -82,7 +122,7 @@ QSet<QString> Self::saveExpandedItems() {
     for (QTreeWidgetItemIterator iter(this); *iter != nullptr; ++iter) {
         auto&& item = *iter;
         if (isItemExpanded(item)) {
-            auto filePath = item->data(0, role::full_file_path).toString();
+            auto filePath = getFullFilePath(item);
             expandedItems.insert(filePath);
         }
     }
@@ -162,16 +202,25 @@ void Self::restoreSelectedItem(QStack<QString> names) {
     setCurrentItem(currentItem);
 }
 
-QMimeData* Self::mimeData(const QList<QTreeWidgetItem*> items) const {
-    Q_ASSERT(items.size() > 0);
-    auto item = items.front();
+QStringList Self::getPathComponents(const QTreeWidgetItem* item) const {
     QStringList components;
     while (item->parent() != nullptr) {
         components << item->text(0);
         item = item->parent();
     }
     std::reverse(components.begin(), components.end());
-    auto path = components.join(QDir::separator());
+    return components;
+}
+
+QString Self::getPath(const QTreeWidgetItem* item) const {
+    auto components = getPathComponents(item);
+    return components.join(QDir ::separator());
+}
+
+QMimeData* Self::mimeData(const QList<QTreeWidgetItem*> items) const {
+    Q_ASSERT(items.size() > 0);
+    auto item = items.front();
+    auto path = getPath(item);
     auto data = new QMimeData();
     data->setData(mimeTypes().at(0), path.toUtf8());
     return data;

@@ -103,12 +103,12 @@ Self::MainWindow(QWidget* parent)
     connect(&Config::getInstance(), &Config::projectLoaded,
             [this](const QFileInfo& path) {
                 Q_UNUSED(path);
+                ProjectResources::getInstance().addResources(
+                    Config::getInstance().getProjectSettings());
+
                 ui_->actionProject_Settings->setEnabled(true);
                 ui_->actionInterface_File->setEnabled(true);
                 ui_->resourceTree->setListenToFileChangeEvents(true);
-
-                ProjectResources::getInstance().addResources(
-                    Config::getInstance().getProjectSettings());
             });
 
     connect(&Config::getInstance(), &Config::interfaceLoaded,
@@ -135,9 +135,24 @@ Self::MainWindow(QWidget* parent)
         }
     });
 
-    connect(
-        ui_->resourceTree, &ResourceTree::fileSelected,
-        [this](const QString& path) { ui_->imageView->setImagePath(path); });
+    connect(ui_->resourceTree, &ResourceTree::imageSelected,
+            [this](const QString& imagePath) {
+                ui_->imageView->setImagePath(imagePath);
+            });
+
+    connect(ui_->resourceTree, &ResourceTree::spriteFrameSelected,
+            [this](const QString& spriteFrameName) {
+                ui_->imageView->setSpriteFrameName(spriteFrameName);
+            });
+
+    connect(ui_->resourceTree, &ResourceTree::noneSelected,
+            [this] { ui_->imageView->clearDisplay(); });
+
+    connect(ui_->resourceTree, &ResourceTree::interfaceSelected,
+            [](const QString& path) {
+                qDebug() << "open interface: " << path;
+                Config::getInstance().loadInterface(QFileInfo(path));
+            });
 
     connect(ui_->straightAlphaButton, &QPushButton::clicked,
             [this] { ui_->imageView->setBlendStraightAlpha(); });

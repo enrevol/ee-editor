@@ -1,7 +1,9 @@
 #include "projectresources.hpp"
+#include "fileclassifier.hpp"
 #include "projectsettings.hpp"
 #include "utils.hpp"
 
+#include <2d/CCSpriteFrameCache.h>
 #include <base/CCDirector.h>
 #include <platform/CCFileUtils.h>
 #include <renderer/CCTextureCache.h>
@@ -41,14 +43,21 @@ void Self::removeResources(const ProjectSettings& settings) {
     auto&& directories = settings.getResourceDirectories();
     for (auto&& directory : directories) {
         listFiles(directory, [](const QFileInfo& info) {
-            if (not info.isDir() &&
-                (info.suffix() == "png" || info.suffix() == "pvr" ||
-                 info.suffix() == "ccz")) {
-                auto cache =
-                    cocos2d::Director::getInstance()->getTextureCache();
-                auto path = info.absoluteFilePath();
+            if (info.isDir()) {
+                return;
+            }
+            FileClassifier classifier(info);
+            auto path = info.absoluteFilePath();
+            if (classifier.isImage()) {
+                auto director = cocos2d::Director::getInstance();
+                auto cache = director->getTextureCache();
                 qDebug() << "Remove image: " << path;
                 cache->removeTextureForKey(path.toStdString());
+            }
+            if (classifier.isSpriteSheet()) {
+                auto cache = cocos2d::SpriteFrameCache::getInstance();
+                qDebug() << "Remove sheet: " << path;
+                cache->removeSpriteFramesFromFile(path.toStdString());
             }
         });
     }
@@ -67,14 +76,21 @@ void Self::addResources(const ProjectSettings& settings) {
     for (auto&& directory : directories) {
         searchPaths.push_back(directory.absolutePath().toStdString());
         listFiles(directory, [](const QFileInfo& info) {
-            if (not info.isDir() &&
-                (info.suffix() == "png" || info.suffix() == "pvr" ||
-                 info.suffix() == "ccz")) {
-                auto cache =
-                    cocos2d::Director::getInstance()->getTextureCache();
-                auto path = info.absoluteFilePath();
+            if (info.isDir()) {
+                return;
+            }
+            FileClassifier classifier(info);
+            auto path = info.absoluteFilePath();
+            if (classifier.isImage()) {
+                auto director = cocos2d::Director::getInstance();
+                auto cache = director->getTextureCache();
                 qDebug() << "Add image: " << path;
                 cache->addImage(path.toStdString());
+            }
+            if (classifier.isSpriteSheet()) {
+                auto cache = cocos2d::SpriteFrameCache::getInstance();
+                qDebug() << "Add sheet: " << path;
+                cache->addSpriteFramesWithFile(path.toStdString());
             }
         });
     }
