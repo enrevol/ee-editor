@@ -1,10 +1,6 @@
 #ifndef EE_EDITOR_IMAGE_VIEW_HPP
 #define EE_EDITOR_IMAGE_VIEW_HPP
 
-#include <base/ccTypes.h>
-#include <platform/CCGL.h>
-#include <renderer/CCTrianglesCommand.h>
-
 #include <QOpenGLWidget>
 
 namespace cocos2d {
@@ -31,13 +27,6 @@ protected:
 
 private:
     QString imagePath_;
-
-    cocos2d::TrianglesCommand command_;
-    cocos2d::V3F_C4B_T2F vert_;
-    GLushort indices_[100];
-    GLuint buffers_[2];
-
-    cocos2d::Sprite* sprite_;
 };
 } // namespace ee
 
