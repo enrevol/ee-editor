@@ -11,7 +11,9 @@ namespace ee {
 using Self = ImageView;
 
 Self::ImageView(QWidget* parent)
-    : Super(parent) {}
+    : Super(parent) {
+    setBlendPremultipliedAlpha();
+}
 
 Self::~ImageView() {}
 
@@ -60,7 +62,7 @@ void Self::paintGL() {
     f->glOrtho(0, width, height, 0, 0, 1);
 
     f->glEnable(GL_BLEND);
-    f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    f->glBlendFunc(blendSrc_, blendDst_);
 
     f->glEnable(GL_TEXTURE_2D);
     f->glBindTexture(GL_TEXTURE_2D, texture->getName());
@@ -109,5 +111,20 @@ void Self::setImagePath(const QString& path) {
         imagePath_ = path;
     }
     update();
+}
+
+void Self::setBlendFunc(GLenum src, GLenum dst) {
+    qDebug() << "Image view blend changed to: " << src << ' ' << dst;
+    blendSrc_ = src;
+    blendDst_ = dst;
+    update();
+}
+
+void Self::setBlendStraightAlpha() {
+    setBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void Self::setBlendPremultipliedAlpha() {
+    setBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 }
 } // namespace ee

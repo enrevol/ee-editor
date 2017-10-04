@@ -139,6 +139,12 @@ Self::MainWindow(QWidget* parent)
         ui_->resourceTree, &ResourceTree::fileSelected,
         [this](const QString& path) { ui_->imageView->setImagePath(path); });
 
+    connect(ui_->straightAlphaButton, &QPushButton::clicked,
+            [this] { ui_->imageView->setBlendStraightAlpha(); });
+
+    connect(ui_->premultipliedAlphaButton, &QPushButton::clicked,
+            [this] { ui_->imageView->setBlendPremultipliedAlpha(); });
+
     connect(ui_->addNodeButton, &QPushButton::clicked, [this] {
         auto scene = dynamic_cast<RootScene*>(
             cocos2d::Director::getInstance()->getRunningScene());

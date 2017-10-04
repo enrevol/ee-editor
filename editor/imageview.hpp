@@ -3,10 +3,6 @@
 
 #include <QOpenGLWidget>
 
-namespace cocos2d {
-class Sprite;
-} // namespace cocos2d
-
 namespace ee {
 class ImageView : public QOpenGLWidget {
 private:
@@ -19,6 +15,9 @@ public:
     virtual ~ImageView() override;
 
     void setImagePath(const QString& path);
+    void setBlendFunc(GLenum src, GLenum dst);
+    void setBlendStraightAlpha();
+    void setBlendPremultipliedAlpha();
 
 protected:
     virtual void initializeGL() override;
@@ -27,6 +26,8 @@ protected:
 
 private:
     QString imagePath_;
+    GLenum blendSrc_;
+    GLenum blendDst_;
 };
 } // namespace ee
 
