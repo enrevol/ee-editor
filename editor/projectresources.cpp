@@ -41,7 +41,9 @@ void Self::removeResources(const ProjectSettings& settings) {
     auto&& directories = settings.getResourceDirectories();
     for (auto&& directory : directories) {
         listFiles(directory, [](const QFileInfo& info) {
-            if (not info.isDir() && info.suffix() == "png") {
+            if (not info.isDir() &&
+                (info.suffix() == "png" || info.suffix() == "pvr" ||
+                 info.suffix() == "ccz")) {
                 auto cache =
                     cocos2d::Director::getInstance()->getTextureCache();
                 auto path = info.absoluteFilePath();
@@ -65,7 +67,9 @@ void Self::addResources(const ProjectSettings& settings) {
     for (auto&& directory : directories) {
         searchPaths.push_back(directory.absolutePath().toStdString());
         listFiles(directory, [](const QFileInfo& info) {
-            if (not info.isDir() && info.suffix() == "png") {
+            if (not info.isDir() &&
+                (info.suffix() == "png" || info.suffix() == "pvr" ||
+                 info.suffix() == "ccz")) {
                 auto cache =
                     cocos2d::Director::getInstance()->getTextureCache();
                 auto path = info.absoluteFilePath();

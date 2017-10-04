@@ -81,7 +81,6 @@ SOURCES += \
     interfacesettings.cpp \
     filesystemwatcher.cpp \
     resourcetree.cpp \
-    imageview.cpp \
     scenetreemodel.cpp \
     scenetreeitem.cpp \
     nodehighlighter.cpp \
@@ -114,7 +113,8 @@ SOURCES += \
     inspectorblend.cpp \
     inspectorselect.cpp \
     scale9spriteinspector.cpp \
-    scale9spriteinspectorloader.cpp
+    scale9spriteinspectorloader.cpp \
+    imageview.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -139,7 +139,6 @@ HEADERS += \
     interfacesettings.hpp \
     filesystemwatcher.hpp \
     resourcetree.hpp \
-    imageview.hpp \
     scenetreemodel.hpp \
     scenetreeitem.hpp \
     nodehighlighter.hpp \
@@ -172,7 +171,8 @@ HEADERS += \
     inspectorblend.hpp \
     inspectorselect.hpp \
     scale9spriteinspector.hpp \
-    scale9spriteinspectorloader.hpp
+    scale9spriteinspectorloader.hpp \
+    imageview.hpp
 
 FORMS += \
     mainwindow.ui \

@@ -123,9 +123,9 @@
              <height>0</height>
             </size>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+           <layout class="QVBoxLayout" name="verticalLayout">
             <property name="spacing">
-             <number>3</number>
+             <number>0</number>
             </property>
             <property name="leftMargin">
              <number>0</number>
@@ -140,26 +140,29 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="ee::ImageView" name="imageView">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>200</height>
-               </size>
+             <widget class="QSplitter" name="splitter_4">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
               </property>
-              <property name="text">
-               <string/>
+              <property name="handleWidth">
+               <number>10</number>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="ee::ResourceTree" name="resourceTree">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
+              <widget class="ee::ImageView" name="imageView">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>200</height>
+                </size>
+               </property>
+              </widget>
+              <widget class="ee::ResourceTree" name="resourceTree">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
              </widget>
             </item>
            </layout>
@@ -624,11 +627,6 @@
    <header>resourcetree.hpp</header>
   </customwidget>
   <customwidget>
-   <class>ee::ImageView</class>
-   <extends>QLabel</extends>
-   <header>imageview.hpp</header>
-  </customwidget>
-  <customwidget>
    <class>ee::SceneTree</class>
    <extends>QTreeView</extends>
    <header>scenetree.hpp</header>
@@ -638,6 +636,11 @@
    <extends>QWidget</extends>
    <header>inspectorlistwidget.hpp</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ee::ImageView</class>
+   <extends>QOpenGLWidget</extends>
+   <header>imageview.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>
