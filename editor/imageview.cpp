@@ -139,38 +139,31 @@ void Self::displayTexture(const cocos2d::Texture2D* texture,
                            paddingY - offset.y + std::abs(offset.y),
                            rect.size.width, rect.size.height);
 
+    auto tex0 = [&] { f->glTexCoord2f(texRect.getMinX(), texRect.getMinY()); };
+    auto tex1 = [&] { f->glTexCoord2f(texRect.getMinX(), texRect.getMaxY()); };
+    auto tex2 = [&] { f->glTexCoord2f(texRect.getMaxX(), texRect.getMaxY()); };
+    auto tex3 = [&] { f->glTexCoord2f(texRect.getMaxX(), texRect.getMinY()); };
+
+    auto vert0 = [&] { f->glVertex2f(vertRect.getMinX(), vertRect.getMinY()); };
+    auto vert1 = [&] { f->glVertex2f(vertRect.getMinX(), vertRect.getMaxY()); };
+    auto vert2 = [&] { f->glVertex2f(vertRect.getMaxX(), vertRect.getMaxY()); };
+    auto vert3 = [&] { f->glVertex2f(vertRect.getMaxX(), vertRect.getMinY()); };
+
+    auto draw = [](auto&& tex, auto&& vert) {
+        tex();
+        vert();
+    };
+
     if (rotated) {
-        // Bottom-left.
-        f->glTexCoord2f(texRect.getMaxX(), texRect.getMinY());
-        f->glVertex2f(vertRect.getMinX(), vertRect.getMinY());
-
-        // Top-left.
-        f->glTexCoord2f(texRect.getMinX(), texRect.getMinY());
-        f->glVertex2f(vertRect.getMinX(), vertRect.getMaxY());
-
-        // Top-right.
-        f->glTexCoord2f(texRect.getMinX(), texRect.getMaxY());
-        f->glVertex2f(vertRect.getMaxX(), vertRect.getMaxY());
-
-        // Bottom-right.
-        f->glTexCoord2f(texRect.getMaxX(), texRect.getMaxY());
-        f->glVertex2f(vertRect.getMaxX(), vertRect.getMinY());
+        draw(tex3, vert0);
+        draw(tex0, vert1);
+        draw(tex1, vert2);
+        draw(tex2, vert3);
     } else {
-        // Bottom-left.
-        f->glTexCoord2f(texRect.getMinX(), texRect.getMinY());
-        f->glVertex2f(vertRect.getMinX(), vertRect.getMinY());
-
-        // Top-left.
-        f->glTexCoord2f(texRect.getMinX(), texRect.getMaxY());
-        f->glVertex2f(vertRect.getMinX(), vertRect.getMaxY());
-
-        // Top-right.
-        f->glTexCoord2f(texRect.getMaxX(), texRect.getMaxY());
-        f->glVertex2f(vertRect.getMaxX(), vertRect.getMaxY());
-
-        // Bottom-right.
-        f->glTexCoord2f(texRect.getMaxX(), texRect.getMinY());
-        f->glVertex2f(vertRect.getMaxX(), vertRect.getMinY());
+        draw(tex0, vert0);
+        draw(tex1, vert1);
+        draw(tex2, vert2);
+        draw(tex3, vert3);
     }
 
     f->glEnd();
