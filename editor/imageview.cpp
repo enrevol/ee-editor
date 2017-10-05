@@ -69,7 +69,7 @@ void Self::displayImage(const QString& imagePath) {
     cocos2d::Rect rect;
     rect.origin = cocos2d::Point::ZERO;
     rect.size = texture->getContentSize();
-    displayTexture(texture, rect, false);
+    displayTexture(texture, rect, cocos2d::Vec2::ZERO, false);
 }
 
 void Self::displaySpriteFrame(const QString& spriteFrameName) {
@@ -77,16 +77,19 @@ void Self::displaySpriteFrame(const QString& spriteFrameName) {
     auto spriteFrame =
         cache->getSpriteFrameByName(spriteFrameName.toStdString());
     auto texture = spriteFrame->getTexture();
-    auto rect = spriteFrame->getRect();
-    displayTexture(texture, rect, spriteFrame->isRotated());
+    auto&& rect = spriteFrame->getRect();
+    auto&& offset = spriteFrame->getOffset();
+    auto rotated = spriteFrame->isRotated();
+    displayTexture(texture, rect, offset, rotated);
 }
 
 void Self::displayTexture(const cocos2d::Texture2D* texture,
-                          const cocos2d::Rect& rect, bool rotated) {
+                          const cocos2d::Rect& rect,
+                          const cocos2d::Vec2& offset, bool rotated) {
     auto f = getGLFunctions(this);
 
-    auto width = size().width();
-    auto height = size().height();
+    auto screenWidth = size().width();
+    auto screenHeight = size().height();
 
     auto textureWidth = texture->getContentSize().width;
     auto textureHeight = texture->getContentSize().height;
@@ -97,20 +100,23 @@ void Self::displayTexture(const cocos2d::Texture2D* texture,
         std::swap(frameRect.size.width, frameRect.size.height);
     }
 
-    auto scaleX = width / rect.size.width;
-    auto scaleY = height / rect.size.height;
+    auto viewWidth = rect.size.width + std::abs(offset.x) * 2;
+    auto viewHeight = rect.size.height + std::abs(offset.y) * 2;
+
+    auto scaleX = screenWidth / viewWidth;
+    auto scaleY = screenHeight / viewHeight;
 
     // Keep aspect ratio.
     auto scale = std::min(scaleX, scaleY);
-    width /= scale;
-    height /= scale;
+    screenWidth /= scale;
+    screenHeight /= scale;
 
-    auto paddingX = (width - rect.size.width) / 2;
-    auto paddingY = (height - rect.size.height) / 2;
+    auto paddingX = (screenWidth - viewWidth) / 2;
+    auto paddingY = (screenHeight - viewHeight) / 2;
 
     f->glMatrixMode(GL_PROJECTION);
     f->glLoadIdentity();
-    f->glOrtho(0, width, height, 0, 0, 1);
+    f->glOrtho(0, screenWidth, screenHeight, 0, 0, 1);
 
     f->glEnable(GL_BLEND);
     f->glBlendFunc(blendSrc_, blendDst_);
@@ -128,8 +134,10 @@ void Self::displayTexture(const cocos2d::Texture2D* texture,
                           frameRect.size.width / textureWidth,
                           frameRect.size.height / textureHeight);
 
-    cocos2d::Rect vertRect(paddingX, paddingY, rect.size.width,
-                           rect.size.height);
+    // y-axis is reversed (texture coordinate): from top to bottom.
+    cocos2d::Rect vertRect(paddingX + offset.x + std::abs(offset.x),
+                           paddingY - offset.y + std::abs(offset.y),
+                           rect.size.width, rect.size.height);
 
     if (rotated) {
         // Bottom-left.

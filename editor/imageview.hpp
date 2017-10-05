@@ -6,6 +6,7 @@
 namespace cocos2d {
 class Texture2D;
 class Rect;
+class Vec2;
 } // namespace cocos2d
 
 namespace ee {
@@ -35,7 +36,8 @@ protected:
     void displayImage(const QString& imagePath);
     void displaySpriteFrame(const QString& spriteFrameName);
     void displayTexture(const cocos2d::Texture2D* texture,
-                        const cocos2d::Rect& rect, bool rotated);
+                        const cocos2d::Rect& rect, const cocos2d::Vec2& offset,
+                        bool rotated);
 
 private:
     enum class Display { None, Image, SpriteFrame };
