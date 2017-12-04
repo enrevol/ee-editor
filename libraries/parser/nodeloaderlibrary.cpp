@@ -21,15 +21,11 @@ Self::NodeLoaderLibrary(const Self& other) {
 }
 
 void Self::addDefaultLoaders() {
-    addLoader(NodeLoader::create());
-    addLoader(Scale9SpriteLoader::create());
-    addLoader(SpriteLoader::create());
-    addLoader(WidgetLoader::create());
-    addLoader(LayerColorLoader::create());
-}
-
-cocos2d::Node* Self::createNode(const std::string& name) const {
-    return getLoader(name)->createNode();
+    addLoader(std::make_unique<NodeLoader>());
+    addLoader(std::make_unique<Scale9SpriteLoader>());
+    addLoader(std::make_unique<SpriteLoader>());
+    addLoader(std::make_unique<WidgetLoader>());
+    addLoader(std::make_unique<LayerColorLoader>());
 }
 
 bool Self::hasLoader(const std::string& name) const {

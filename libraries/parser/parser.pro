@@ -23,25 +23,14 @@ HEADERS += \
     nodegraph.hpp \
     spriteloader.hpp \
     nodeinfo.hpp \
-    nodeinforeader.hpp \
-    nodeinfowriter.hpp \
-    propertyreader.hpp \
-    propertywriter.hpp \
     layercolorloader.hpp \
     graphreader.hpp \
     widgetloader.hpp \
     layoutloader.hpp \
     property.hpp \
-    propertybool.hpp \
-    propertyint.hpp \
-    propertyfloat.hpp \
-    propertystring.hpp \
-    propertypoint.hpp \
-    propertysize.hpp \
-    propertycolor.hpp \
-    propertyrect.hpp \
-    propertyblend.hpp \
-    scale9spriteloader.hpp
+    scale9spriteloader.hpp \
+    value.hpp \
+    propertytraits.hpp
 
 SOURCES += \
     nodeloader.cpp \
@@ -50,21 +39,10 @@ SOURCES += \
     nodegraph.cpp \
     spriteloader.cpp \
     nodeinfo.cpp \
-    nodeinforeader.cpp \
-    nodeinfowriter.cpp \
-    propertyreader.cpp \
-    propertywriter.cpp \
     layercolorloader.cpp \
     graphreader.cpp \
     widgetloader.cpp \
     layoutloader.cpp \
-    propertybool.cpp \
-    propertyint.cpp \
-    propertyfloat.cpp \
-    propertystring.cpp \
-    propertypoint.cpp \
-    propertysize.cpp \
-    propertycolor.cpp \
-    propertyrect.cpp \
-    propertyblend.cpp \
-    scale9spriteloader.cpp
+    scale9spriteloader.cpp \
+    value.cpp \
+    propertytraits.cpp

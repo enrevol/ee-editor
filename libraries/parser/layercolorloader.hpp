@@ -3,32 +3,34 @@
 
 #include "nodeloader.hpp"
 
+namespace cocos2d {
+class LayerColor;
+} // namespace cocos2d
+
 namespace ee {
 class LayerColorLoader : public NodeLoader {
 public:
 private:
     using Self = LayerColorLoader;
     using Super = NodeLoader;
+    using Target = cocos2d::LayerColor;
 
 public:
     static const std::string ClassName;
 
-    static NodeLoaderPtr create();
+    /// Constructs a sprite loader.
+    LayerColorLoader();
 
     virtual ~LayerColorLoader() override;
 
     virtual cocos2d::Node* createNode() const override;
 
+    virtual void loadProperties(cocos2d::Node* node,
+                                const PropertyHandler& handler) const override;
+
     virtual std::string getClassName() const override;
 
 protected:
-    /// Constructs a sprite loader.
-    LayerColorLoader();
-
-    virtual void addReadHandlers(PropertyHandler& handler) override;
-    virtual void addWriteHandlers(PropertyHandler& handler) override;
-    virtual void addDefaultProperties(PropertyWriter& writer) override;
-
     virtual Self* cloneRaw() const override;
 };
 } // namespace ee

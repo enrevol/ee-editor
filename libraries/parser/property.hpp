@@ -3,8 +3,16 @@
 
 #include <functional>
 
+#include "value.hpp"
+
 namespace cocos2d {
+struct BlendFunc;
+struct Color3B;
 class Node;
+class Vec2;
+using Point = Vec2;
+class Rect;
+class Size;
 } // namespace cocos2d
 
 namespace ee {
@@ -12,35 +20,73 @@ class PropertyHandler;
 class PropertyReader;
 class PropertyWriter;
 
-namespace detail {
-class PropertyBase {};
-} // namespace detail
+/// SFINAE whether the specified class is a property.
+template <class T>
+struct IsProperty;
 
-template <class T> class Property : detail::PropertyBase {
+/// A node property.
+template <class TargetT, class ValueT>
+class Property {
 public:
-    using Value = T;
-    using ReadHandler = std::function<Value(const cocos2d::Node* node)>;
-    using WriteHandler =
-        std::function<bool(cocos2d::Node* node, const Value& value)>;
+    using Target = TargetT;
+    using Value = ValueT;
 
-    virtual ~Property() = default;
+    using Reader = std::function<Value(const Target* node)>;
+    using Writer = std::function<void(Target* node, const Value& value)>;
 
-    virtual bool addReadHandler(PropertyHandler& propertyHandler,
-                                const ReadHandler& handler) const = 0;
+    explicit Property(const std::string& name, const Reader& reader,
+                      const Writer& writer)
+        : name_(name)
+        , reader_(reader)
+        , writer_(writer) {}
 
-    virtual bool addWriteHandler(PropertyHandler& propertyHandler,
-                                 const WriteHandler& handler) const = 0;
+    const std::string& getName() const { return name_; }
 
-    virtual Value get(const PropertyReader& reader,
-                      const Value& defaultValue) const = 0;
+    Value read(const Target* node) const { return reader_(node); }
 
-    virtual void set(PropertyWriter& writer, const Value& value) const = 0;
+    void write(Target* node, const Value& value) const { writer_(node, value); }
 
-    virtual bool add(PropertyWriter& writer, const Value& value) const = 0;
+private:
+    std::string name_;
+    Reader reader_;
+    Writer writer_;
 };
 
 template <class T>
-struct IsProperty : std::is_base_of<detail::PropertyBase, T> {};
+struct IsProperty : std::false_type {};
+
+template <class T, class U>
+struct IsProperty<Property<T, U>> : std::true_type {};
+
+template <class Target>
+using PropertyBool = Property<Target, bool>;
+
+template <class Target>
+using PropertyInt = Property<Target, int>;
+
+template <class Target>
+using PropertyFloat = Property<Target, float>;
+
+template <class Target>
+using PropertyString = Property<Target, std::string>;
+
+template <class Target, class Enum>
+using PropertyEnum = Property<Target, Enum>;
+
+template <class Target>
+using PropertyBlend = Property<Target, cocos2d::BlendFunc>;
+
+template <class Target>
+using PropertyColor3B = Property<Target, cocos2d::Color3B>;
+
+template <class Target>
+using PropertyPoint = Property<Target, cocos2d::Point>;
+
+template <class Target>
+using PropertyRect = Property<Target, cocos2d::Rect>;
+
+template <class Target>
+using PropertySize = Property<Target, cocos2d::Size>;
 } // namespace ee
 
 #endif // EE_PARSER_PROPERTY_HPP

@@ -5,142 +5,54 @@
 #include <string>
 
 #include "property.hpp"
-
-#include <base/CCValue.h>
+#include "propertytraits.hpp"
+#include "value.hpp"
 
 namespace ee {
-class PropertyHandler final {
+class PropertyHandler {
+private:
+    using Self = PropertyHandler;
+
 public:
-    template <class T>
-    using GenericReadHandler = std::function<T(const cocos2d::Node* node)>;
+    PropertyHandler();
 
-    template <class T>
-    using GenericWriteHandler =
-        std::function<bool(cocos2d::Node* node, T value)>;
+    const ValueMap& getProperties() const;
+    void setProperties(const ValueMap& properties);
+    void clearProperties();
 
-    using ReadHandler = GenericReadHandler<cocos2d::Value>;
-    using ReadBoolHandler = GenericReadHandler<bool>;
-    using ReadIntHandler = GenericReadHandler<int>;
-    using ReadFloatHandler = GenericReadHandler<float>;
-    using ReadStringHandler = GenericReadHandler<std::string>;
+    const Value& getProperty(const std::string& name) const;
+    void setProperty(const std::string& name, const Value& value);
 
-    using WriteHandler = GenericWriteHandler<const cocos2d::Value&>;
-    using WriteBoolHandler = GenericWriteHandler<bool>;
-    using WriteIntHandler = GenericWriteHandler<int>;
-    using WriteFloatHandler = GenericWriteHandler<float>;
-    using WriteStringHandler = GenericWriteHandler<const std::string&>;
-
-    PropertyHandler() = default;
-    ~PropertyHandler() = default;
-
-    /// Reads a bool property.
-    /// @param name The name of the property
-    /// @param defaultValue The default value if the property doesn't exist.
-    /// @return The property value.
-    bool readBoolProperty(const cocos2d::Node* node, const std::string& name,
-                          bool defaultValue = false) const;
-
-    /// Reads an int property.
-    /// @param name The name of the property
-    /// @param defaultValue The default value if the property doesn't exist.
-    /// @return The property value.
-    int readIntProperty(const cocos2d::Node* node, const std::string& name,
-                        int defaultValue = 0) const;
-
-    /// Reads a float property.
-    /// @param name The name of the property
-    /// @param defaultValue The default value if the property doesn't exist.
-    /// @return The property value.
-    float readFloatProperty(const cocos2d::Node* node, const std::string& name,
-                            float defaultValue = 0.0f) const;
-
-    /// Reads a string property.
-    /// @param name The name of the property
-    /// @param defaultValue The default value if the property doesn't exist.
-    /// @return The property value.
-    std::string
-    readStringProperty(const cocos2d::Node* node, const std::string& name,
-                       std::string defaultValue = std::string()) const;
-
-    /// Attempts to write a property.
-    /// @param name The name of the property.
-    /// @param value The value to write.
-    /// @return True if the property was written, false otherwise.
-    bool writeProperty(cocos2d::Node* node, const std::string& name,
-                       const cocos2d::Value& value) const;
-
-    bool addReadHandler(const std::string& name, const ReadHandler& handler);
-
-    bool addReadBoolHandler(const std::string name,
-                            const ReadBoolHandler& handler);
-
-    bool addReadIntHandler(const std::string name,
-                           const ReadIntHandler& handler);
-
-    bool addReadFloatHandler(const std::string name,
-                             const ReadFloatHandler& handler);
-
-    bool addReadStringHandler(const std::string name,
-                              const ReadStringHandler& handler);
-
-    bool addWriteHandler(const std::string& name, const WriteHandler& handler);
-
-    bool addWriteBoolHandler(const std::string& name,
-                             const WriteBoolHandler& handler);
-
-    bool addWriteIntHandler(const std::string& name,
-                            const WriteIntHandler& handler);
-
-    bool addWriteFloatHandler(const std::string& name,
-                              const WriteFloatHandler& handler);
-
-    bool addWriteStringHandler(const std::string& name,
-                               const WriteStringHandler& handler);
-
-    template <class Property, class Handler = typename Property::ReadHandler,
-              std::enable_if_t<IsProperty<Property>::value, int> = 0>
-    bool addReadHandler(const Property& property, const Handler& handler) {
-        return property.addReadHandler(*this, handler);
+    /// Reads a property value from the specified property handler.
+    /// @param name The property's name.
+    template <class Value>
+    Value getProperty(const std::string& name) const {
+        return PropertyTraits<Value>::getProperty(*this, name);
     }
 
-    template <class Property, class Handler = typename Property::WriteHandler,
-              std::enable_if_t<IsProperty<Property>::value, int> = 0>
-    bool addWriteHandler(const Property& property, const Handler& handler) {
-        return property.addWriteHandler(*this, handler);
+    /// Writes a property value to the specified property handler.
+    /// @param name The property's name.
+    template <class Value>
+    void setProperty(const std::string& name, const Value& value) {
+        PropertyTraits<Value>::setProperty(*this, name, value);
     }
 
-    template <class Node, class Property,
-              class Value = typename Property::Value,
-              class Handler = std::function<Value(const Node* node)>>
-    bool addReadHandler(const Property& property, const Handler& handler) {
-        return addReadHandler(property, [handler](const cocos2d::Node* node) {
-            auto v = dynamic_cast<const Node*>(node);
-            if (v == nullptr) {
-                CC_ASSERT(false);
-                return Value();
-            }
-            return handler(v);
-        });
+    template <class Target, class Value>
+    void loadProperty(const Property<Target, Value>& property,
+                      Target* node) const {
+        auto value = getProperty<Value>(property.getName());
+        property.write(node, value);
     }
 
-    template <
-        class Node, class Property, class Value = typename Property::Value,
-        class Handler = std::function<bool(Node* node, const Value& value)>>
-    bool addWriteHandler(const Property& property, const Handler& handler) {
-        return addWriteHandler(
-            property, [handler](cocos2d::Node* node, const Value& value) {
-                auto v = dynamic_cast<Node*>(node);
-                if (v == nullptr) {
-                    CC_ASSERT(false);
-                    return false;
-                }
-                return handler(v, value);
-            });
+    template <class Target, class Value>
+    void storeProperty(const Property<Target, Value>& property,
+                       const Target* node) {
+        auto value = property.read(node);
+        setProperty<Value>(property.getName(), value);
     }
 
 private:
-    std::unordered_map<std::string, ReadHandler> readHandlers_;
-    std::unordered_map<std::string, WriteHandler> writeHandlers_;
+    ValueMap properties_;
 };
 } // namespace ee
 

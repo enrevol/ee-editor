@@ -2,8 +2,6 @@
 
 #include "nodegraph.hpp"
 #include "propertyhandler.hpp"
-#include "propertyreader.hpp"
-#include "propertywriter.hpp"
 
 namespace ee {
 namespace key {
@@ -18,55 +16,49 @@ using Self = NodeGraph;
 
 Self::NodeGraph() {}
 
-Self::NodeGraph(const cocos2d::ValueMap& dict) {
+Self::NodeGraph(const ValueMap& dict) {
     setDictionary(dict);
 }
 
 Self::~NodeGraph() {}
 
-void Self::setDictionary(const cocos2d::ValueMap& dict) {
+void Self::setDictionary(const ValueMap& dict) {
     children_.clear();
-    properties_.clear();
+    propertyHandler_.clearProperties();
     if (dict.count(key::children)) {
-        auto&& children = dict.at(key::children).asValueVector();
+        auto&& children = dict.at(key::children).getList();
         for (auto&& child : children) {
-            children_.emplace_back(child.asValueMap());
+            children_.emplace_back(child.getMap());
         }
     }
     if (dict.count(key::properties)) {
-        auto&& properties = dict.at(key::properties).asValueMap();
-        properties_ = properties;
+        auto&& properties = dict.at(key::properties).getMap();
+        propertyHandler_.setProperties(properties);
     }
 }
 
-const cocos2d::ValueMap& Self::getProperties() const {
-    return properties_;
-}
-
-PropertyReader Self::getPropertyReader() const {
-    return PropertyReader(properties_);
-}
-
-PropertyWriter Self::getPropertyWriter() {
-    return PropertyWriter(properties_);
+const PropertyHandler& Self::getPropertyHandler() const {
+    return propertyHandler_;
 }
 
 std::string Self::getBaseClass() const {
-    return getPropertyReader().getStringProperty(key::base_class);
+    return getPropertyHandler().getProperty(key::base_class).getString();
 }
 
 std::string Self::getCustomClass() const {
-    return getPropertyReader().getStringProperty(key::custom_class, "");
+    return getPropertyHandler().getProperty(key::custom_class).getString();
 }
 
 std::string Self::getDisplayName() const {
-    auto value = getPropertyReader().getStringProperty(key::display_name, "");
+    auto value =
+        getPropertyHandler().getProperty(key::display_name).getString();
     if (not value.empty()) {
         return value;
     }
     return getBaseClass();
 }
 
+/*
 void Self::setBaseClass(const std::string& name) {
     getPropertyWriter().setProperty(key::base_class, name);
 }
@@ -78,6 +70,7 @@ void Self::setCustomClass(const std::string& name) {
 void Self::setDisplayName(const std::string& name) {
     getPropertyWriter().setProperty(key::display_name, name);
 }
+*/
 
 Self& Self::getChild(std::size_t index) {
     return children_.at(index);
@@ -99,11 +92,11 @@ void Self::addChild(const Self& child) {
     children_.push_back(child);
 }
 
-cocos2d::ValueMap Self::toDict() const {
-    cocos2d::ValueMap dict;
-    dict[key::properties] = properties_;
+ValueMap Self::toDict() const {
+    ValueMap dict;
+    dict[key::properties] = propertyHandler_.getProperties();
 
-    cocos2d::ValueVector children;
+    ValueList children;
     for (auto&& child : getChildren()) {
         children.emplace_back(child.toDict());
     }

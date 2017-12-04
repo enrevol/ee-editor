@@ -20,11 +20,11 @@ public:
     NodeLoaderLibrary();
     ~NodeLoaderLibrary();
 
+    /// Copy constructor.
     NodeLoaderLibrary(const Self& other);
 
+    /// Adds default node loaders.
     void addDefaultLoaders();
-
-    cocos2d::Node* createNode(const std::string& name) const;
 
     /// Checks whether this library has a loader for the specified class name.
     /// @param name The name of the node loader.
@@ -49,6 +49,7 @@ public:
     const NodeLoaderPtr& getLoader(const std::string& name) const;
 
 private:
+    /// Stores individual node loaders.
     std::unordered_map<std::string, NodeLoaderPtr> loaders_;
 };
 } // namespace ee

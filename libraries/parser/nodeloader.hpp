@@ -2,14 +2,8 @@
 #define EE_PARSER_NODE_LOADER_HPP
 
 #include "parserfwd.hpp"
-#include "propertybool.hpp"
-#include "propertycolor.hpp"
-#include "propertyfloat.hpp"
+#include "property.hpp"
 #include "propertyhandler.hpp"
-#include "propertyint.hpp"
-#include "propertypoint.hpp"
-#include "propertysize.hpp"
-#include "propertystring.hpp"
 
 namespace cocos2d {
 class Node;
@@ -19,65 +13,59 @@ namespace ee {
 class PropertyReader;
 class PropertyWriter;
 
+/// Parses cocos2d::Node.
 class NodeLoader {
 private:
     using Self = NodeLoader;
+    using Target = cocos2d::Node;
 
 public:
     struct Property {
-        static const PropertyPoint AnchorPoint;
-        static const PropertyBool CascadeColorEnabled;
-        static const PropertyBool CascadeOpacityEnabled;
-        static const PropertyColor Color;
-        static const PropertySize ContentSize;
-        static const PropertyBool IgnoreAnchorPointForPosition;
-        static const PropertyInt LocalZOrder;
-        static const PropertyString Name;
-        static const PropertyInt Opacity;
-        static const PropertyBool OpacityModifyRGB;
-        static const PropertyPoint Position;
-        static const PropertyFloat Rotation;
-        static const PropertyFloat ScaleX;
-        static const PropertyFloat ScaleY;
-        static const PropertyFloat SkewX;
-        static const PropertyFloat SkewY;
-        static const PropertyInt Tag;
-        static const PropertyBool Visible;
+        static const PropertyPoint<Target> AnchorPoint;
+        static const PropertyBool<Target> CascadeColorEnabled;
+        static const PropertyBool<Target> CascadeOpacityEnabled;
+        static const PropertyColor3B<Target> Color;
+        static const PropertySize<Target> ContentSize;
+        static const PropertyBool<Target> IgnoreAnchorPointForPosition;
+        static const PropertyInt<Target> LocalZOrder;
+        static const PropertyString<Target> Name;
+        static const PropertyInt<Target> Opacity;
+        static const PropertyBool<Target> OpacityModifyRGB;
+        static const PropertyPoint<Target> Position;
+        static const PropertyFloat<Target> Rotation;
+        static const PropertyFloat<Target> ScaleX;
+        static const PropertyFloat<Target> ScaleY;
+        static const PropertyFloat<Target> SkewX;
+        static const PropertyFloat<Target> SkewY;
+        static const PropertyInt<Target> Tag;
+        static const PropertyBool<Target> Visible;
     };
 
     static const std::string ClassName;
 
-    static NodeLoaderPtr create();
+    /// Constructs a node loader.
+    NodeLoader();
 
     virtual ~NodeLoader();
 
-    /// Creates a node.
+    /// Creates a default node.
     virtual cocos2d::Node* createNode() const;
 
-    virtual std::string getClassName() const;
+    /// Loads properties from the specified handler to the specified node.
+    virtual void loadProperties(cocos2d::Node* node,
+                                const PropertyHandler& handler) const;
 
-    /// Gets the property handler.
-    const PropertyHandler& getPropertyHandler() const;
+    virtual std::string getClassName() const;
 
     PropertyReader getDefaultPropertyReader() const;
 
     NodeLoaderPtr clone() const;
 
 protected:
-    /// Constructs a node loader.
-    NodeLoader();
-
-    void initialize();
-
-    virtual void addReadHandlers(PropertyHandler& handler);
-    virtual void addWriteHandlers(PropertyHandler& handler);
-    virtual void addDefaultProperties(PropertyWriter& writer);
-
     virtual Self* cloneRaw() const;
 
 private:
-    PropertyHandler propertyHandler_;
-    cocos2d::ValueMap defaultProperties_;
+    // cocos2d::ValueMap defaultProperties_;
 };
 } // namespace ee
 

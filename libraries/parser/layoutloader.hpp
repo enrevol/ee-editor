@@ -1,55 +1,58 @@
 #ifndef EE_PARSER_LAYOUT_LOADER_HPP
 #define EE_PARSER_LAYOUT_LOADER_HPP
 
-#include "propertybool.hpp"
-#include "propertycolor.hpp"
-#include "propertyint.hpp"
-#include "propertypoint.hpp"
-#include "propertyrect.hpp"
-#include "propertystring.hpp"
 #include "widgetloader.hpp"
+
+#include <ui/UILayout.h>
+
+namespace cocos2d {
+namespace ui {
+class Layout;
+} // namespace ui
+} // namespace cocos2d
 
 namespace ee {
 class LayoutLoader : public WidgetLoader {
 private:
     using Self = LayoutLoader;
     using Super = WidgetLoader;
+    using Target = cocos2d::ui::Layout;
 
 public:
     struct Property {
-        static const PropertyColor BackgroundColor;
-        static const PropertyInt BackgroundColorOpacity;
-        static const PropertyInt BackgroundColorType;
-        static const PropertyPoint BackgroundColorVector;
-        static const PropertyColor BackgroundEndColor;
-        static const PropertyRect BackgroundImageCapInsets;
-        static const PropertyColor BackgroundImageColor;
-        static const PropertyInt BackgroundImageOpacity;
-        static const PropertyString BackgroundImageName;
-        static const PropertyInt BackgroundImageTexType;
-        static const PropertyBool BackgroundImageScale9Enabled;
-        static const PropertyColor BackgroundStartColor;
-        static const PropertyBool ClippingEnabled;
-        static const PropertyInt ClippingType;
-        static const PropertyInt LayoutType;
+        static const PropertyColor3B<Target> BackgroundColor;
+        static const PropertyInt<Target> BackgroundColorOpacity;
+        static const PropertyEnum<Target,
+                                  cocos2d::ui::Layout::BackGroundColorType>
+            BackgroundColorType;
+        static const PropertyPoint<Target> BackgroundColorVector;
+        // static const PropertyColor3B<Target> BackgroundStartColor;
+        // static const PropertyColor3B<Target> BackgroundEndColor;
+        static const PropertyRect<Target> BackgroundImageCapInsets;
+        static const PropertyColor3B<Target> BackgroundImageColor;
+        static const PropertyInt<Target> BackgroundImageOpacity;
+        // static const PropertyString<Target> BackgroundImageName;
+        // static const PropertyInt<Target> BackgroundImageTexType;
+        // static const PropertyBool<Target> BackgroundImageScale9Enabled;
+        static const PropertyBool<Target> ClippingEnabled;
+        static const PropertyEnum<Target, cocos2d::ui::Layout::ClippingType>
+            ClippingType;
+        static const PropertyEnum<Target, cocos2d::ui::Layout::Type> LayoutType;
     };
 
     static const std::string ClassName;
-
-    static NodeLoaderPtr create();
 
     virtual ~LayoutLoader() override;
 
     virtual cocos2d::Node* createNode() const override;
 
+    virtual void loadProperties(cocos2d::Node* node,
+                                const PropertyHandler& handler) const override;
+
     virtual std::string getClassName() const override;
 
 protected:
     LayoutLoader();
-
-    virtual void addReadHandlers(PropertyHandler& handler) override;
-    virtual void addWriteHandlers(PropertyHandler& handler) override;
-    virtual void addDefaultProperties(PropertyWriter& writer) override;
 
     virtual Self* cloneRaw() const override;
 };

@@ -3,8 +3,6 @@
 #include "nodeinfo.hpp"
 #include "nodeloader.hpp"
 #include "propertyhandler.hpp"
-#include "propertyreader.hpp"
-#include "propertywriter.hpp"
 
 #include <2d/CCNode.h>
 
@@ -20,7 +18,7 @@ Self::GraphReader(const NodeLoaderLibrary& library)
 
 Self::~GraphReader() {}
 
-cocos2d::Node* Self::readDictionary(const cocos2d::ValueMap& dict) const {
+cocos2d::Node* Self::readDictionary(const ValueMap& dict) const {
     return readNodeGraph(NodeGraph(dict));
 }
 
@@ -28,15 +26,8 @@ cocos2d::Node* Self::readNodeGraph(const NodeGraph& graph) const {
     auto&& loader = getNodeLoader(graph);
     auto node = loader->createNode();
     node->setUserObject(NodeInfo::create());
-    auto&& propertyHandler = loader->getPropertyHandler();
-    for (auto&& elt : graph.getProperties()) {
-        auto&& key = elt.first;
-        auto&& value = elt.second;
-        if (key == "base_class") {
-            continue;
-        }
-        propertyHandler.writeProperty(node, key, value);
-    }
+    auto&& propertyHandler = graph.getPropertyHandler();
+    loader->loadProperties(node, propertyHandler);
     for (auto&& child : graph.getChildren()) {
         auto childNode = readNodeGraph(child);
         node->addChild(childNode);
@@ -45,6 +36,8 @@ cocos2d::Node* Self::readNodeGraph(const NodeGraph& graph) const {
 }
 
 void Self::addDefaultProperties(NodeGraph& graph) const {
+    // FIXME.
+    /*
     auto&& loader = getNodeLoader(graph);
     auto&& defaultProperties =
         loader->getDefaultPropertyReader().getProperties();
@@ -61,6 +54,7 @@ void Self::addDefaultProperties(NodeGraph& graph) const {
     for (auto&& child : graph.getChildren()) {
         addDefaultProperties(child);
     }
+    */
 }
 
 const NodeLoaderPtr& Self::getNodeLoader(const NodeGraph& graph) const {

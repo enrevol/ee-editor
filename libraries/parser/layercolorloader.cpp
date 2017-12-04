@@ -7,30 +7,18 @@ using Self = LayerColorLoader;
 
 const std::string Self::ClassName = "_LayerColor";
 
-NodeLoaderPtr Self::create() {
-    auto result = std::unique_ptr<Self>(new Self());
-    result->initialize();
-    return std::move(result);
-}
-
 Self::LayerColorLoader() {}
 
 Self::~LayerColorLoader() {}
 
-void Self::addReadHandlers(PropertyHandler& handler) {
-    Super::addReadHandlers(handler);
-}
-
-void Self::addWriteHandlers(PropertyHandler& handler) {
-    Super::addWriteHandlers(handler);
-}
-
-void Self::addDefaultProperties(PropertyWriter& writer) {
-    Super::addDefaultProperties(writer);
-}
-
 cocos2d::Node* Self::createNode() const {
-    return cocos2d::LayerColor::create();
+    return Target::create();
+}
+
+void Self::loadProperties(cocos2d::Node* node_,
+                          const PropertyHandler& handler) const {
+    auto node = dynamic_cast<Target*>(node_);
+    Super::loadProperties(node, handler);
 }
 
 std::string Self::getClassName() const {

@@ -1,7 +1,7 @@
 #ifndef EE_PARSER_NODE_GRAPH_HPP
 #define EE_PARSER_NODE_GRAPH_HPP
 
-#include <base/CCValue.h>
+#include "propertyhandler.hpp"
 
 namespace ee {
 class PropertyReader;
@@ -17,18 +17,17 @@ public:
 
     /// Constructs a node graph with the specified dictionary.
     /// @param dict Node graph's dictionary.
-    explicit NodeGraph(const cocos2d::ValueMap& dict);
+    explicit NodeGraph(const ValueMap& dict);
+
+    NodeGraph(const Self& other) = default;
 
     ~NodeGraph();
 
     /// Sets the node graph's dictionary.
     /// @param dict The desired dictionary.
-    void setDictionary(const cocos2d::ValueMap& dict);
+    void setDictionary(const ValueMap& dict);
 
-    const cocos2d::ValueMap& getProperties() const;
-
-    PropertyReader getPropertyReader() const;
-    PropertyWriter getPropertyWriter();
+    const PropertyHandler& getPropertyHandler() const;
 
     std::string getBaseClass() const;
     std::string getCustomClass() const;
@@ -46,10 +45,10 @@ public:
 
     void addChild(const Self& child);
 
-    cocos2d::ValueMap toDict() const;
+    ValueMap toDict() const;
 
 private:
-    cocos2d::ValueMap properties_;
+    PropertyHandler propertyHandler_;
     std::vector<Self> children_;
 };
 } // namespace ee
