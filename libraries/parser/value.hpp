@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include <base/CCValue.h>
+
 namespace ee {
 class Value;
 
@@ -27,6 +29,8 @@ public:
     };
 
     static const Self Null;
+
+    static Self fromValue(const cocos2d::Value& value);
 
     Value();
 
@@ -71,10 +75,18 @@ public:
     const ValueMap& getMap() const;
 
     bool isNull() const;
+    bool isBool() const;
+    bool isInt() const;
+    bool isFloat() const;
+    bool isString() const;
+    bool isList() const;
+    bool isMap() const;
 
     Type getType() const;
 
     void clear();
+
+    cocos2d::Value toValue() const;
 
 private:
     Self& operator=(const std::unique_ptr<std::string>& value);

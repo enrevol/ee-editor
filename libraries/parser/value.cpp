@@ -7,6 +7,66 @@
 namespace ee {
 using Self = Value;
 
+const Self Self::Null = Self();
+
+Self Self::fromValue(const cocos2d::Value& value) {
+    switch (value.getType()) {
+    case cocos2d::Value::Type::BOOLEAN:
+        return Self(value.asBool());
+    case cocos2d::Value::Type::INTEGER:
+        return Self(value.asInt());
+    case cocos2d::Value::Type::FLOAT:
+        return Self(value.asFloat());
+    case cocos2d::Value::Type::STRING:
+        return Self(value.asString());
+    case cocos2d::Value::Type::VECTOR: {
+        ValueList array;
+        for (auto&& elt : value.asValueVector()) {
+            array.emplace_back(fromValue(elt));
+        }
+        return Self(array);
+    }
+    case cocos2d::Value::Type::MAP: {
+        ValueMap dict;
+        for (auto&& elt : value.asValueMap()) {
+            dict.emplace(elt.first, fromValue(elt.second));
+        }
+        return Self(dict);
+    }
+    default:
+        return Null;
+    }
+}
+
+cocos2d::Value Self::toValue() const {
+    switch (getType()) {
+    case Type::Bool:
+        return cocos2d::Value(getBool());
+    case Type::Int:
+        return cocos2d::Value(getInt());
+    case Type::Float:
+        return cocos2d::Value(getFloat());
+    case Type::String:
+        return cocos2d::Value(getString());
+    case Type::List: {
+        cocos2d::ValueVector array;
+        for (auto&& elt : getList()) {
+            array.emplace_back(elt.toValue());
+        }
+        return cocos2d::Value(std::move(array));
+    }
+    case Type::Map: {
+        cocos2d::ValueMap dict;
+        for (auto&& elt : getMap()) {
+            dict.emplace(elt.first, elt.second.toValue());
+        }
+        return cocos2d::Value(std::move(dict));
+    }
+    default:
+        return cocos2d::Value::Null;
+    }
+}
+
 Self::Value() {
     type_ = Type::None;
 }
@@ -236,6 +296,38 @@ bool Self::operator==(const Self& other) const {
 
 bool Self::operator!=(const Self& other) const {
     return !(*this == other);
+}
+
+Self::Type Self::getType() const {
+    return type_;
+}
+
+bool Self::isNull() const {
+    return getType() == Type::None;
+}
+
+bool Self::isBool() const {
+    return getType() == Type::Bool;
+}
+
+bool Self::isInt() const {
+    return getType() == Type::Int;
+}
+
+bool Self::isFloat() const {
+    return getType() == Type::Float;
+}
+
+bool Self::isString() const {
+    return getType() == Type::String;
+}
+
+bool Self::isList() const {
+    return getType() == Type::List;
+}
+
+bool Self::isMap() const {
+    return getType() == Type::Map;
 }
 
 bool Self::getBool() const {
