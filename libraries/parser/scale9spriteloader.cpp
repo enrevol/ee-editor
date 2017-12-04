@@ -4,15 +4,20 @@
 
 namespace ee {
 using Self = Scale9SpriteLoader;
+using Target = cocos2d::ui::Scale9Sprite;
+using Helper = PropertyHelper<Target>;
 
-const PropertyEnum<Self::Target, cocos2d::ui::Scale9Sprite::State>
-    Self::Property::State("state", std::mem_fn(&Target::getState),
-                          std::mem_fn(&Target::setState));
+const PropertyEnum<Target::State> Self::Property::State(
+    "state", //
+    Helper::makeReader<Target::State>(std::mem_fn(&Target::getState)),
+    Helper::makeWriter<Target::State>(std::mem_fn(&Target::setState)));
 
-const PropertyEnum<Self::Target, cocos2d::ui::Scale9Sprite::RenderingType>
+const PropertyEnum<Target::RenderingType>
     Self::Property::RenderingType("rendering_type",
-                                  std::mem_fn(&Target::getRenderingType),
-                                  std::mem_fn(&Target::setRenderingType));
+                                  Helper::makeReader<Target::RenderingType>(
+                                      std::mem_fn(&Target::getRenderingType)),
+                                  Helper::makeWriter<Target::RenderingType>(
+                                      std::mem_fn(&Target::setRenderingType)));
 
 const std::string Self::ClassName = "_Scale9Sprite";
 

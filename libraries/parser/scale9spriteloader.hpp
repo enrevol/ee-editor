@@ -20,11 +20,8 @@ private:
 
 public:
     struct Property {
-        static const PropertyEnum<Target, cocos2d::ui::Scale9Sprite::State>
-            State;
-        static const PropertyEnum<Target,
-                                  cocos2d::ui::Scale9Sprite::RenderingType>
-            RenderingType;
+        static const PropertyEnum<Target::State> State;
+        static const PropertyEnum<Target::RenderingType> RenderingType;
     };
 
     static const std::string ClassName;

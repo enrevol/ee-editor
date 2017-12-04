@@ -37,16 +37,16 @@ public:
         PropertyTraits<Value>::setProperty(*this, name, value);
     }
 
-    template <class Target, class Value>
-    void loadProperty(const Property<Target, Value>& property,
-                      Target* node) const {
+    template <class Value>
+    void loadProperty(const Property<Value>& property,
+                      cocos2d::Node* node) const {
         auto value = getProperty<Value>(property.getName());
         property.write(node, value);
     }
 
-    template <class Target, class Value>
-    void storeProperty(const Property<Target, Value>& property,
-                       const Target* node) {
+    template <class Value>
+    void storeProperty(const Property<Value>& property,
+                       const cocos2d::Node* node) {
         auto value = property.read(node);
         setProperty<Value>(property.getName(), value);
     }

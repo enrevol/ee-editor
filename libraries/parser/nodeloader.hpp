@@ -21,24 +21,24 @@ private:
 
 public:
     struct Property {
-        static const PropertyPoint<Target> AnchorPoint;
-        static const PropertyBool<Target> CascadeColorEnabled;
-        static const PropertyBool<Target> CascadeOpacityEnabled;
-        static const PropertyColor3B<Target> Color;
-        static const PropertySize<Target> ContentSize;
-        static const PropertyBool<Target> IgnoreAnchorPointForPosition;
-        static const PropertyInt<Target> LocalZOrder;
-        static const PropertyString<Target> Name;
-        static const PropertyInt<Target> Opacity;
-        static const PropertyBool<Target> OpacityModifyRGB;
-        static const PropertyPoint<Target> Position;
-        static const PropertyFloat<Target> Rotation;
-        static const PropertyFloat<Target> ScaleX;
-        static const PropertyFloat<Target> ScaleY;
-        static const PropertyFloat<Target> SkewX;
-        static const PropertyFloat<Target> SkewY;
-        static const PropertyInt<Target> Tag;
-        static const PropertyBool<Target> Visible;
+        static const PropertyPoint AnchorPoint;
+        static const PropertyBool CascadeColorEnabled;
+        static const PropertyBool CascadeOpacityEnabled;
+        static const PropertyColor3B Color;
+        static const PropertySize ContentSize;
+        static const PropertyBool IgnoreAnchorPointForPosition;
+        static const PropertyInt LocalZOrder;
+        static const PropertyString Name;
+        static const PropertyInt Opacity;
+        static const PropertyBool OpacityModifyRGB;
+        static const PropertyPoint Position;
+        static const PropertyFloat Rotation;
+        static const PropertyFloat ScaleX;
+        static const PropertyFloat ScaleY;
+        static const PropertyFloat SkewX;
+        static const PropertyFloat SkewY;
+        static const PropertyInt Tag;
+        static const PropertyBool Visible;
     };
 
     static const std::string ClassName;

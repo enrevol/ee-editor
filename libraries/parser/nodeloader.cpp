@@ -8,84 +8,82 @@
 namespace ee {
 using Self = NodeLoader;
 
-const PropertyPoint<Self::Target>
+const PropertyPoint
     Self::Property::AnchorPoint("anchor_point",
                                 std::mem_fn(&Target::getAnchorPoint),
                                 std::mem_fn(&Target::setAnchorPoint));
 
-const PropertyBool<Self::Target> Self::Property::CascadeColorEnabled(
+const PropertyBool Self::Property::CascadeColorEnabled(
     "cascade_color_enabled", std::mem_fn(&Target::isCascadeColorEnabled),
     std::mem_fn(&Target::setCascadeColorEnabled));
 
-const PropertyBool<Self::Target> Self::Property::CascadeOpacityEnabled(
+const PropertyBool Self::Property::CascadeOpacityEnabled(
     "cascade_opacity_enabled", std::mem_fn(&Target::isCascadeOpacityEnabled),
     std::mem_fn(&Target::setCascadeOpacityEnabled));
 
-const PropertyColor3B<Self::Target>
-    Self::Property::Color("color", std::mem_fn(&Target::getColor),
-                          std::mem_fn(&Target::setColor));
+const PropertyColor3B Self::Property::Color("color",
+                                            std::mem_fn(&Target::getColor),
+                                            std::mem_fn(&Target::setColor));
 
-const PropertySize<Self::Target>
+const PropertySize
     Self::Property::ContentSize("content_size",
                                 std::mem_fn(&Target::getContentSize),
                                 std::mem_fn(&Target::setContentSize));
 
-const PropertyBool<Self::Target> Self::Property::IgnoreAnchorPointForPosition(
+const PropertyBool Self::Property::IgnoreAnchorPointForPosition(
     "ignore_anchor_point_for_position",
     std::mem_fn(&Target::isIgnoreAnchorPointForPosition),
     std::mem_fn(&Target::setIgnoreAnchorPointForPosition));
 
-const PropertyInt<Self::Target>
+const PropertyInt
     Self::Property::LocalZOrder("local_z_order",
                                 std::mem_fn(&Target::getLocalZOrder),
                                 std::mem_fn(&Target::setLocalZOrder));
 
-const PropertyString<Self::Target>
-    Self::Property::Name("name", std::mem_fn(&Target::getName),
-                         std::mem_fn(&Target::setName));
+const PropertyString Self::Property::Name("name", std::mem_fn(&Target::getName),
+                                          std::mem_fn(&Target::setName));
 
-const PropertyInt<Self::Target>
-    Self::Property::Opacity("opacity", std::mem_fn(&Target::getOpacity),
-                            std::mem_fn(&Target::setOpacity));
+const PropertyInt Self::Property::Opacity("opacity",
+                                          std::mem_fn(&Target::getOpacity),
+                                          std::mem_fn(&Target::setOpacity));
 
-const PropertyBool<Self::Target>
+const PropertyBool
     Self::Property::OpacityModifyRGB("opacity_modify_rgb",
                                      std::mem_fn(&Target::isOpacityModifyRGB),
                                      std::mem_fn(&Target::setOpacityModifyRGB));
 
-const PropertyPoint<Self::Target> Self::Property::Position(
+const PropertyPoint Self::Property::Position(
     "position", [](const Target* node) { return node->getPosition(); },
     [](Target* node, const cocos2d::Point& position) {
         node->setPosition(position);
     });
 
-const PropertyFloat<Self::Target>
-    Self::Property::Rotation("rotation", std::mem_fn(&Target::getRotation),
-                             std::mem_fn(&Target::setRotation));
+const PropertyFloat Self::Property::Rotation("rotation",
+                                             std::mem_fn(&Target::getRotation),
+                                             std::mem_fn(&Target::setRotation));
 
-const PropertyFloat<Self::Target>
-    Self::Property::ScaleX("scale_x", std::mem_fn(&Target::getScaleX),
-                           std::mem_fn(&Target::setScaleX));
+const PropertyFloat Self::Property::ScaleX("scale_x",
+                                           std::mem_fn(&Target::getScaleX),
+                                           std::mem_fn(&Target::setScaleX));
 
-const PropertyFloat<Self::Target>
-    Self::Property::ScaleY("scale_y", std::mem_fn(&Target::getScaleY),
-                           std::mem_fn(&Target::setScaleY));
+const PropertyFloat Self::Property::ScaleY("scale_y",
+                                           std::mem_fn(&Target::getScaleY),
+                                           std::mem_fn(&Target::setScaleY));
 
-const PropertyFloat<Self::Target>
-    Self::Property::SkewX("skew_x", std::mem_fn(&Target::getSkewX),
-                          std::mem_fn(&Target::setSkewX));
+const PropertyFloat Self::Property::SkewX("skew_x",
+                                          std::mem_fn(&Target::getSkewX),
+                                          std::mem_fn(&Target::setSkewX));
 
-const PropertyFloat<Self::Target>
-    Self::Property::SkewY("skew_y", std::mem_fn(&Target::getSkewY),
-                          std::mem_fn(&Target::setSkewY));
+const PropertyFloat Self::Property::SkewY("skew_y",
+                                          std::mem_fn(&Target::getSkewY),
+                                          std::mem_fn(&Target::setSkewY));
 
-const PropertyInt<Self::Target>
-    Self::Property::Tag("tag", std::mem_fn(&Target::getTag),
-                        std::mem_fn(&Target::setTag));
+const PropertyInt Self::Property::Tag("tag", std::mem_fn(&Target::getTag),
+                                      std::mem_fn(&Target::setTag));
 
-const PropertyBool<Self::Target>
-    Self::Property::Visible("visible", std::mem_fn(&Target::isVisible),
-                            std::mem_fn(&Target::setVisible));
+const PropertyBool Self::Property::Visible("visible",
+                                           std::mem_fn(&Target::isVisible),
+                                           std::mem_fn(&Target::setVisible));
 
 const std::string Self::ClassName = "_Node";
 

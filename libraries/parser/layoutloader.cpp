@@ -4,43 +4,61 @@
 
 namespace ee {
 using Self = LayoutLoader;
+using Target = cocos2d::ui::Layout;
+using Helper = PropertyHelper<Target>;
 
-const PropertyColor3B<Self::Target> Self::Property::BackgroundColor(
-    "background_color", std::mem_fn(&Target::getBackGroundColor),
-    [](Target* node, const cocos2d::Color3B& value) {
+const PropertyColor3B Self::Property::BackgroundColor(
+    "background_color",
+    Helper::makeReader<cocos2d::Color3B>(
+        std::mem_fn(&Target::getBackGroundColor)),
+    Helper::makeWriter<cocos2d::Color3B>([](Target* node,
+                                            const cocos2d::Color3B& value) {
         node->setBackGroundColor(value);
-    });
+    }));
 
-const PropertyInt<Self::Target> Self::Property::BackgroundColorOpacity(
-    "background_color_opacity", std::mem_fn(&Target::getBackGroundColorOpacity),
-    std::mem_fn(&Target::setBackGroundColorOpacity));
+const PropertyInt Self::Property::BackgroundColorOpacity(
+    "background_color_opacity",
+    Helper::makeReader<int>(std::mem_fn(&Target::getBackGroundColorOpacity)),
+    Helper::makeWriter<int>(std::mem_fn(&Target::setBackGroundColorOpacity)));
 
-const PropertyEnum<Self::Target, cocos2d::ui::Layout::BackGroundColorType>
+const PropertyEnum<Target::BackGroundColorType>
     Self::Property::BackgroundColorType(
-        "background_color_type", std::mem_fn(&Target::getBackGroundColorType),
-        std::mem_fn(&Target::setBackGroundColorType));
+        "background_color_type",
+        Helper::makeReader<Target::BackGroundColorType>(
+            std::mem_fn(&Target::getBackGroundColorType)),
+        Helper::makeWriter<Target::BackGroundColorType>(
+            std::mem_fn(&Target::setBackGroundColorType)));
 
-const PropertyPoint<Self::Target> Self::Property::BackgroundColorVector(
-    "background_color_vector", std::mem_fn(&Target::getBackGroundColorVector),
-    std::mem_fn(&Target::setBackGroundColorVector));
+const PropertyPoint Self::Property::BackgroundColorVector(
+    "background_color_vector",
+    Helper::makeReader<cocos2d::Point>(
+        std::mem_fn(&Target::getBackGroundColorVector)),
+    Helper::makeWriter<cocos2d::Point>(
+        std::mem_fn(&Target::setBackGroundColorVector)));
 
 // const PropertyColor3B<Target> BackgroundEndColor("background_end_color",
 // std::mem_fn(&Target::getBackGroundEndColor),
 // std::mem_fn(&Target::SetBackgroundE)); const PropertyColor3B<Target>
 // BackgroundStartColor("background_start_color");
 
-const PropertyRect<Self::Target> Self::Property::BackgroundImageCapInsets(
+const PropertyRect Self::Property::BackgroundImageCapInsets(
     "background_image_cap_insets",
-    std::mem_fn(&Target::getBackGroundImageCapInsets),
-    std::mem_fn(&Target::setBackGroundImageCapInsets));
+    Helper::makeReader<cocos2d::Rect>(
+        std::mem_fn(&Target::getBackGroundImageCapInsets)),
+    Helper::makeWriter<cocos2d::Rect>(
+        std::mem_fn(&Target::setBackGroundImageCapInsets)));
 
-const PropertyColor3B<Self::Target> Self::Property::BackgroundImageColor(
-    "background_image_color", std::mem_fn(&Target::getBackGroundImageColor),
-    std::mem_fn(&Target::setBackGroundImageColor));
+const PropertyColor3B Self::Property::BackgroundImageColor(
+    "background_image_color",
+    Helper::makeReader<cocos2d::Color3B>(
+        std::mem_fn(&Target::getBackGroundImageColor)),
+    Helper::makeWriter<cocos2d::Color3B>(
+        std::mem_fn(&Target::setBackGroundImageColor)));
 
-const PropertyInt<Self::Target> Self::Property::BackgroundImageOpacity(
-    "background_image_opacity", std::mem_fn(&Target::getBackGroundImageOpacity),
-    std::mem_fn(&Target::setBackGroundImageOpacity));
+const PropertyInt Self::Property::BackgroundImageOpacity(
+    "background_image_opacity",
+    Helper::makeReader<int>(std::mem_fn(&Target::getBackGroundImageOpacity)),
+    Helper::makeWriter<int>(std::mem_fn(&Target::setBackGroundImageOpacity)));
 
 // const PropertyString<Target> BackgroundImageName("background_image_name",
 // std::mem_fn(&Target::getBackgroundIma));
@@ -51,20 +69,22 @@ const PropertyInt<Self::Target> Self::Property::BackgroundImageOpacity(
 // const PropertyBool<Target>
 // BackgroundImageScale9Enabled("background_image_scale_9_enabled");
 
-const PropertyBool<Self::Target>
-    Self::Property::ClippingEnabled("clipping_enabled",
-                                    std::mem_fn(&Target::isClippingEnabled),
-                                    std::mem_fn(&Target::setClippingEnabled));
+const PropertyBool Self::Property::ClippingEnabled(
+    "clipping_enabled",
+    Helper::makeReader<bool>(std::mem_fn(&Target::isClippingEnabled)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setClippingEnabled)));
 
-const PropertyEnum<Self::Target, cocos2d::ui::Layout::ClippingType>
+const PropertyEnum<Target::ClippingType>
     Self::Property::ClippingType("clipping_type",
-                                 std::mem_fn(&Target::getClippingType),
-                                 std::mem_fn(&Target::setClippingType));
+                                 Helper::makeReader<Target::ClippingType>(
+                                     std::mem_fn(&Target::getClippingType)),
+                                 Helper::makeWriter<Target::ClippingType>(
+                                     std::mem_fn(&Target::setClippingType)));
 
-const PropertyEnum<Self::Target, cocos2d::ui::Layout::Type>
-    Self::Property::LayoutType("layout_type",
-                               std::mem_fn(&Target::getLayoutType),
-                               std::mem_fn(&Target::setLayoutType));
+const PropertyEnum<Target::Type> Self::Property::LayoutType(
+    "layout_type",
+    Helper::makeReader<Target::Type>(std::mem_fn(&Target::getLayoutType)),
+    Helper::makeWriter<Target::Type>(std::mem_fn(&Target::setLayoutType)));
 
 const std::string Self::ClassName = "_Layout";
 

@@ -16,12 +16,12 @@ private:
 
 public:
     struct Property {
-        static const PropertyBlend<Target> BlendFunc;
-        static const PropertyBool<Target> FlippedX;
-        static const PropertyBool<Target> FlippedY;
-        static const PropertyBool<Target> StretchEnabled;
-        static const PropertyString<Target> Texture;
-        static const PropertyString<Target> SpriteFrame;
+        static const PropertyBlend BlendFunc;
+        static const PropertyBool FlippedX;
+        static const PropertyBool FlippedY;
+        static const PropertyBool StretchEnabled;
+        static const PropertyString Texture;
+        static const PropertyString SpriteFrame;
     };
 
     static const std::string ClassName;

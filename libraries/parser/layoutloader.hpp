@@ -20,24 +20,23 @@ private:
 
 public:
     struct Property {
-        static const PropertyColor3B<Target> BackgroundColor;
-        static const PropertyInt<Target> BackgroundColorOpacity;
-        static const PropertyEnum<Target,
-                                  cocos2d::ui::Layout::BackGroundColorType>
+        static const PropertyColor3B BackgroundColor;
+        static const PropertyInt BackgroundColorOpacity;
+        static const PropertyEnum<cocos2d::ui::Layout::BackGroundColorType>
             BackgroundColorType;
-        static const PropertyPoint<Target> BackgroundColorVector;
+        static const PropertyPoint BackgroundColorVector;
         // static const PropertyColor3B<Target> BackgroundStartColor;
         // static const PropertyColor3B<Target> BackgroundEndColor;
-        static const PropertyRect<Target> BackgroundImageCapInsets;
-        static const PropertyColor3B<Target> BackgroundImageColor;
-        static const PropertyInt<Target> BackgroundImageOpacity;
+        static const PropertyRect BackgroundImageCapInsets;
+        static const PropertyColor3B BackgroundImageColor;
+        static const PropertyInt BackgroundImageOpacity;
         // static const PropertyString<Target> BackgroundImageName;
         // static const PropertyInt<Target> BackgroundImageTexType;
         // static const PropertyBool<Target> BackgroundImageScale9Enabled;
-        static const PropertyBool<Target> ClippingEnabled;
-        static const PropertyEnum<Target, cocos2d::ui::Layout::ClippingType>
+        static const PropertyBool ClippingEnabled;
+        static const PropertyEnum<cocos2d::ui::Layout::ClippingType>
             ClippingType;
-        static const PropertyEnum<Target, cocos2d::ui::Layout::Type> LayoutType;
+        static const PropertyEnum<cocos2d::ui::Layout::Type> LayoutType;
     };
 
     static const std::string ClassName;

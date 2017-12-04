@@ -4,80 +4,93 @@
 
 namespace ee {
 using Self = WidgetLoader;
+using Target = cocos2d::ui::Widget;
+using Helper = PropertyHelper<Target>;
 
-const PropertyBool<Self::Target>
-    Self::Property::Bright("bright", std::mem_fn(&Target::isBright),
-                           std::mem_fn(&Target::setBright));
+const PropertyBool Self::Property::Bright(
+    "bright", //
+    Helper::makeReader<bool>(std::mem_fn(&Target::isBright)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setBright)));
 
-const PropertyBool<Self::Target>
-    Self::Property::Enabled("enabled", std::mem_fn(&Target::isEnabled),
-                            std::mem_fn(&Target::setEnabled));
+const PropertyBool Self::Property::Enabled(
+    "enabled", //
+    Helper::makeReader<bool>(std::mem_fn(&Target::isEnabled)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setEnabled)));
 
-const PropertyBool<Self::Target>
-    Self::Property::FlippedX("flipped_x", std::mem_fn(&Target::isFlippedX),
-                             std::mem_fn(&Target::setFlippedX));
+const PropertyBool Self::Property::FlippedX(
+    "flipped_x", //
+    Helper::makeReader<bool>(std::mem_fn(&Target::isFlippedX)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setFlippedX)));
 
-const PropertyBool<Self::Target>
-    Self::Property::FlippedY("flipped_y", std::mem_fn(&Target::isFlippedY),
-                             std::mem_fn(&Target::setFlippedY));
+const PropertyBool Self::Property::FlippedY(
+    "flipped_y", Helper::makeReader<bool>(std::mem_fn(&Target::isFlippedY)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setFlippedY)));
 
-const PropertyBool<Self::Target>
-    Self::Property::Highlighted("highlighted",
-                                std::mem_fn(&Target::isHighlighted),
-                                std::mem_fn(&Target::setHighlighted));
+const PropertyBool Self::Property::Highlighted(
+    "highlighted", //
+    Helper::makeReader<bool>(std::mem_fn(&Target::isHighlighted)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setHighlighted)));
 
-const PropertyBool<Self::Target> Self::Property::IgnoreContentAdaptWithSize(
+const PropertyBool Self::Property::IgnoreContentAdaptWithSize(
     "ignore_content_adapt_with_size",
-    std::mem_fn(&Target::isIgnoreContentAdaptWithSize),
-    std::mem_fn(&Target::setIgnoreAnchorPointForPosition));
+    Helper::makeReader<bool>(
+        std::mem_fn(&Target::isIgnoreContentAdaptWithSize)),
+    Helper::makeWriter<bool>(
+        std::mem_fn(&Target::setIgnoreAnchorPointForPosition)));
 
-const PropertyBool<Self::Target> Self::Property::LayoutComponentEnabled(
-    "layout_component_enabled", std::mem_fn(&Target::isLayoutComponentEnabled),
-    std::mem_fn(&Target::setLayoutComponentEnabled));
+const PropertyBool Self::Property::LayoutComponentEnabled(
+    "layout_component_enabled",
+    Helper::makeReader<bool>(std::mem_fn(&Target::isLayoutComponentEnabled)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setLayoutComponentEnabled)));
 
-const PropertyPoint<Self::Target> Self::Property::PositionPercent(
+const PropertyPoint Self::Property::PositionPercent(
     "position_percent",
-    [](const Target* node) {
+    Helper::makeReader<cocos2d::Point>([](const Target* node) {
         // FIXME:
         return const_cast<Target*>(node)->getPositionPercent();
-    },
-    std::mem_fn(&Target::setPositionPercent));
+    }),
+    Helper::makeWriter<cocos2d::Point>(
+        std::mem_fn(&Target::setPositionPercent)));
 
-const PropertyEnum<Self::Target, cocos2d::ui::Widget::PositionType>
+const PropertyEnum<Target::PositionType>
     Self::Property::PositionType("position_type",
-                                 std::mem_fn(&Target::getPositionType),
-                                 std::mem_fn(&Target::setPositionType));
+                                 Helper::makeReader<Target::PositionType>(
+                                     std::mem_fn(&Target::getPositionType)),
+                                 Helper::makeWriter<Target::PositionType>(
+                                     std::mem_fn(&Target::setPositionType)));
 
-const PropertyBool<Self::Target> Self::Property::PropagateTouchEvents(
-    "propagate_touch_events", std::mem_fn(&Target::isPropagateTouchEvents),
-    std::mem_fn(&Target::setPropagateTouchEvents));
+const PropertyBool Self::Property::PropagateTouchEvents(
+    "propagate_touch_events",
+    Helper::makeReader<bool>(std::mem_fn(&Target::isPropagateTouchEvents)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setPropagateTouchEvents)));
 
-const PropertyPoint<Self::Target> Self::Property::SizePercent(
-    "size_percent",
-    [](const Target* node) {
+const PropertyPoint Self::Property::SizePercent(
+    "size_percent", //
+    Helper ::makeReader<cocos2d::Point>([](const Target* node) {
         // FIXME
         return const_cast<Target*>(node)->getSizePercent();
-    },
-    std::mem_fn(&Target::setSizePercent));
+    }),
+    Helper::makeWriter<cocos2d::Point>(std::mem_fn(&Target::setSizePercent)));
 
-const PropertyEnum<Self::Target, cocos2d::ui::Widget::SizeType>
-    Self::Property::SizeType("size_type", std::mem_fn(&Target::getSizeType),
-                             std::mem_fn(&Target::setSizeType));
+const PropertyEnum<Target::SizeType> Self::Property::SizeType(
+    "size_type",
+    Helper::makeReader<Target::SizeType>(std::mem_fn(&Target::getSizeType)),
+    Helper::makeWriter<Target::SizeType>(std::mem_fn(&Target::setSizeType)));
 
-const PropertyBool<Self::Target>
-    Self::Property::SwallowTouches("swallow_touches",
-                                   std::mem_fn(&Target::isSwallowTouches),
-                                   std::mem_fn(&Target::setSwallowTouches));
+const PropertyBool Self::Property::SwallowTouches(
+    "swallow_touches",
+    Helper::makeReader<bool>(std::mem_fn(&Target::isSwallowTouches)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setSwallowTouches)));
 
-const PropertyBool<Self::Target>
-    Self::Property::TouchEnabled("touch_enabled",
-                                 std::mem_fn(&Target::isTouchEnabled),
-                                 std::mem_fn(&Target::setTouchEnabled));
+const PropertyBool Self::Property::TouchEnabled(
+    "touch_enabled",
+    Helper::makeReader<bool>(std::mem_fn(&Target::isTouchEnabled)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setTouchEnabled)));
 
-const PropertyBool<Self::Target>
-    Self::Property::UnifySizeEnabled("unify_size_enabled",
-                                     std::mem_fn(&Target::isUnifySizeEnabled),
-                                     std::mem_fn(&Target::setUnifySizeEnabled));
+const PropertyBool Self::Property::UnifySizeEnabled(
+    "unify_size_enabled",
+    Helper::makeReader<bool>(std::mem_fn(&Target::isUnifySizeEnabled)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setUnifySizeEnabled)));
 
 const std::string Self::ClassName = "_Widget";
 
