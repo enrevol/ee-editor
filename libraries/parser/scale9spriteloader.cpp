@@ -41,8 +41,18 @@ void Self::loadProperties(cocos2d::Node* node_,
                           const PropertyHandler& handler) const {
     auto node = dynamic_cast<Target*>(node_);
     Super::loadProperties(node, handler);
+
     handler.loadProperty(Property::State, node);
     handler.loadProperty(Property::RenderingType, node);
+}
+
+void Self::storeProperties(const cocos2d::Node* node_,
+                           PropertyHandler& handler) const {
+    auto node = dynamic_cast<const Target*>(node_);
+    Super::storeProperties(node, handler);
+
+    handler.storeProperty(Property::State, node);
+    handler.storeProperty(Property::RenderingType, node);
 }
 
 std::string Self::getClassName() const {

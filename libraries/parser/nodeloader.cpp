@@ -178,6 +178,29 @@ void Self::loadProperties(cocos2d::Node* node,
     handler.loadProperty(Property::Visible, node);
 }
 
+void Self::storeProperties(const cocos2d::Node* node,
+                           PropertyHandler& handler) const {
+    handler.storeProperty(Property::AnchorPoint, node);
+    handler.storeProperty(Property::CascadeColorEnabled, node);
+    handler.storeProperty(Property::CascadeOpacityEnabled, node);
+    handler.storeProperty(Property::Color, node);
+    handler.storeProperty(Property::ContentSize, node);
+    handler.storeProperty(Property::IgnoreAnchorPointForPosition, node);
+    handler.storeProperty(Property::LocalZOrder, node);
+    handler.storeProperty(Property::Name, node);
+    handler.storeProperty(Property::Opacity, node);
+    handler.storeProperty(Property::OpacityModifyRGB, node);
+    handler.storeProperty(Property::Position, node);
+    handler.storeProperty(Property::Rotation, node);
+    handler.storeProperty(Property::ScaleX, node);
+    handler.storeProperty(Property::ScaleY, node);
+    handler.storeProperty(Property::Position, node);
+    handler.storeProperty(Property::SkewX, node);
+    handler.storeProperty(Property::SkewY, node);
+    handler.storeProperty(Property::Tag, node);
+    handler.storeProperty(Property::Visible, node);
+}
+
 std::string Self::getClassName() const {
     return ClassName;
 }

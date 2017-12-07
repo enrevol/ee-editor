@@ -143,6 +143,26 @@ void Self::loadProperties(cocos2d::Node* node_,
     handler.loadProperty(Property::UnifySizeEnabled, node);
 }
 
+void Self::storeProperties(const cocos2d::Node* node_,
+                           PropertyHandler& handler) const {
+    auto node = dynamic_cast<const Target*>(node_);
+    Super::storeProperties(node, handler);
+
+    handler.storeProperty(Property::Bright, node);
+    handler.storeProperty(Property::Enabled, node);
+    handler.storeProperty(Property::FlippedX, node);
+    handler.storeProperty(Property::FlippedY, node);
+    handler.storeProperty(Property::Highlighted, node);
+    handler.storeProperty(Property::IgnoreContentAdaptWithSize, node);
+    handler.storeProperty(Property::LayoutComponentEnabled, node);
+    handler.storeProperty(Property::PositionPercent, node);
+    handler.storeProperty(Property::PropagateTouchEvents, node);
+    handler.storeProperty(Property::SizePercent, node);
+    handler.storeProperty(Property::SwallowTouches, node);
+    handler.storeProperty(Property::TouchEnabled, node);
+    handler.storeProperty(Property::UnifySizeEnabled, node);
+}
+
 std::string Self::getClassName() const {
     return ClassName;
 }

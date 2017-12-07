@@ -13,6 +13,13 @@ public:
     explicit InspectorList(QWidget* parent = nullptr);
 
     virtual ~InspectorList() override;
+
+    /// Adds the specified inspector to this inspector list.
+    /// @param inspector The desired inspector.
+    virtual void addInspector(Inspector* inspector) = 0;
+
+    /// Clears all inspectors from this inspector list.
+    virtual void clearInspectors() = 0;
 };
 } // namespace ee
 

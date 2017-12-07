@@ -36,6 +36,9 @@ public:
     virtual void loadProperties(cocos2d::Node* node,
                                 const PropertyHandler& handler) const override;
 
+    virtual void storeProperties(const cocos2d::Node* node,
+                                 PropertyHandler& handler) const override;
+
     virtual std::string getClassName() const override;
 
 protected:

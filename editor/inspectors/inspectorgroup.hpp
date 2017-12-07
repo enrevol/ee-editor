@@ -20,6 +20,7 @@ public:
 
     Self* setDisplayName(const QString& name);
 
+    /// @see Super.
     virtual void
     refreshInspector(const std::vector<const cocos2d::Node*>& nodes) override;
 

@@ -31,12 +31,8 @@ class Layout;
 
 namespace ee {
 class Gizmo;
-class NodeGraph;
 class NodeHighlighter;
 class NodeHighlighterLayer;
-class NodeLoader;
-class SelectionPath;
-class SelectionTree;
 
 class MainSceneView : public MainScene, public cocos2d::Scene {
 private:
@@ -50,7 +46,7 @@ public:
     virtual void setNodeGraph(const NodeGraph& graph) override;
 
     /// @see Super.
-    virtual void setSelection(const SelectionTree& selection) override;
+    virtual void selectTree(const SelectionTree& selection) override;
 
     /// Moves the currently selection by the specified amount.
     void moveSelectionBy(const cocos2d::Vec2& delta);

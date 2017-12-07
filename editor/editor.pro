@@ -76,7 +76,8 @@ FORMS += \
     inspectors/inspectorstring.ui \
     inspectors/inspectortexture.ui \
     mainwindow.ui \
-    projectsettingsdialog.ui
+    projectsettingsdialog.ui \
+    inspectors/inspectorblend.ui
 
 SUBDIRS += \
     editor.pro

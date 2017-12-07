@@ -20,7 +20,7 @@ public:
 
     /// Sets the selection.
     /// @param selection The desired selection.
-    virtual void setSelection(const SelectionTree& selection) = 0;
+    virtual void selectTree(const SelectionTree& selection) = 0;
 
 Q_SIGNALS:
     void selectionTreeChanged(const SelectionTree& selection);

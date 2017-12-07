@@ -13,8 +13,7 @@ Self::SceneTreeModel(QObject* parent)
 
 Self::~SceneTreeModel() {}
 
-void Self::setNodeGraph(NodeGraph& graph) {
-    nodeGraph_ = &graph;
+void Self::setNodeGraph(const NodeGraph& graph) {
     rootItem_ = SceneTreeItem::createRootItem();
     auto node = SceneTreeItem::createChildItem(rootItem_.get());
     setupTree(node.get(), graph);

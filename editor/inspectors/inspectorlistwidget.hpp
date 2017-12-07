@@ -4,10 +4,6 @@
 #include "inspectorlist.hpp"
 
 namespace ee {
-class NodeGraph;
-class SelectionPath;
-class SelectionTree;
-
 class InspectorListWidget : public InspectorList {
     Q_OBJECT
 
@@ -20,24 +16,19 @@ public:
 
     virtual ~InspectorListWidget() override;
 
-    void addInspector(Inspector* inspector);
+    /// @see Super.
+    virtual void addInspector(Inspector* inspector) override;
 
-    void clearInspectors();
+    /// @see Super.
+    virtual void clearInspectors() override;
 
-    void setSelection(const NodeGraph& graph, const SelectionTree& selection);
-
+    /// @see Super.
     virtual void
     refreshInspector(const std::vector<const cocos2d::Node*>& nodes) override;
 
-Q_SIGNALS:
-   // void propertyValueChanged(const SelectionPath& path,
-   //                           const QString& propertyName,
-   //                           const cocos2d::Value& value);
-
 private:
-    const NodeGraph* nodeGraph_;
-    std::unique_ptr<SelectionTree> selection_;
     QVector<Inspector*> inspectors_;
+    QList<QMetaObject::Connection> connections_;
 };
 } // namespace ee
 

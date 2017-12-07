@@ -31,6 +31,10 @@ Self* Self::setDisplayName(const QString& name) {
 void Self::addInspector(Inspector* inspector) {
     Q_ASSERT(layout() != nullptr);
     ui_->containerWidget->layout()->addWidget(inspector);
+    connect(inspector, &Inspector::propertyChanged,
+            [this](const Applier& applier) { //
+                Q_EMIT propertyChanged(applier);
+            });
     inspectors_.append(inspector);
 }
 

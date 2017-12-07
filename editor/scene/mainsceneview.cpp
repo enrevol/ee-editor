@@ -52,7 +52,7 @@ bool Self::init() {
     addChild(gizmo_, +2);
     connect(gizmo_, &Gizmo::moveBy, this, &Self::moveSelectionBy);
 
-    setSelection(SelectionTree::emptySelection());
+    selectTree(SelectionTree::emptySelection());
 
     background_ =
         cocos2d::LayerColor::create(cocos2d::Color4B(50, 50, 50, 255));
@@ -158,7 +158,7 @@ void Self::setNodeGraph(const NodeGraph& graph) {
     addChild(rootNode_);
 }
 
-void Self::setSelection(const SelectionTree& selection) {
+void Self::selectTree(const SelectionTree& selection) {
     qDebug() << Q_FUNC_INFO;
     selection_ = std::make_unique<SelectionTree>(selection);
 }
@@ -311,7 +311,7 @@ void Self::mouseReleased(cocos2d::EventMouse* event) {
             selection.addPath(path);
         }
         if (selection != *selection_) {
-            setSelection(selection);
+            selectTree(selection);
             Q_EMIT selectionTreeChanged(selection);
         }
     }

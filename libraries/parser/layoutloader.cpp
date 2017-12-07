@@ -113,6 +113,23 @@ void Self::loadProperties(cocos2d::Node* node_,
     handler.loadProperty(Property::LayoutType, node);
 }
 
+void Self::storeProperties(const cocos2d::Node* node_,
+                           PropertyHandler& handler) const {
+    auto node = dynamic_cast<const Target*>(node_);
+    Super::storeProperties(node, handler);
+
+    handler.storeProperty(Property::BackgroundColor, node);
+    handler.storeProperty(Property::BackgroundColorOpacity, node);
+    handler.storeProperty(Property::BackgroundColorType, node);
+    handler.storeProperty(Property::BackgroundColorVector, node);
+    handler.storeProperty(Property::BackgroundImageCapInsets, node);
+    handler.storeProperty(Property::BackgroundImageColor, node);
+    handler.storeProperty(Property::BackgroundImageOpacity, node);
+    handler.storeProperty(Property::ClippingEnabled, node);
+    handler.storeProperty(Property::ClippingType, node);
+    handler.storeProperty(Property::LayoutType, node);
+}
+
 std::string Self::getClassName() const {
     return ClassName;
 }

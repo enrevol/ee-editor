@@ -55,6 +55,9 @@ public:
     virtual void loadProperties(cocos2d::Node* node,
                                 const PropertyHandler& handler) const;
 
+    virtual void storeProperties(const cocos2d::Node* node,
+                                 PropertyHandler& handler) const;
+
     virtual std::string getClassName() const;
 
     PropertyReader getDefaultPropertyReader() const;

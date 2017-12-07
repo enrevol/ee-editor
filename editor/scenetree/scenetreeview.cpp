@@ -24,14 +24,9 @@ Self::SceneTreeView(QWidget* parent)
 
 Self::~SceneTreeView() {}
 
-const NodeGraph& Self::getNodeGraph() const {
-    return *nodeGraph_;
-}
-
 void Self::setNodeGraph(const NodeGraph& graph) {
-    nodeGraph_ = std::make_unique<NodeGraph>(graph);
     treeModel_ = std::make_unique<SceneTreeModel>(this);
-    treeModel_->setNodeGraph(*nodeGraph_);
+    treeModel_->setNodeGraph(graph);
     setModel(treeModel_.get());
 }
 

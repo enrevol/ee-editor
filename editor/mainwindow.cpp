@@ -8,6 +8,7 @@
 #include "projectsettings.hpp"
 #include "projectsettingsdialog.hpp"
 #include "scene/mainsceneview.hpp"
+#include "scenemanager.hpp"
 #include "selection/selectiontree.hpp"
 #include "settings.hpp"
 #include "ui_mainwindow.h"
@@ -91,65 +92,18 @@ Self::MainWindow(QWidget* parent)
     //});
 
     /*
-    connect(ui_->inspectorList, &InspectorListWidget::propertyValueChanged,
-            [this](const SelectionPath& path, const QString& propertyName,
-                   const cocos2d::Value& value) {
-                auto sceneTree = ui_->sceneTree;
-                auto rootScene = dynamic_cast<RootScene*>(
-                    cocos2d::Director::getInstance()->getRunningScene());
-                rootScene->updateSelectionProperty(sceneTree->getNodeGraph(),
-                                                   path, propertyName, value);
-                sceneTree->updateSelectionProperty(path, propertyName, value);
-            });
-            */
-
-    // FIXME: RootScene hasn't been initialized.
-    /*
+     FIXME: RootScene hasn't been initialized.
+     */
     QTimer::singleShot(1, [this] {
-        auto rootScene = dynamic_cast<RootScene*>(
+        auto mainScene = dynamic_cast<MainScene*>(
             cocos2d::Director::getInstance()->getRunningScene());
-        connect(
-            rootScene, &RootScene::propertyValueChanged,
-            [this](const SelectionPath& path, const QString& propertyName,
-                   const cocos2d::Value& value) {
-                qDebug() << "root scene change property " << propertyName;
-                auto sceneTree = ui_->sceneTree;
-                auto inspectorList = ui_->inspectorList;
-                sceneTree->updateSelectionProperty(path, propertyName, value);
-                inspectorList->refreshProperty(sceneTree->getNodeGraph(),
-                                               sceneTree->currentSelection(),
-                                               propertyName);
-            });
+        auto sceneTree = ui_->sceneTree;
+        auto inspectorList = ui_->inspectorList;
 
-        connect(rootScene, &RootScene::selectionTreeChanged,
-                [this](const SelectionTree& selection) {
-                    auto sceneTree = ui_->sceneTree;
-                    auto list = ui_->inspectorList;
-
-                    sceneTree->selectTree(selection);
-                    list->setSelection(sceneTree->getNodeGraph(), selection);
-                });
+        sceneManager_ =
+            std::make_unique<SceneManager>(mainScene, sceneTree, inspectorList);
+        sceneManager_->connect();
     });
-    */
-
-    /*
-    connect(&Config::getInstance(), &Config::interfaceLoaded,
-            [this](const QFileInfo& path) {
-                Q_UNUSED(path);
-                auto sceneTree = ui_->sceneTree;
-                sceneTree->setNodeGraph(Config::getInstance()
-                                            .getInterfaceSettings()
-                                            ->getNodeGraph()
-                                            .value());
-
-                auto rootScene = dynamic_cast<RootScene*>(
-                    cocos2d::Director::getInstance()->getRunningScene());
-                rootScene->setNodeGraph(Config::getInstance()
-                                            .getInterfaceSettings()
-                                            ->getNodeGraph()
-                                            .value());
-            });
-            */
 
     auto&& watcher = FileSystemWatcher::getInstance();
     connect(&watcher, &FileSystemWatcher::fileChanged,
@@ -218,7 +172,7 @@ void Self::openProject() {
     ProjectResources::getInstance().addResources(config.getProjectSettings());
     // ui_->actionProject_Settings->setEnabled(true);
     // ui_->actionInterface_File->setEnabled(true);
-    // ui_->resourceTree->setListenToFileChangeEvents(true);
+    ui_->resourceTree->setListenToFileChangeEvents(true);
 }
 
 void Self::closeProject(const QFileInfo& path) {
@@ -263,6 +217,9 @@ void Self::createInterface() {
 
 void Self::loadInterface(const QFileInfo& path) {
     Q_UNUSED(path);
+    auto&& config = Config::getInstance();
+    auto&& interface = config.getInterfaceSettings().value();
+    sceneManager_->setNodeGraph(interface.getNodeGraph().value());
     ui_->saveButton->setEnabled(true);
 }
 
@@ -271,8 +228,9 @@ void Self::saveInterface() {
     auto&& settings = config.getInterfaceSettings();
     Q_ASSERT(settings.has_value());
     InterfaceSettings newSettings(settings->getInterfacePath());
-    newSettings.setNodeGraph(ui_->sceneTree->getNodeGraph());
-    config.setInterfaceSettings(newSettings);
-    newSettings.write();
+    // FIXME.
+    // newSettings.setNodeGraph(ui_->sceneTree->getNodeGraph());
+    // config.setInterfaceSettings(newSettings);
+    // newSettings.write();
 }
 } // namespace ee

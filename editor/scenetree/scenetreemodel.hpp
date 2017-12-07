@@ -21,7 +21,7 @@ public:
     virtual ~SceneTreeModel() override;
 
     /// Sets the node graph reference.
-    void setNodeGraph(NodeGraph& graph);
+    void setNodeGraph(const NodeGraph& graph);
 
     QModelIndex rootIndex() const;
 
@@ -63,9 +63,6 @@ protected:
     SceneTreeItem* getTreeItem(const QModelIndex& index) const;
 
 private:
-    /// Reference to the node graph.
-    NodeGraph* nodeGraph_;
-
     /// Root scene tree item.
     std::unique_ptr<SceneTreeItem> rootItem_;
 };

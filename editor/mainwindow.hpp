@@ -11,6 +11,7 @@ class MainWindow;
 
 namespace ee {
 class OpenGLWidget;
+class SceneManager;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -35,6 +36,7 @@ public:
 
 private:
     Ui::MainWindow* ui_;
+    std::unique_ptr<SceneManager> sceneManager_;
 };
 } // namespace ee
 
