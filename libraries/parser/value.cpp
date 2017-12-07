@@ -126,7 +126,9 @@ Self::Value(Self&& other) {
     *this = std::move(other);
 }
 
-Self::~Value() {}
+Self::~Value() {
+    clear();
+}
 
 Self& Self::operator=(const Self& other) {
     if (this == &other) {
@@ -193,17 +195,20 @@ Self& Self::operator=(Self&& other) {
 Self& Self::operator=(bool value) {
     clear();
     field_.b = value;
+    type_ = Type::Bool;
     return *this;
 }
 
 Self& Self::operator=(int value) {
     clear();
     field_.i = value;
+    type_ = Type::Int;
     return *this;
 }
 Self& Self::operator=(float value) {
     clear();
     field_.f = value;
+    type_ = Type::Float;
     return *this;
 }
 
@@ -233,37 +238,43 @@ Self& Self::operator=(ValueMap&& value) {
 
 Self& Self::operator=(const std::unique_ptr<std::string>& value) {
     clear();
-    field_.s = std::make_unique<std::string>(*value);
+    new (&field_.s) std::unique_ptr<std::string>(new std::string(*value));
+    type_ = Type::String;
     return *this;
 }
 
 Self& Self::operator=(std::unique_ptr<std::string>&& value) {
     clear();
-    field_.s = std::move(value);
+    new (&field_.s) std::unique_ptr<std::string>(std::move(value));
+    type_ = Type::String;
     return *this;
 }
 
 Self& Self::operator=(const std::unique_ptr<ValueList>& value) {
     clear();
-    field_.l = std::make_unique<ValueList>(*value);
+    new (&field_.l) std::unique_ptr<ValueList>(new ValueList(*value));
+    type_ = Type::List;
     return *this;
 }
 
 Self& Self::operator=(std::unique_ptr<ValueList>&& value) {
     clear();
-    field_.l = std::move(value);
+    new (&field_.l) std::unique_ptr<ValueList>(std::move(value));
+    type_ = Type::List;
     return *this;
 }
 
 Self& Self::operator=(const std::unique_ptr<ValueMap>& value) {
     clear();
-    field_.m = std::make_unique<ValueMap>(*value);
+    new (&field_.m) std::unique_ptr<ValueMap>(new ValueMap(*value));
+    type_ = Type::Map;
     return *this;
 }
 
 Self& Self::operator=(std::unique_ptr<ValueMap>&& value) {
     clear();
-    field_.m = std::move(value);
+    new (&field_.m) std::unique_ptr<ValueMap>(std::move(value));
+    type_ = Type::Map;
     return *this;
 }
 
@@ -384,13 +395,13 @@ void Self::clear() {
         field_.f = 0;
         break;
     case Type::String:
-        field_.s.reset();
+        field_.s.~unique_ptr();
         break;
     case Type::List:
-        field_.l.reset();
+        field_.l.~unique_ptr();
         break;
     case Type::Map:
-        field_.m.reset();
+        field_.m.~unique_ptr();
         break;
     }
     type_ = Type::None;
