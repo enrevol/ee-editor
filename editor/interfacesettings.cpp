@@ -71,7 +71,7 @@ bool Self::write() const {
 
 bool Self::deserialize(const QJsonObject& json) {
     auto obj = json.value(key::node_graph).toObject();
-    auto dict = convertToValue(obj).asValueMap();
+    auto dict = convertToValue(obj).getMap();
     NodeGraph graph(dict);
     setNodeGraph(graph);
     return true;
@@ -79,7 +79,7 @@ bool Self::deserialize(const QJsonObject& json) {
 
 void Self::serialize(QJsonObject& json) const {
     auto dict = getNodeGraph()->toDict();
-    auto obj = convertToJson(cocos2d::Value(dict)).toObject();
+    auto obj = convertToJson(Value(dict)).toObject();
     json[key::node_graph] = obj;
 }
 } // namespace ee

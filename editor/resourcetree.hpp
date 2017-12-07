@@ -5,6 +5,7 @@
 #include <QTreeWidget>
 
 namespace ee {
+/// Displays all resource files in the current project.
 class ResourceTree : public QTreeWidget {
     Q_OBJECT
 

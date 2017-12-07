@@ -1,5 +1,7 @@
 #include "utils.hpp"
 
+#include <parser/value.hpp>
+
 #include <base/CCDirector.h>
 #include <platform/CCGLView.h>
 
@@ -17,13 +19,23 @@ void doneCocosContext() {
 }
 
 void makeCocosContext(cocos2d::GLView* view) {
+    auto oldContext = QOpenGLContext::currentContext();
     auto context = view->getOpenGLContext();
     context->makeCurrent(context->surface());
+    auto newContext = QOpenGLContext::currentContext();
+    qDebug() << QString::asprintf("Make cocos context: from %p to %p",
+                                  static_cast<void*>(oldContext),
+                                  static_cast<void*>(newContext));
 }
 
 void doneCocosContext(cocos2d::GLView* view) {
+    auto oldContext = QOpenGLContext::currentContext();
     auto context = view->getOpenGLContext();
     context->doneCurrent();
+    auto newContext = QOpenGLContext::currentContext();
+    qDebug() << QString::asprintf("Done cocos context: from %p to %p",
+                                  static_cast<void*>(oldContext),
+                                  static_cast<void*>(newContext));
 }
 
 bool isCurrentContextCocos() {
@@ -34,29 +46,29 @@ bool isCurrentContextCocos() {
     return context == currentContext;
 }
 
-QJsonValue convertToJson(const cocos2d::Value& value) {
-    if (value.getType() == cocos2d::Value::Type::BOOLEAN) {
-        return value.asBool();
+QJsonValue convertToJson(const Value& value) {
+    if (value.isBool()) {
+        return value.getBool();
     }
-    if (value.getType() == cocos2d::Value::Type::INTEGER) {
-        return value.asInt();
+    if (value.isInt()) {
+        return value.getInt();
     }
-    if (value.getType() == cocos2d::Value::Type::FLOAT) {
-        return static_cast<double>(value.asFloat());
+    if (value.isFloat()) {
+        return static_cast<double>(value.getFloat());
     }
-    if (value.getType() == cocos2d::Value::Type::STRING) {
-        return QString::fromStdString(value.asString());
+    if (value.isString()) {
+        return QString::fromStdString(value.getString());
     }
-    if (value.getType() == cocos2d::Value::Type::VECTOR) {
+    if (value.isList()) {
         QJsonArray array;
-        for (auto&& v : value.asValueVector()) {
+        for (auto&& v : value.getList()) {
             array.append(convertToJson(v));
         }
         return array;
     }
-    if (value.getType() == cocos2d::Value::Type::MAP) {
+    if (value.isMap()) {
         QJsonObject dict;
-        for (auto&& v : value.asValueMap()) {
+        for (auto&& v : value.getMap()) {
             dict.insert(QString::fromStdString(v.first),
                         convertToJson(v.second));
         }
@@ -66,38 +78,38 @@ QJsonValue convertToJson(const cocos2d::Value& value) {
     return QJsonValue::Null;
 }
 
-cocos2d::Value convertToValue(const QJsonValue& json) {
+Value convertToValue(const QJsonValue& json) {
     if (json.isBool()) {
-        return cocos2d::Value(json.toBool());
+        return Value(json.toBool());
     }
     if (json.isDouble()) {
         auto v = json.toDouble();
         constexpr auto eps = std::numeric_limits<double>::epsilon();
         if (std::abs(int(v) - v) < eps) {
-            return cocos2d::Value(json.toInt());
+            return Value(json.toInt());
         }
-        return cocos2d::Value(static_cast<float>(json.toDouble()));
+        return Value(static_cast<float>(json.toDouble()));
     }
     if (json.isString()) {
-        return cocos2d::Value(json.toString().toStdString());
+        return Value(json.toString().toStdString());
     }
     if (json.isArray()) {
-        cocos2d::ValueVector array;
+        ValueList array;
         for (auto v : json.toArray()) {
             array.push_back(convertToValue(v));
         }
-        return cocos2d::Value(array);
+        return Value(array);
     }
     if (json.isObject()) {
-        cocos2d::ValueMap dict;
+        ValueMap dict;
         auto obj = json.toObject();
         for (auto iter = obj.begin(); iter != obj.end(); ++iter) {
             dict.emplace(iter.key().toStdString(),
                          convertToValue(iter.value()));
         }
-        return cocos2d::Value(dict);
+        return Value(dict);
     }
     Q_ASSERT(false);
-    return cocos2d::Value::Null;
+    return Value::Null;
 }
 } // namespace ee

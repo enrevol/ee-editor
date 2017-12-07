@@ -2,13 +2,13 @@
 
 #include "config.hpp"
 #include "filesystemwatcher.hpp"
+#include "inspectors/nodeinspector.hpp"
 #include "mainwindow.hpp"
-#include "nodeinspector.hpp"
 #include "projectresources.hpp"
 #include "projectsettings.hpp"
 #include "projectsettingsdialog.hpp"
-#include "rootscene.hpp"
-#include "selectiontree.hpp"
+#include "scene/mainsceneview.hpp"
+#include "selection/selectiontree.hpp"
 #include "settings.hpp"
 #include "ui_mainwindow.h"
 
@@ -36,104 +36,28 @@ Self::MainWindow(QWidget* parent)
 
     // Not supported yet.
     ui_->actionClose->setVisible(false);
-    ui_->actionClose_Project->setVisible(false);
+    ui_->closeProjectButton->setVisible(false);
     ui_->actionSave_As->setVisible(false);
     ui_->actionSave_All->setVisible(false);
     ui_->actionPublish->setVisible(false);
     ui_->actionPublish_Settings->setVisible(false);
 
-    connect(ui_->actionProject_Settings, &QAction::triggered, this,
-            &Self::onProjectSettingsButtonPressed);
+    connect(ui_->createProjectButton, &QAction::triggered, this,
+            &Self::createProject);
 
-    connect(ui_->actionProject, &QAction::triggered, [this] {
-        Settings settings;
-        auto path = QFileDialog::getSaveFileName(
-            this, "New Project", settings.getLastBrowsingPath().absolutePath(),
-            filter::project);
+    connect(ui_->openProjectButton, &QAction::triggered, this,
+            &Self::openProject);
 
-        if (path.isEmpty()) {
-            return;
-        }
-        qDebug() << "Create new project: " << path;
-        QFileInfo filePath(path);
-        settings.setLastBrowsingPath(QDir(filePath.absolutePath()));
-        auto&& config = Config::getInstance();
-        if (config.createProject(filePath)) {
-            if (config.loadProject(filePath)) {
-                // Nothing.
-            }
-        }
-    });
+    connect(ui_->saveButton, &QAction::triggered, this, &Self::saveInterface);
 
-    connect(ui_->actionOpen, &QAction::triggered, [this] {
-        Settings settings;
-        auto path = QFileDialog::getOpenFileName(
-            this, "Open Project", settings.getLastBrowsingPath().absolutePath(),
-            filter::project);
+    connect(&Config::getInstance(), &Config::projectClosed, this,
+            &Self::closeProject);
 
-        if (path.isEmpty()) {
-            return;
-        }
-        qDebug() << "select: " << path;
-        QFileInfo filePath(path);
-        settings.setLastBrowsingPath(QDir(filePath.absolutePath()));
-        auto&& config = Config::getInstance();
-        if (not config.loadProject(filePath)) {
-            return;
-        }
-    });
+    connect(ui_->openProjectSettingsButton, &QAction::triggered, this,
+            &Self::openProjectSettings);
 
-    connect(ui_->actionSave, &QAction::triggered, [this] {
-        auto&& config = Config::getInstance();
-        auto&& settings = config.getInterfaceSettings();
-        Q_ASSERT(settings.has_value());
-        InterfaceSettings newSettings(settings->getInterfacePath());
-        newSettings.setNodeGraph(ui_->sceneTree->getNodeGraph());
-        config.setInterfaceSettings(newSettings);
-        newSettings.write();
-    });
-
-    connect(&Config::getInstance(), &Config::projectClosed,
-            [this](const QFileInfo& path) {
-                Q_UNUSED(path);
-                ProjectResources::getInstance().removeResources(
-                    Config::getInstance().getProjectSettings());
-            });
-
-    connect(&Config::getInstance(), &Config::projectLoaded,
-            [this](const QFileInfo& path) {
-                Q_UNUSED(path);
-                ProjectResources::getInstance().addResources(
-                    Config::getInstance().getProjectSettings());
-
-                ui_->actionProject_Settings->setEnabled(true);
-                ui_->actionInterface_File->setEnabled(true);
-                ui_->resourceTree->setListenToFileChangeEvents(true);
-            });
-
-    connect(&Config::getInstance(), &Config::interfaceLoaded,
-            [this](const QFileInfo& path) {
-                Q_UNUSED(path);
-                ui_->actionSave->setEnabled(true);
-            });
-
-    connect(ui_->actionInterface_File, &QAction::triggered, [this] {
-        auto&& config = Config::getInstance();
-        auto path = QFileDialog::getSaveFileName(
-            this, "New Interface",
-            config.getProjectSettings().getProjectDirectory().absolutePath(),
-            filter::interface);
-        if (path.isEmpty()) {
-            return;
-        }
-        qDebug() << "Create new interface: " << path;
-        QFileInfo info(path);
-        if (config.createInterface(info)) {
-            if (config.loadInterface(info)) {
-                // Nothing.
-            }
-        }
-    });
+    connect(ui_->createInterfaceButton, &QAction::triggered, this,
+            &Self::createInterface);
 
     connect(ui_->resourceTree, &ResourceTree::imageSelected,
             [this](const QString& imagePath) {
@@ -160,23 +84,13 @@ Self::MainWindow(QWidget* parent)
     connect(ui_->premultipliedAlphaButton, &QPushButton::clicked,
             [this] { ui_->imageView->setBlendPremultipliedAlpha(); });
 
-    connect(ui_->addNodeButton, &QPushButton::clicked, [this] {
-        auto scene = dynamic_cast<RootScene*>(
-            cocos2d::Director::getInstance()->getRunningScene());
-        // ui_->sceneTree->setRootNode(scene);
-    });
+    // connect(ui_->addNodeButton, &QPushButton::clicked, [this] {
+    //    auto scene = dynamic_cast<RootScene*>(
+    //        cocos2d::Director::getInstance()->getRunningScene());
+    // ui_->sceneTree->setRootNode(scene);
+    //});
 
-    connect(ui_->sceneTree, &SceneTree::selectionTreeChanged,
-            [this](const SelectionTree& selection) {
-                auto rootScene = dynamic_cast<RootScene*>(
-                    cocos2d::Director::getInstance()->getRunningScene());
-                auto sceneTree = ui_->sceneTree;
-                auto list = ui_->inspectorList;
-
-                rootScene->setSelection(selection);
-                list->setSelection(sceneTree->getNodeGraph(), selection);
-            });
-
+    /*
     connect(ui_->inspectorList, &InspectorListWidget::propertyValueChanged,
             [this](const SelectionPath& path, const QString& propertyName,
                    const cocos2d::Value& value) {
@@ -187,8 +101,10 @@ Self::MainWindow(QWidget* parent)
                                                    path, propertyName, value);
                 sceneTree->updateSelectionProperty(path, propertyName, value);
             });
+            */
 
     // FIXME: RootScene hasn't been initialized.
+    /*
     QTimer::singleShot(1, [this] {
         auto rootScene = dynamic_cast<RootScene*>(
             cocos2d::Director::getInstance()->getRunningScene());
@@ -214,7 +130,9 @@ Self::MainWindow(QWidget* parent)
                     list->setSelection(sceneTree->getNodeGraph(), selection);
                 });
     });
+    */
 
+    /*
     connect(&Config::getInstance(), &Config::interfaceLoaded,
             [this](const QFileInfo& path) {
                 Q_UNUSED(path);
@@ -231,6 +149,7 @@ Self::MainWindow(QWidget* parent)
                                             ->getNodeGraph()
                                             .value());
             });
+            */
 
     auto&& watcher = FileSystemWatcher::getInstance();
     connect(&watcher, &FileSystemWatcher::fileChanged,
@@ -245,10 +164,10 @@ Self::MainWindow(QWidget* parent)
                 ui_->resourceTree->updateResourceDirectories();
             });
 
-    ui_->actionProject_Settings->setEnabled(false);
-    ui_->actionInterface_File->setEnabled(false);
-    ui_->actionSave->setEnabled(false);
-    ui_->resourceTree->setListenToFileChangeEvents(false);
+    //  ui_->actionProject_Settings->setEnabled(false);
+    //   ui_->actionInterface_File->setEnabled(false);
+    //   ui_->actionSave->setEnabled(false);
+    //   ui_->resourceTree->setListenToFileChangeEvents(false);
 }
 
 Self::~MainWindow() {
@@ -259,7 +178,56 @@ OpenGLWidget* Self::getOpenGLView() {
     return ui_->sceneView;
 }
 
-void Self::onProjectSettingsButtonPressed() {
+void Self::createProject() {
+    Settings settings;
+    auto path = QFileDialog::getSaveFileName(
+        this, "New Project", settings.getLastBrowsingPath().absolutePath(),
+        filter::project);
+
+    if (path.isEmpty()) {
+        return;
+    }
+    qDebug() << "Create new project: " << path;
+    QFileInfo filePath(path);
+    settings.setLastBrowsingPath(QDir(filePath.absolutePath()));
+    auto&& config = Config::getInstance();
+    if (config.createProject(filePath)) {
+        if (config.loadProject(filePath)) {
+            // Nothing.
+        }
+    }
+}
+
+void Self::openProject() {
+    Settings settings;
+    auto path = QFileDialog::getOpenFileName(
+        this, "Open Project", settings.getLastBrowsingPath().absolutePath(),
+        filter::project);
+
+    if (path.isEmpty()) {
+        return;
+    }
+    qDebug() << "select: " << path;
+    QFileInfo filePath(path);
+    settings.setLastBrowsingPath(QDir(filePath.absolutePath()));
+    auto&& config = Config::getInstance();
+    if (not config.loadProject(filePath)) {
+        return;
+    }
+
+    ProjectResources::getInstance().addResources(config.getProjectSettings());
+    // ui_->actionProject_Settings->setEnabled(true);
+    // ui_->actionInterface_File->setEnabled(true);
+    // ui_->resourceTree->setListenToFileChangeEvents(true);
+}
+
+void Self::closeProject(const QFileInfo& path) {
+    Q_UNUSED(path);
+    ProjectResources::getInstance().removeResources(
+        Config::getInstance().getProjectSettings());
+}
+
+void Self::openProjectSettings() {
     qDebug() << Q_FUNC_INFO;
 
     auto&& config = Config::getInstance();
@@ -273,5 +241,38 @@ void Self::onProjectSettingsButtonPressed() {
         ui_->resourceTree->updateResourceDirectories();
     });
     dialog->exec();
+}
+
+void Self::createInterface() {
+    auto&& config = Config::getInstance();
+    auto path = QFileDialog::getSaveFileName(
+        this, "New Interface",
+        config.getProjectSettings().getProjectDirectory().absolutePath(),
+        filter::interface);
+    if (path.isEmpty()) {
+        return;
+    }
+    qDebug() << "Create new interface: " << path;
+    QFileInfo info(path);
+    if (config.createInterface(info)) {
+        if (config.loadInterface(info)) {
+            loadInterface(info);
+        }
+    }
+}
+
+void Self::loadInterface(const QFileInfo& path) {
+    Q_UNUSED(path);
+    ui_->saveButton->setEnabled(true);
+}
+
+void Self::saveInterface() {
+    auto&& config = Config::getInstance();
+    auto&& settings = config.getInterfaceSettings();
+    Q_ASSERT(settings.has_value());
+    InterfaceSettings newSettings(settings->getInterfacePath());
+    newSettings.setNodeGraph(ui_->sceneTree->getNodeGraph());
+    config.setInterfaceSettings(newSettings);
+    newSettings.write();
 }
 } // namespace ee

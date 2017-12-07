@@ -1,6 +1,6 @@
 #include "appdelegate.hpp"
 #include "projectresources.hpp"
-#include "rootscene.hpp"
+#include "scene/mainsceneview.hpp"
 #include "utils.hpp"
 
 #include <2d/CCActionInterval.h>
@@ -49,7 +49,7 @@ bool Self::applicationDidFinishLaunching() {
     fileUtils->addSearchPath("cocos_images");
     ProjectResources::getInstance().addDefaultSearchPath("cocos_images");
 
-    auto scene = RootScene::create();
+    auto scene = MainSceneView::create();
     director->runWithScene(scene);
 
     doneCocosContext();

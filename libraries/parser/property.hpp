@@ -31,7 +31,7 @@ public:
     using Value = ValueT;
 
     using Reader = std::function<Value(const cocos2d::Node* node)>;
-    using Writer = std::function<void(cocos2d::Node* node, const Value& value)>;
+    using Writer = std::function<bool(cocos2d::Node* node, const Value& value)>;
 
     explicit Property(const std::string& name, const Reader& reader,
                       const Writer& writer)
@@ -40,11 +40,13 @@ public:
         , writer_(writer) {}
 
     const std::string& getName() const { return name_; }
+    const Reader& getReader() const { return reader_; }
+    const Writer& getWriter() const { return writer_; }
 
-    Value read(const cocos2d::Node* node) const { return reader_(node); }
+    Value read(const cocos2d::Node* node) const { return getReader()(node); }
 
-    void write(cocos2d::Node* node, const Value& value) const {
-        writer_(node, value);
+    bool write(cocos2d::Node* node, const Value& value) const {
+        return getWriter()(node, value);
     }
 
 private:
@@ -64,12 +66,16 @@ typename Property<Value>::Reader makePropertyReader(const Reader& reader) {
 }
 
 template <class Target, class Value,
-          class Writer = std::function<void(Target* node, const Value& value)>>
+          class Writer = std::function<bool(Target* node, const Value& value)>>
 typename Property<Value>::Writer makePropertyWriter(const Writer& writer) {
     return [writer](cocos2d::Node* node_, const Value& value) {
         auto node = dynamic_cast<Target*>(node_);
-        assert(node != nullptr);
+        if (node == nullptr) {
+            assert(false);
+            return false;
+        }
         writer(node, value);
+        return true;
     };
 }
 

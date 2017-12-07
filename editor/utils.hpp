@@ -1,8 +1,6 @@
 #ifndef EE_EDITOR_UTILS_HPP
 #define EE_EDITOR_UTILS_HPP
 
-#include <base/CCValue.h>
-
 #include <QJsonValue>
 
 namespace cocos2d {
@@ -10,6 +8,8 @@ class GLView;
 } // namespace cocos2d
 
 namespace ee {
+class Value;
+
 void makeCocosContext();
 void doneCocosContext();
 
@@ -19,10 +19,10 @@ void doneCocosContext(cocos2d::GLView* view);
 bool isCurrentContextCocos();
 
 /// Converts from cocos2d::Value to QJsonValue.
-QJsonValue convertToJson(const cocos2d::Value& value);
+QJsonValue convertToJson(const Value& value);
 
 /// Converts from QJsonValue to cocos2d::Value.
-cocos2d::Value convertToValue(const QJsonValue& json);
+Value convertToValue(const QJsonValue& json);
 } // namespace ee
 
 #endif // EE_EDITOR_UTILS_HPP

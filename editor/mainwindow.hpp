@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+class QFileInfo;
+
 namespace Ui {
 class MainWindow;
 } // namespace Ui
@@ -23,8 +25,13 @@ public:
 
     OpenGLWidget* getOpenGLView();
 
-protected Q_SLOTS:
-    void onProjectSettingsButtonPressed();
+    void createProject();
+    void openProject();
+    void closeProject(const QFileInfo& path);
+    void openProjectSettings();
+    void createInterface();
+    void loadInterface(const QFileInfo& path);
+    void saveInterface();
 
 private:
     Ui::MainWindow* ui_;

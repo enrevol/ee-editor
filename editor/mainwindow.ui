@@ -262,7 +262,7 @@
                 </size>
                </property>
               </widget>
-              <widget class="ee::SceneTree" name="sceneTree"/>
+              <widget class="ee::SceneTreeView" name="sceneTree"/>
              </widget>
             </item>
            </layout>
@@ -313,7 +313,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>300</width>
-                 <height>507</height>
+                 <height>513</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -391,25 +391,25 @@
      <property name="title">
       <string>New</string>
      </property>
-     <addaction name="actionProject"/>
+     <addaction name="createProjectButton"/>
      <addaction name="separator"/>
-     <addaction name="actionInterface_File"/>
+     <addaction name="createInterfaceButton"/>
     </widget>
     <addaction name="menuNew"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen"/>
+    <addaction name="openProjectButton"/>
     <addaction name="actionOpen_Recent"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
-    <addaction name="actionClose_Project"/>
+    <addaction name="closeProjectButton"/>
     <addaction name="separator"/>
-    <addaction name="actionSave"/>
+    <addaction name="saveButton"/>
     <addaction name="actionSave_As"/>
     <addaction name="actionSave_All"/>
     <addaction name="separator"/>
     <addaction name="actionPublish"/>
     <addaction name="separator"/>
-    <addaction name="actionProject_Settings"/>
+    <addaction name="openProjectSettingsButton"/>
     <addaction name="actionPublish_Settings"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -471,7 +471,7 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <action name="actionProject">
+  <action name="createProjectButton">
    <property name="text">
     <string>Project...</string>
    </property>
@@ -479,7 +479,7 @@
     <string>Ctrl+Shift+N</string>
    </property>
   </action>
-  <action name="actionInterface_File">
+  <action name="createInterfaceButton">
    <property name="text">
     <string>Interface File...</string>
    </property>
@@ -487,7 +487,7 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionOpen">
+  <action name="openProjectButton">
    <property name="text">
     <string>Open...</string>
    </property>
@@ -508,7 +508,7 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionClose_Project">
+  <action name="closeProjectButton">
    <property name="text">
     <string>Close Project</string>
    </property>
@@ -516,7 +516,7 @@
     <string>Ctrl+Alt+W</string>
    </property>
   </action>
-  <action name="actionSave">
+  <action name="saveButton">
    <property name="text">
     <string>Save</string>
    </property>
@@ -545,7 +545,7 @@
     <string>Ctrl+Alt+S</string>
    </property>
   </action>
-  <action name="actionProject_Settings">
+  <action name="openProjectSettingsButton">
    <property name="text">
     <string>Project Settings</string>
    </property>
@@ -681,7 +681,7 @@
   <customwidget>
    <class>ee::OpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
-   <header>openglwidget.hpp</header>
+   <header>scene/openglwidget.hpp</header>
   </customwidget>
   <customwidget>
    <class>ee::ResourceTree</class>
@@ -689,14 +689,14 @@
    <header>resourcetree.hpp</header>
   </customwidget>
   <customwidget>
-   <class>ee::SceneTree</class>
+   <class>ee::SceneTreeView</class>
    <extends>QTreeView</extends>
-   <header>scenetree.hpp</header>
+   <header>scenetree/scenetreeview.hpp</header>
   </customwidget>
   <customwidget>
    <class>ee::InspectorListWidget</class>
    <extends>QWidget</extends>
-   <header>inspectorlistwidget.hpp</header>
+   <header>inspectors/inspectorlistwidget.hpp</header>
    <container>1</container>
   </customwidget>
   <customwidget>

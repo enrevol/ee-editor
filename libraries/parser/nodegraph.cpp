@@ -58,19 +58,17 @@ std::string Self::getDisplayName() const {
     return getBaseClass();
 }
 
-/*
 void Self::setBaseClass(const std::string& name) {
-    getPropertyWriter().setProperty(key::base_class, name);
+    propertyHandler_.setProperty(key::base_class, name);
 }
 
 void Self::setCustomClass(const std::string& name) {
-    getPropertyWriter().setProperty(key::custom_class, name);
+    propertyHandler_.setProperty(key::custom_class, name);
 }
 
 void Self::setDisplayName(const std::string& name) {
-    getPropertyWriter().setProperty(key::display_name, name);
+    propertyHandler_.setProperty(key::display_name, name);
 }
-*/
 
 Self& Self::getChild(std::size_t index) {
     return children_.at(index);

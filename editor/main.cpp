@@ -1,6 +1,6 @@
 #include "appdelegate.hpp"
 #include "mainwindow.hpp"
-#include "openglwidget.hpp"
+#include "scene/openglwidget.hpp"
 
 #include "platform/qt/CCOpenGLWidget_Qt.hpp"
 

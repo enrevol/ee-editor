@@ -7,83 +7,104 @@
 
 namespace ee {
 using Self = NodeLoader;
+using Target = cocos2d::Node;
+using Helper = PropertyHelper<Target>;
 
-const PropertyPoint
-    Self::Property::AnchorPoint("anchor_point",
-                                std::mem_fn(&Target::getAnchorPoint),
-                                std::mem_fn(&Target::setAnchorPoint));
+const PropertyPoint Self::Property::AnchorPoint(
+    "anchor_point",
+    Helper::makeReader<cocos2d::Point>(std::mem_fn(&Target::getAnchorPoint)),
+    Helper::makeWriter<cocos2d::Point>(std::mem_fn(&Target::setAnchorPoint)));
 
 const PropertyBool Self::Property::CascadeColorEnabled(
-    "cascade_color_enabled", std::mem_fn(&Target::isCascadeColorEnabled),
-    std::mem_fn(&Target::setCascadeColorEnabled));
+    "cascade_color_enabled",
+    Helper::makeReader<bool>(std::mem_fn(&Target::isCascadeColorEnabled)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setCascadeColorEnabled)));
 
 const PropertyBool Self::Property::CascadeOpacityEnabled(
-    "cascade_opacity_enabled", std::mem_fn(&Target::isCascadeOpacityEnabled),
-    std::mem_fn(&Target::setCascadeOpacityEnabled));
+    "cascade_opacity_enabled",
+    Helper::makeReader<bool>(std::mem_fn(&Target::isCascadeOpacityEnabled)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setCascadeOpacityEnabled)));
 
-const PropertyColor3B Self::Property::Color("color",
-                                            std::mem_fn(&Target::getColor),
-                                            std::mem_fn(&Target::setColor));
+const PropertyColor3B Self::Property::Color(
+    "color",
+    Helper::makeReader<cocos2d::Color3B>(std::mem_fn(&Target::getColor)),
+    Helper::makeWriter<cocos2d::Color3B>(std::mem_fn(&Target::setColor)));
 
-const PropertySize
-    Self::Property::ContentSize("content_size",
-                                std::mem_fn(&Target::getContentSize),
-                                std::mem_fn(&Target::setContentSize));
+const PropertySize Self::Property::ContentSize(
+    "content_size",
+    Helper::makeReader<cocos2d::Size>(std::mem_fn(&Target::getContentSize)),
+    Helper::makeWriter<cocos2d::Size>(std::mem_fn(&Target::setContentSize)));
 
 const PropertyBool Self::Property::IgnoreAnchorPointForPosition(
     "ignore_anchor_point_for_position",
-    std::mem_fn(&Target::isIgnoreAnchorPointForPosition),
-    std::mem_fn(&Target::setIgnoreAnchorPointForPosition));
+    Helper::makeReader<bool>(
+        std::mem_fn(&Target::isIgnoreAnchorPointForPosition)),
+    Helper::makeWriter<bool>(
+        std::mem_fn(&Target::setIgnoreAnchorPointForPosition)));
 
-const PropertyInt
-    Self::Property::LocalZOrder("local_z_order",
-                                std::mem_fn(&Target::getLocalZOrder),
-                                std::mem_fn(&Target::setLocalZOrder));
+const PropertyInt Self::Property::LocalZOrder(
+    "local_z_order",
+    Helper::makeReader<int>(std::mem_fn(&Target::getLocalZOrder)),
+    Helper::makeWriter<int>(std::mem_fn(&Target::setLocalZOrder)));
 
-const PropertyString Self::Property::Name("name", std::mem_fn(&Target::getName),
-                                          std::mem_fn(&Target::setName));
+const PropertyString Self::Property::Name(
+    "name", //
+    Helper::makeReader<std::string>(std::mem_fn(&Target::getName)),
+    Helper::makeWriter<std::string>(std::mem_fn(&Target::setName)));
 
-const PropertyInt Self::Property::Opacity("opacity",
-                                          std::mem_fn(&Target::getOpacity),
-                                          std::mem_fn(&Target::setOpacity));
+const PropertyInt Self::Property::Opacity(
+    "opacity", //
+    Helper::makeReader<int>(std::mem_fn(&Target::getOpacity)),
+    Helper::makeWriter<int>(std::mem_fn(&Target::setOpacity)));
 
-const PropertyBool
-    Self::Property::OpacityModifyRGB("opacity_modify_rgb",
-                                     std::mem_fn(&Target::isOpacityModifyRGB),
-                                     std::mem_fn(&Target::setOpacityModifyRGB));
+const PropertyBool Self::Property::OpacityModifyRGB(
+    "opacity_modify_rgb",
+    Helper::makeReader<bool>(std::mem_fn(&Target::isOpacityModifyRGB)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setOpacityModifyRGB)));
 
 const PropertyPoint Self::Property::Position(
-    "position", [](const Target* node) { return node->getPosition(); },
-    [](Target* node, const cocos2d::Point& position) {
+    "position", Helper ::makeReader<cocos2d::Point>([](const Target* node) {
+        return node->getPosition();
+    }),
+    Helper::makeWriter<cocos2d::Point>([](Target* node,
+                                          const cocos2d::Point& position) {
         node->setPosition(position);
-    });
+    }));
 
-const PropertyFloat Self::Property::Rotation("rotation",
-                                             std::mem_fn(&Target::getRotation),
-                                             std::mem_fn(&Target::setRotation));
+const PropertyFloat Self::Property::Rotation(
+    "rotation", //
+    Helper::makeReader<float>(std::mem_fn(&Target::getRotation)),
+    Helper::makeWriter<float>(std::mem_fn(&Target::setRotation)));
 
-const PropertyFloat Self::Property::ScaleX("scale_x",
-                                           std::mem_fn(&Target::getScaleX),
-                                           std::mem_fn(&Target::setScaleX));
+const PropertyFloat Self::Property::ScaleX(
+    "scale_x", //
+    Helper::makeReader<float>(std::mem_fn(&Target::getScaleX)),
+    Helper::makeWriter<float>(std::mem_fn(&Target::setScaleX)));
 
-const PropertyFloat Self::Property::ScaleY("scale_y",
-                                           std::mem_fn(&Target::getScaleY),
-                                           std::mem_fn(&Target::setScaleY));
+const PropertyFloat Self::Property::ScaleY(
+    "scale_y", //
+    Helper::makeReader<float>(std::mem_fn(&Target::getScaleY)),
+    Helper::makeWriter<float>(std::mem_fn(&Target::setScaleY)));
 
-const PropertyFloat Self::Property::SkewX("skew_x",
-                                          std::mem_fn(&Target::getSkewX),
-                                          std::mem_fn(&Target::setSkewX));
+const PropertyFloat Self::Property::SkewX(
+    "skew_x", //
+    Helper::makeReader<float>(std::mem_fn(&Target::getSkewX)),
+    Helper::makeWriter<float>(std::mem_fn(&Target::setSkewX)));
 
-const PropertyFloat Self::Property::SkewY("skew_y",
-                                          std::mem_fn(&Target::getSkewY),
-                                          std::mem_fn(&Target::setSkewY));
+const PropertyFloat Self::Property::SkewY(
+    "skew_y", //
+    Helper::makeReader<float>(std::mem_fn(&Target::getSkewY)),
+    Helper::makeWriter<float>(std::mem_fn(&Target::setSkewY)));
 
-const PropertyInt Self::Property::Tag("tag", std::mem_fn(&Target::getTag),
-                                      std::mem_fn(&Target::setTag));
+const PropertyInt
+    Self::Property::Tag("tag",
+                        Helper::makeReader<int>(std::mem_fn(&Target::getTag)),
+                        Helper::makeWriter<int>(std::mem_fn(&Target::setTag)));
 
-const PropertyBool Self::Property::Visible("visible",
-                                           std::mem_fn(&Target::isVisible),
-                                           std::mem_fn(&Target::setVisible));
+const PropertyBool Self::Property::Visible(
+    "visible", //
+    Helper::makeReader<bool>(std::mem_fn(&Target::isVisible)),
+    Helper::makeWriter<bool>(std::mem_fn(&Target::setVisible)));
 
 const std::string Self::ClassName = "_Node";
 

@@ -10,6 +10,7 @@ class Vec2;
 } // namespace cocos2d
 
 namespace ee {
+/// Displays images or sprite frames.
 class ImageView : public QOpenGLWidget {
 private:
     using Self = ImageView;
@@ -20,10 +21,18 @@ public:
 
     virtual ~ImageView() override;
 
+    /// Clears the current display.
     void clearDisplay();
+
+    /// Sets the image path.
     void setImagePath(const QString& path);
+
+    /// Sets the sprite frame name.
     void setSpriteFrameName(const QString& name);
+
+    /// Sets the blend function.
     void setBlendFunc(GLenum src, GLenum dst);
+
     void setBlendStraightAlpha();
     void setBlendPremultipliedAlpha();
 
@@ -40,7 +49,16 @@ protected:
                         bool rotated);
 
 private:
-    enum class Display { None, Image, SpriteFrame };
+    enum class Display {
+        /// Doesn't display any.
+        None,
+
+        /// Displays an image
+        Image,
+
+        /// Displays a sprite frame.
+        SpriteFrame
+    };
 
     Display display_;
     QString imagePath_;
