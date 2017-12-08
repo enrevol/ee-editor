@@ -120,7 +120,7 @@ template <>
 std::optional<cocos2d::Point>
 Self<cocos2d::Point>::getProperty(const PropertyHandler& handler,
                                   const std::string& name) {
-    auto x = handler.getProperty<float>(name + " _x");
+    auto x = handler.getProperty<float>(name + "_x");
     return map(x, [&](float x_) {
         auto y = handler.getProperty<float>(name + "_y");
         return map(y, [&](float y_) { //
