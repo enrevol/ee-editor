@@ -124,10 +124,10 @@ namespace {
                 break;
             
         } while (true);
-        
-        strcat(buf, "\n");
 
         qDebug() << buf;
+        
+        strcat(buf, "\n");
         
         Director::getInstance()->getConsole()->log(buf);
         delete [] buf;
