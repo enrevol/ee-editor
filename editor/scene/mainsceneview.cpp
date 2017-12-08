@@ -4,6 +4,7 @@
 #include "gizmo.hpp"
 #include "mainsceneview.hpp"
 #include "nodehighlighterlayer.hpp"
+#include "rulerview.hpp"
 #include "selection/selectionpath.hpp"
 #include "selection/selectiontree.hpp"
 #include "utils.hpp"
@@ -43,20 +44,32 @@ bool Self::init() {
         return false;
     }
 
+    background_ =
+        cocos2d::LayerColor::create(cocos2d::Color4B(50, 50, 50, 255));
+    addChild(background_, +0);
+
+    rulerView_ = RulerView::create()
+                     ->setMinDisplayLength(10.0f)
+                     ->setMaxDisplayLength(50.0f)
+                     ->setLineWidth(1.0f)
+                     ->setUnitLength(1.0f)
+                     ->setOrigin(cocos2d::Point::ZERO)
+                     ->setRegion(_director->getWinSize());
+    addChild(rulerView_, +1);
+
+    originNode_ = cocos2d::Node::create();
+    addChild(originNode_, +2);
+
     highlighter_ = NodeHighlighterLayer::create();
-    addChild(highlighter_, +1);
+    addChild(highlighter_, +3);
 
     gizmo_ = Gizmo::create();
     gizmo_->setVisible(false);
     gizmo_->setMovable(false);
-    addChild(gizmo_, +2);
+    addChild(gizmo_, +4);
     connect(gizmo_, &Gizmo::moveBy, this, &Self::moveSelectionBy);
 
     selectTree(SelectionTree::emptySelection());
-
-    background_ =
-        cocos2d::LayerColor::create(cocos2d::Color4B(50, 50, 50, 255));
-    addChild(background_);
 
     touchListener_ = cocos2d::EventListenerTouchOneByOne::create();
     touchListener_->onTouchBegan = std::bind(
@@ -75,6 +88,8 @@ bool Self::init() {
         std::bind(&Self::mouseMoved, this, std::placeholders::_1);
     mouseListener_->onMouseUp =
         std::bind(&Self::mouseReleased, this, std::placeholders::_1);
+    mouseListener_->onMouseScroll =
+        std::bind(&Self::mouseScrolled, this, std::placeholders::_1);
     getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener_,
                                                                  this);
 
@@ -155,7 +170,7 @@ void Self::setNodeGraph(const NodeGraph& graph) {
 
     GraphReader reader(library);
     rootNode_ = reader.readNodeGraph(graph);
-    addChild(rootNode_);
+    originNode_->addChild(rootNode_);
 }
 
 void Self::selectTree(const SelectionTree& selection) {
@@ -284,6 +299,15 @@ void Self::mouseMoved(cocos2d::EventMouse* event) {
     if (mousePressing_) {
         highlighter_->unhover();
         // FIXME.
+
+        if (event->getMouseButton() ==
+            cocos2d::EventMouse::MouseButton::BUTTON_MIDDLE) {
+            auto&& delta = event->getDelta();
+            auto origin = originNode_->getPosition();
+            origin += delta;
+            originNode_->setPosition(origin);
+            rulerView_->setOrigin(origin);
+        }
     } else {
         auto capturedNode = findCapturedNode(rootNode_, position);
         if (capturedNode == nullptr) {
@@ -317,8 +341,25 @@ void Self::mouseReleased(cocos2d::EventMouse* event) {
     }
 }
 
+void Self::mouseScrolled(cocos2d::EventMouse* event) {
+    auto&& mousePosition = event->getLocation();
+    auto offset = mousePosition - originNode_->getPosition();
+    float multiplier = 1.0f;
+    if (event->getScrollY() > 0) {
+        multiplier += 0.2f;
+    } else {
+        multiplier -= 0.2f;
+    }
+    auto originScale = originNode_->getScale() * multiplier;
+    auto originPosition = mousePosition - offset * multiplier;
+    originNode_->setScale(originScale);
+    originNode_->setPosition(originPosition);
+    rulerView_->setUnitLength(originScale)->setOrigin(originPosition);
+}
+
 void Self::updateWindowSize() {
     auto&& winSize = _director->getWinSize();
     background_->setContentSize(winSize);
+    rulerView_->setRegion(winSize);
 }
 } // namespace ee

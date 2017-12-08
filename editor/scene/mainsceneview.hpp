@@ -31,6 +31,7 @@ class Layout;
 
 namespace ee {
 class Gizmo;
+class RulerView;
 class NodeHighlighter;
 class NodeHighlighterLayer;
 
@@ -69,6 +70,7 @@ protected:
     void mousePressed(cocos2d::EventMouse* event);
     void mouseMoved(cocos2d::EventMouse* event);
     void mouseReleased(cocos2d::EventMouse* event);
+    void mouseScrolled(cocos2d::EventMouse* event);
 
 private:
     void updateSelection();
@@ -89,9 +91,11 @@ private:
 
     /// The root node.
     cocos2d::Node* rootNode_;
+    cocos2d::Node* originNode_;
     cocos2d::LayerColor* background_;
 
     Gizmo* gizmo_;
+    RulerView* rulerView_;
     NodeHighlighterLayer* highlighter_;
 
     bool mousePressing_;

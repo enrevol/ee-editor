@@ -156,7 +156,9 @@ HEADERS += \
     scene/mainscene.hpp \
     scene/mainsceneview.hpp \
     inspectors/inspectorlist.hpp \
-    optional.hpp
+    optional.hpp \
+    scene/rulerview.hpp \
+    scene/rulerline.hpp
 
 SOURCES += \
     inspectors/inspector.cpp \
@@ -218,4 +220,6 @@ SOURCES += \
     scenetree/scenetree.cpp \
     scene/mainscene.cpp \
     scene/mainsceneview.cpp \
-    inspectors/inspectorlist.cpp
+    inspectors/inspectorlist.cpp \
+    scene/rulerview.cpp \
+    scene/rulerline.cpp
