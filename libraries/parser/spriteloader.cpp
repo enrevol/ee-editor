@@ -32,14 +32,13 @@ const PropertyString Self::Property::Texture(
     "texture", //
     Helper::makeReader<std::string>([](const Target* node) {
         auto&& handler = NodeInfo::getPropertyHandler(node);
-        return handler.getProperty("texture").getString();
+        return handler.getProperty<std::string>("texture").value();
     }),
     Helper::makeWriter<std::string>([](Target* node, const std::string& value) {
         auto&& handler = NodeInfo::getPropertyHandler(node);
         handler.setProperty("texture", Value(value));
 
-        // Preserve content size and blend
-        // func.
+        // Preserve content size and blend func.
         auto&& contentSize = node->getContentSize();
         auto&& blendFunc = node->getBlendFunc();
         node->setTexture(value);
@@ -47,6 +46,7 @@ const PropertyString Self::Property::Texture(
         node->setBlendFunc(blendFunc);
     }));
 
+/*
 const PropertyString Self::Property::SpriteFrame(
     "sprite_frame", //
     Helper::makeReader<std::string>([](const Target* node) {
@@ -62,6 +62,7 @@ const PropertyString Self::Property::SpriteFrame(
         node->setSpriteFrame(value);
         node->setBlendFunc(blendFunc);
     }));
+*/
 
 const std::string Self::ClassName = "_Sprite";
 
@@ -100,7 +101,7 @@ void Self::loadProperties(cocos2d::Node* node_,
     handler.loadProperty(Property::FlippedY, node);
     handler.loadProperty(Property::StretchEnabled, node);
     handler.loadProperty(Property::Texture, node);
-    handler.loadProperty(Property::SpriteFrame, node);
+    // handler.loadProperty(Property::SpriteFrame, node);
 }
 
 void Self::storeProperties(const cocos2d::Node* node_,
@@ -113,7 +114,7 @@ void Self::storeProperties(const cocos2d::Node* node_,
     handler.storeProperty(Property::FlippedY, node);
     handler.storeProperty(Property::StretchEnabled, node);
     handler.storeProperty(Property::Texture, node);
-    handler.storeProperty(Property::SpriteFrame, node);
+    // handler.storeProperty(Property::SpriteFrame, node);
 }
 
 std::string Self::getClassName() const {

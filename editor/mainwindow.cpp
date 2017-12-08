@@ -73,11 +73,8 @@ Self::MainWindow(QWidget* parent)
     connect(ui_->resourceTree, &ResourceTree::noneSelected,
             [this] { ui_->imageView->clearDisplay(); });
 
-    connect(ui_->resourceTree, &ResourceTree::interfaceSelected,
-            [](const QString& path) {
-                qDebug() << "open interface: " << path;
-                Config::getInstance().loadInterface(QFileInfo(path));
-            });
+    connect(ui_->resourceTree, &ResourceTree::interfaceSelected, this,
+            &Self::openInterface);
 
     connect(ui_->straightAlphaButton, &QPushButton::clicked,
             [this] { ui_->imageView->setBlendStraightAlpha(); });
@@ -212,6 +209,15 @@ void Self::createInterface() {
         if (config.loadInterface(info)) {
             loadInterface(info);
         }
+    }
+}
+
+void Self::openInterface(const QString& path) {
+    qDebug() << "open interface: " << path;
+    QFileInfo info(path);
+    auto&& config = Config::getInstance();
+    if (config.loadInterface(info)) {
+        loadInterface(info);
     }
 }
 

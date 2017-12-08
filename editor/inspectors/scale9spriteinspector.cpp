@@ -11,7 +11,7 @@ auto createStateInspector() {
     return (new InspectorSelect())
         ->setReader([](const cocos2d::Node* node) {
             return static_cast<int>(
-                Scale9SpriteLoader::Property::State.read(node));
+                *Scale9SpriteLoader::Property::State.read(node));
         })
         ->setWriter([](cocos2d::Node* node, int value) {
             return Scale9SpriteLoader::Property::State.write(

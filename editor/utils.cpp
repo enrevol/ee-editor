@@ -48,27 +48,27 @@ bool isCurrentContextCocos() {
 
 QJsonValue convertToJson(const Value& value) {
     if (value.isBool()) {
-        return value.getBool();
+        return value.getBool().value();
     }
     if (value.isInt()) {
-        return value.getInt();
+        return value.getInt().value();
     }
     if (value.isFloat()) {
-        return static_cast<double>(value.getFloat());
+        return static_cast<double>(value.getFloat().value());
     }
     if (value.isString()) {
-        return QString::fromStdString(value.getString());
+        return QString::fromStdString(value.asString());
     }
     if (value.isList()) {
         QJsonArray array;
-        for (auto&& v : value.getList()) {
+        for (auto&& v : value.asList()) {
             array.append(convertToJson(v));
         }
         return array;
     }
     if (value.isMap()) {
         QJsonObject dict;
-        for (auto&& v : value.getMap()) {
+        for (auto&& v : value.asMap()) {
             dict.insert(QString::fromStdString(v.first),
                         convertToJson(v.second));
         }

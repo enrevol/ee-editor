@@ -10,6 +10,9 @@ CONFIG += c++1z
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+INCLUDEPATH += \
+    ..
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -30,7 +33,8 @@ HEADERS += \
     property.hpp \
     scale9spriteloader.hpp \
     value.hpp \
-    propertytraits.hpp
+    propertytraits.hpp \
+    optional.hpp
 
 SOURCES += \
     nodeloader.cpp \

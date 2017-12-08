@@ -11,9 +11,10 @@ template <class T>
 using Self = PropertyTraitsNonEnum<T>;
 
 template <>
-bool Self<bool>::getProperty(const PropertyHandler& handler,
-                             const std::string& name) {
-    return handler.getProperty(name).getBool();
+std::optional<bool> Self<bool>::getProperty(const PropertyHandler& handler,
+                                            const std::string& name) {
+    auto&& value = handler.getProperty(name);
+    return map(value, std::mem_fn(&Value::getBool));
 }
 
 template <>
@@ -23,9 +24,10 @@ void Self<bool>::setProperty(PropertyHandler& handler, const std::string& name,
 }
 
 template <>
-int Self<int>::getProperty(const PropertyHandler& handler,
-                           const std::string& name) {
-    return handler.getProperty(name).getInt();
+std::optional<int> Self<int>::getProperty(const PropertyHandler& handler,
+                                          const std::string& name) {
+    auto&& value = handler.getProperty(name);
+    return map(value, std::mem_fn(&Value::getInt));
 }
 
 template <>
@@ -35,9 +37,10 @@ void Self<int>::setProperty(PropertyHandler& handler, const std::string& name,
 }
 
 template <>
-float Self<float>::getProperty(const PropertyHandler& handler,
-                               const std::string& name) {
-    return handler.getProperty(name).getFloat();
+std::optional<float> Self<float>::getProperty(const PropertyHandler& handler,
+                                              const std::string& name) {
+    auto&& value = handler.getProperty(name);
+    return map(value, std::mem_fn(&Value::getFloat));
 }
 
 template <>
@@ -47,9 +50,11 @@ void Self<float>::setProperty(PropertyHandler& handler, const std::string& name,
 }
 
 template <>
-std::string Self<std::string>::getProperty(const PropertyHandler& handler,
-                                           const std::string& name) {
-    return handler.getProperty(name).getString();
+std::optional<std::string>
+Self<std::string>::getProperty(const PropertyHandler& handler,
+                               const std::string& name) {
+    auto&& value = handler.getProperty(name);
+    return map(value, std::mem_fn(&Value::getString));
 }
 
 template <>
@@ -60,15 +65,19 @@ void Self<std::string>::setProperty(PropertyHandler& handler,
 }
 
 template <>
-cocos2d::BlendFunc
+std::optional<cocos2d::BlendFunc>
 Self<cocos2d::BlendFunc>::getProperty(const PropertyHandler& handler,
                                       const std::string& name) {
-    auto src = static_cast<GLenum>(handler.getProperty(name + "_src").getInt());
-    auto dst = static_cast<GLenum>(handler.getProperty(name + "_dst").getInt());
-    cocos2d::BlendFunc blend;
-    blend.src = src;
-    blend.dst = dst;
-    return blend;
+    auto src = handler.getProperty<int>(name + "_src");
+    return map(src, [&](int src_) {
+        auto dst = handler.getProperty<int>(name + "_dst");
+        return map(dst, [&](int dst_) {
+            cocos2d::BlendFunc blend;
+            blend.src = static_cast<GLenum>(src_);
+            blend.dst = static_cast<GLenum>(dst_);
+            return std::make_optional(blend);
+        });
+    });
 }
 
 template <>
@@ -80,13 +89,22 @@ void Self<cocos2d::BlendFunc>::setProperty(PropertyHandler& handler,
 }
 
 template <>
-cocos2d::Color3B
+std::optional<cocos2d::Color3B>
 Self<cocos2d::Color3B>::getProperty(const PropertyHandler& handler,
                                     const std::string& name) {
-    auto r = static_cast<GLubyte>(handler.getProperty(name + "_r").getInt());
-    auto g = static_cast<GLubyte>(handler.getProperty(name + "_g").getInt());
-    auto b = static_cast<GLubyte>(handler.getProperty(name + "_b").getInt());
-    return cocos2d::Color3B(r, g, b);
+    auto r = handler.getProperty<int>(name + "_r");
+    return map(r, [&](int r_) {
+        auto g = handler.getProperty<int>(name + "_g");
+        return map(g, [&](int g_) {
+            auto b = handler.getProperty<int>(name + "_b");
+            return map(b, [&](int b_) {
+                return std::make_optional(
+                    cocos2d::Color3B(static_cast<GLubyte>(r_), //
+                                     static_cast<GLubyte>(g_), //
+                                     static_cast<GLubyte>(b_)));
+            });
+        });
+    });
 }
 
 template <>
@@ -99,11 +117,16 @@ void Self<cocos2d::Color3B>::setProperty(PropertyHandler& handler,
 }
 
 template <>
-cocos2d::Point Self<cocos2d::Point>::getProperty(const PropertyHandler& handler,
-                                                 const std::string& name) {
-    auto x = handler.getProperty(name + "_x").getFloat();
-    auto y = handler.getProperty(name + "_y").getFloat();
-    return cocos2d::Vec2(x, y);
+std::optional<cocos2d::Point>
+Self<cocos2d::Point>::getProperty(const PropertyHandler& handler,
+                                  const std::string& name) {
+    auto x = handler.getProperty<float>(name + " _x");
+    return map(x, [&](float x_) {
+        auto y = handler.getProperty<float>(name + "_y");
+        return map(y, [&](float y_) { //
+            return std::make_optional(cocos2d::Point(x_, y_));
+        });
+    });
 }
 
 template <>
@@ -115,13 +138,22 @@ void Self<cocos2d::Point>::setProperty(PropertyHandler& handler,
 }
 
 template <>
-cocos2d::Rect Self<cocos2d::Rect>::getProperty(const PropertyHandler& handler,
-                                               const std::string& name) {
-    auto x = handler.getProperty(name + "_x").getFloat();
-    auto y = handler.getProperty(name + "_y").getFloat();
-    auto w = handler.getProperty(name + "_width").getFloat();
-    auto h = handler.getProperty(name + "_height").getFloat();
-    return cocos2d::Rect(x, y, w, h);
+std::optional<cocos2d::Rect>
+Self<cocos2d::Rect>::getProperty(const PropertyHandler& handler,
+                                 const std::string& name) {
+    auto x = handler.getProperty<float>(name + "_x");
+    return map(x, [&](float x_) {
+        auto y = handler.getProperty<float>(name + "_y");
+        return map(y, [&](float y_) {
+            auto w = handler.getProperty<float>(name + "_width");
+            return map(w, [&](float w_) {
+                auto h = handler.getProperty<float>(name + "_height");
+                return map(h, [&](float h_) { //
+                    return std::make_optional(cocos2d::Rect(x_, y_, w_, h_));
+                });
+            });
+        });
+    });
 }
 
 template <>
@@ -135,11 +167,16 @@ void Self<cocos2d::Rect>::setProperty(PropertyHandler& handler,
 }
 
 template <>
-cocos2d::Size Self<cocos2d::Size>::getProperty(const PropertyHandler& handler,
-                                               const std::string& name) {
-    auto w = handler.getProperty(name + "_width").getFloat();
-    auto h = handler.getProperty(name + "_height").getFloat();
-    return cocos2d::Size(w, h);
+std::optional<cocos2d::Size>
+Self<cocos2d::Size>::getProperty(const PropertyHandler& handler,
+                                 const std::string& name) {
+    auto w = handler.getProperty<float>(name + "_width");
+    return map(w, [&](float w_) {
+        auto h = handler.getProperty<float>(name + "_height");
+        return map(h, [&](float h_) { //
+            return std::make_optional(cocos2d::Size(w_, h_));
+        });
+    });
 }
 
 template <>

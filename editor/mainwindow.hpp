@@ -31,6 +31,7 @@ public:
     void closeProject(const QFileInfo& path);
     void openProjectSettings();
     void createInterface();
+    void openInterface(const QString& path);
     void loadInterface(const QFileInfo& path);
     void saveInterface();
 

@@ -26,13 +26,13 @@ void Self::setDictionary(const ValueMap& dict) {
     children_.clear();
     propertyHandler_.clearProperties();
     if (dict.count(key::children)) {
-        auto&& children = dict.at(key::children).getList();
+        auto&& children = dict.at(key::children).asList();
         for (auto&& child : children) {
-            children_.emplace_back(child.getMap());
+            children_.emplace_back(child.asMap());
         }
     }
     if (dict.count(key::properties)) {
-        auto&& properties = dict.at(key::properties).getMap();
+        auto&& properties = dict.at(key::properties).asMap();
         propertyHandler_.setProperties(properties);
     }
 }
@@ -42,20 +42,19 @@ const PropertyHandler& Self::getPropertyHandler() const {
 }
 
 std::string Self::getBaseClass() const {
-    return getPropertyHandler().getProperty(key::base_class).getString();
+    return getPropertyHandler().getProperty(key::base_class)->asString();
 }
 
 std::string Self::getCustomClass() const {
-    return getPropertyHandler().getProperty(key::custom_class).getString();
+    auto&& handler = getPropertyHandler();
+    auto&& value = handler.getProperty(key::custom_class);
+    return map(value, std::mem_fn(&Value::getString)).value_or("");
 }
 
 std::string Self::getDisplayName() const {
-    auto value =
-        getPropertyHandler().getProperty(key::display_name).getString();
-    if (not value.empty()) {
-        return value;
-    }
-    return getBaseClass();
+    auto&& handler = getPropertyHandler();
+    auto&& value = handler.getProperty(key::display_name);
+    return map(value, std::mem_fn(&Value::getString)).value_or(getBaseClass());
 }
 
 void Self::setBaseClass(const std::string& name) {

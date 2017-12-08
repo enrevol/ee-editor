@@ -43,7 +43,9 @@ public:
     const Reader& getReader() const { return reader_; }
     const Writer& getWriter() const { return writer_; }
 
-    Value read(const cocos2d::Node* node) const { return getReader()(node); }
+    std::optional<Value> read(const cocos2d::Node* node) const {
+        return getReader()(node);
+    }
 
     bool write(cocos2d::Node* node, const Value& value) const {
         return getWriter()(node, value);

@@ -4,6 +4,8 @@
 
 #include "value.hpp"
 
+#include <base/CCValue.h>
+
 namespace ee {
 using Self = Value;
 
@@ -41,23 +43,23 @@ Self Self::fromValue(const cocos2d::Value& value) {
 cocos2d::Value Self::toValue() const {
     switch (getType()) {
     case Type::Bool:
-        return cocos2d::Value(getBool());
+        return cocos2d::Value(getBool().value());
     case Type::Int:
-        return cocos2d::Value(getInt());
+        return cocos2d::Value(getInt().value());
     case Type::Float:
-        return cocos2d::Value(getFloat());
+        return cocos2d::Value(getFloat().value());
     case Type::String:
-        return cocos2d::Value(getString());
+        return cocos2d::Value(asString());
     case Type::List: {
         cocos2d::ValueVector array;
-        for (auto&& elt : getList()) {
+        for (auto&& elt : asList()) {
             array.emplace_back(elt.toValue());
         }
         return cocos2d::Value(std::move(array));
     }
     case Type::Map: {
         cocos2d::ValueMap dict;
-        for (auto&& elt : getMap()) {
+        for (auto&& elt : asMap()) {
             dict.emplace(elt.first, elt.second.toValue());
         }
         return cocos2d::Value(std::move(dict));
@@ -293,14 +295,14 @@ bool Self::operator==(const Self& other) const {
     case Type::Int:
         return getInt() == other.getInt();
     case Type::Float:
-        return std::abs(getFloat() - other.getFloat()) <=
+        return std::abs(getFloat().value() - other.getFloat().value()) <=
                std::numeric_limits<float>::epsilon();
     case Type::String:
-        return getString() == other.getString();
+        return asString() == other.asString();
     case Type::List:
-        return getList() == other.getList();
+        return asList() == other.asList();
     case Type::Map:
-        return getMap() == other.getMap();
+        return asMap() == other.asMap();
     }
     assert(false);
 }
@@ -341,43 +343,56 @@ bool Self::isMap() const {
     return getType() == Type::Map;
 }
 
-bool Self::getBool() const {
-    assert(getType() == Type::Bool);
-    return field_.b;
+std::optional<bool> Self::getBool() const {
+    return isBool() ? std::make_optional(field_.b) : std::nullopt;
 }
 
-int Self::getInt() const {
-    assert(getType() == Type::Int);
-    return field_.i;
+std::optional<int> Self::getInt() const {
+    return isInt() ? std::make_optional(field_.i) : std::nullopt;
 }
 
-float Self::getFloat() const {
-    assert(getType() == Type::Float);
-    return field_.f;
+std::optional<float> Self::getFloat() const {
+    return isFloat() ? std::make_optional(field_.f)
+                     : map(getInt(), [](int value) {
+                           // Qt Json may store float as int.
+                           return std::make_optional<float>(value);
+                       });
 }
 
-const std::string& Self::getString() const {
-    assert(getType() == Type::String);
+std::optional<std::string> Self::getString() const {
+    return isString() ? std::make_optional(*field_.s) : std::nullopt;
+}
+
+std::optional<ValueList> Self::getList() const {
+    return isList() ? std::make_optional(*field_.l) : std::nullopt;
+}
+
+std::optional<ValueMap> Self::getMap() const {
+    return isMap() ? std::make_optional(*field_.m) : std::nullopt;
+}
+
+const std::string& Self::asString() const {
+    assert(isString());
     return *field_.s;
 }
 
-ValueList& Self::getList() {
-    assert(getType() == Type::List);
+ValueList& Self::asList() {
+    assert(isList());
     return *field_.l;
 }
 
-const ValueList& Self::getList() const {
-    assert(getType() == Type::List);
+const ValueList& Self::asList() const {
+    assert(isList());
     return *field_.l;
 }
 
-ValueMap& Self::getMap() {
-    assert(getType() == Type::Map);
+ValueMap& Self::asMap() {
+    assert(isMap());
     return *field_.m;
 }
 
-const ValueMap& Self::getMap() const {
-    assert(getType() == Type::Map);
+const ValueMap& Self::asMap() const {
+    assert(isMap());
     return *field_.m;
 }
 

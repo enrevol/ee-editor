@@ -84,7 +84,7 @@ auto createPositionPercentInspector() {
     return (new InspectorFloatXY())
         ->setReader([](const cocos2d::Node* node) {
             auto value = WidgetLoader::Property::PositionPercent.read(node);
-            return std::make_pair(value.x, value.y);
+            return std::make_pair(value->x, value->y);
         })
         ->setWriter([](cocos2d::Node* node, float x, float y) {
             return WidgetLoader::Property::PositionPercent.write(
@@ -102,7 +102,7 @@ auto createSizePercentInspector() {
     return (+new InspectorFloatXY())
         ->setReader([](const cocos2d::Node* node) {
             auto value = WidgetLoader::Property::SizePercent.read(node);
-            return std::make_pair(value.x, value.y);
+            return std::make_pair(value->x, value->y);
         })
         ->setWriter([](cocos2d::Node* node, float x, float y) {
             return WidgetLoader::Property::SizePercent.write(

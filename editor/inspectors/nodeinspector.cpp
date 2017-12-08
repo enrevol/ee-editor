@@ -35,7 +35,7 @@ auto createPositionInspector() {
     return (new InspectorFloatXY())
         ->setReader([](const cocos2d::Node* node) {
             auto value = NodeLoader::Property::Position.read(node);
-            return std::make_pair(value.x, value.y);
+            return std::make_pair(value->x, value->y);
         })
         ->setWriter([](cocos2d::Node* node, float x, float y) {
             return NodeLoader::Property::Position.write(node,
@@ -53,7 +53,7 @@ auto createContentSizeInspector() {
     return (new InspectorFloatXY())
         ->setReader([](const cocos2d::Node* node) {
             auto value = NodeLoader::Property::ContentSize.read(node);
-            return std::make_pair(value.width, value.height);
+            return std::make_pair(value->width, value->height);
         })
         ->setWriter([](cocos2d::Node* node, float x, float y) {
             return NodeLoader::Property::ContentSize.write(node,
@@ -71,7 +71,7 @@ auto createAnchorPointInspector() {
     return (new InspectorFloatXY())
         ->setReader([](const cocos2d::Node* node) {
             auto value = NodeLoader::Property::AnchorPoint.read(node);
-            return std::make_pair(value.x, value.y);
+            return std::make_pair(value->x, value->y);
         })
         ->setWriter([](cocos2d::Node* node, float x, float y) {
             return NodeLoader::Property::AnchorPoint.write(node,
@@ -90,7 +90,7 @@ auto createScaleInspector() {
         ->setReader([](const cocos2d::Node* node) {
             auto x = NodeLoader::Property::ScaleX.read(node);
             auto y = NodeLoader::Property::ScaleY.read(node);
-            return std::make_pair(x, y);
+            return std::make_pair(*x, *y);
         })
         ->setWriter([](cocos2d::Node* node, float x, float y) {
             return NodeLoader::Property::ScaleX.write(node, x) &&
@@ -120,7 +120,7 @@ auto createSkewInspector() {
         ->setReader([](const cocos2d::Node* node) {
             auto x = NodeLoader::Property::SkewX.read(node);
             auto y = NodeLoader::Property::SkewY.read(node);
-            return std::make_pair(x, y);
+            return std::make_pair(*x, *y);
         })
         ->setWriter([](cocos2d::Node* node, float x, float y) {
             return NodeLoader::Property::SkewX.write(node, x) &&

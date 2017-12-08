@@ -23,7 +23,8 @@ const PropertyBool Self::Property::FlippedX(
     Helper::makeWriter<bool>(std::mem_fn(&Target::setFlippedX)));
 
 const PropertyBool Self::Property::FlippedY(
-    "flipped_y", Helper::makeReader<bool>(std::mem_fn(&Target::isFlippedY)),
+    "flipped_y", //
+    Helper::makeReader<bool>(std::mem_fn(&Target::isFlippedY)),
     Helper::makeWriter<bool>(std::mem_fn(&Target::setFlippedY)));
 
 const PropertyBool Self::Property::Highlighted(
@@ -35,8 +36,7 @@ const PropertyBool Self::Property::IgnoreContentAdaptWithSize(
     "ignore_content_adapt_with_size",
     Helper::makeReader<bool>(
         std::mem_fn(&Target::isIgnoreContentAdaptWithSize)),
-    Helper::makeWriter<bool>(
-        std::mem_fn(&Target::setIgnoreAnchorPointForPosition)));
+    Helper::makeWriter<bool>(std::mem_fn(&Target::ignoreContentAdaptWithSize)));
 
 const PropertyBool Self::Property::LayoutComponentEnabled(
     "layout_component_enabled",

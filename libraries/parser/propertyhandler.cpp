@@ -19,7 +19,14 @@ void Self::clearProperties() {
     properties_.clear();
 }
 
-const Value& Self::getProperty(const std::string& name) const {
+bool Self::hasProperty(const std::string& name) const {
+    return properties_.count(name) != 0;
+}
+
+std::optional<Value> Self::getProperty(const std::string& name) const {
+    if (not hasProperty(name)) {
+        return std::nullopt;
+    }
     return properties_.at(name);
 }
 

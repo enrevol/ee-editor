@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "optional.hpp"
+
 namespace ee {
 class PropertyHandler;
 
@@ -12,8 +14,8 @@ class PropertyTraitsNonEnum {
 public:
     /// Reads a property value from the specified property handler.
     /// @param name The property's name.
-    static Value getProperty(const PropertyHandler& handler,
-                             const std::string& name);
+    static std::optional<Value> getProperty(const PropertyHandler& handler,
+                                            const std::string& name);
 
     /// Writes a property value to the specified property handler.
     /// @param name The property's name.
@@ -24,10 +26,13 @@ public:
 template <class Value>
 class PropertyTraitsEnum {
 public:
-    static Value getProperty(const PropertyHandler& handler,
-                             const std::string& name) {
-        return static_cast<Value>(
-            PropertyTraitsNonEnum<int>::getProperty(handler, name));
+    static std::optional<Value> getProperty(const PropertyHandler& handler,
+                                            const std::string& name) {
+        auto value = PropertyTraitsNonEnum<int>::getProperty(handler, name);
+        return map(value,
+                   [](int value_) { //
+                       return std::make_optional(static_cast<Value>(value_));
+                   });
     }
 
     static void setProperty(PropertyHandler& handler, const std::string& name,

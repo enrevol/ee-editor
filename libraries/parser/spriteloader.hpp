@@ -21,7 +21,7 @@ public:
         static const PropertyBool FlippedY;
         static const PropertyBool StretchEnabled;
         static const PropertyString Texture;
-        static const PropertyString SpriteFrame;
+        // static const PropertyString SpriteFrame;
     };
 
     static const std::string ClassName;

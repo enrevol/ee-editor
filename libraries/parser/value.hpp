@@ -5,7 +5,11 @@
 #include <string>
 #include <vector>
 
-#include <base/CCValue.h>
+#include "optional.hpp"
+
+namespace cocos2d {
+class Value;
+} // namespace cocos2d
 
 namespace ee {
 class Value;
@@ -65,14 +69,18 @@ public:
     bool operator==(const Self& other) const;
     bool operator!=(const Self& other) const;
 
-    bool getBool() const;
-    int getInt() const;
-    float getFloat() const;
-    const std::string& getString() const;
-    ValueList& getList();
-    const ValueList& getList() const;
-    ValueMap& getMap();
-    const ValueMap& getMap() const;
+    std::optional<bool> getBool() const;
+    std::optional<int> getInt() const;
+    std::optional<float> getFloat() const;
+    std::optional<std::string> getString() const;
+    std::optional<ValueList> getList() const;
+    std::optional<ValueMap> getMap() const;
+
+    const std::string& asString() const;
+    ValueList& asList();
+    const ValueList& asList() const;
+    ValueMap& asMap();
+    const ValueMap& asMap() const;
 
     bool isNull() const;
     bool isBool() const;

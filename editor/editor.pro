@@ -143,7 +143,6 @@ HEADERS += \
     interfacesettings.hpp \
     iserializable.hpp \
     mainwindow.hpp \
-    optional.hpp \
     projectresources.hpp \
     projectsettings.hpp \
     projectsettingsdialog.hpp \
@@ -156,7 +155,8 @@ HEADERS += \
     scenetree/scenetree.hpp \
     scene/mainscene.hpp \
     scene/mainsceneview.hpp \
-    inspectors/inspectorlist.hpp
+    inspectors/inspectorlist.hpp \
+    optional.hpp
 
 SOURCES += \
     inspectors/inspector.cpp \

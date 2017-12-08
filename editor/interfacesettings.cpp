@@ -71,7 +71,7 @@ bool Self::write() const {
 
 bool Self::deserialize(const QJsonObject& json) {
     auto obj = json.value(key::node_graph).toObject();
-    auto dict = convertToValue(obj).getMap();
+    auto dict = convertToValue(obj).asMap();
     NodeGraph graph(dict);
     setNodeGraph(graph);
     return true;
