@@ -4,11 +4,19 @@
 #include <functional>
 #include <string>
 
-#include "property.hpp"
 #include "propertytraits.hpp"
 #include "value.hpp"
 
+namespace cocos2d {
+class Node;
+} // namespace cocos2d
+
 namespace ee {
+class Property;
+
+template <class T>
+class GenericProperty;
+
 class PropertyHandler {
 private:
     using Self = PropertyHandler;
@@ -26,42 +34,57 @@ public:
 
     /// Reads a property value from the specified property handler.
     /// @param name The property's name.
-    template <class Value>
-    std::optional<Value> getProperty(const std::string& name) const {
-        return PropertyTraits<Value>::getProperty(*this, name);
+    template <class T>
+    std::optional<T> getProperty(const std::string& name) const {
+        return PropertyTraits<T>::getProperty(*this, name);
     }
 
     /// Writes a property value to the specified property handler.
     /// @param name The property's name.
-    template <class Value>
-    void setProperty(const std::string& name, const Value& value) {
-        PropertyTraits<Value>::setProperty(*this, name, value);
+    template <class T>
+    void setProperty(const std::string& name, const T& value) {
+        PropertyTraits<T>::setProperty(*this, name, value);
     }
 
-    template <class Value>
-    bool loadProperty(const Property<Value>& property,
-                      cocos2d::Node* node) const {
-        auto value = getProperty<Value>(property.getName());
-        if (not value.has_value()) {
-            return false;
-        }
-        return property.write(node, value.value());
-    }
+    bool loadProperty(const Property& property, cocos2d::Node* node) const;
+    bool storeProperty(const Property& property, const cocos2d::Node* node);
 
-    template <class Value>
-    bool storeProperty(const Property<Value>& property,
-                       const cocos2d::Node* node) {
-        auto value = property.read(node);
-        if (not value.has_value()) {
-            return false;
-        }
-        setProperty<Value>(property.getName(), value.value());
-        return true;
-    }
+    template <class T>
+    bool loadProperty(const GenericProperty<T>& property,
+                      cocos2d::Node* node) const;
+
+    template <class T>
+    bool storeProperty(const GenericProperty<T>& property,
+                       const cocos2d::Node* node);
 
 private:
     ValueMap properties_;
 };
+} // namespace ee
+
+#include "property.hpp"
+
+namespace ee {
+template <class T>
+bool PropertyHandler::loadProperty(const GenericProperty<T>& property,
+                                   cocos2d::Node* node) const {
+    auto value = getProperty<T>(property.getName());
+    if (not value.has_value()) {
+        return false;
+    }
+    return property.write(node, value.value());
+}
+
+template <class T>
+bool PropertyHandler::storeProperty(const GenericProperty<T>& property,
+                                    const cocos2d::Node* node) {
+    auto value = property.read(node);
+    if (not value.has_value()) {
+        return false;
+    }
+    setProperty<T>(property.getName(), value.value());
+    return true;
+}
 } // namespace ee
 
 #endif // EE_PARSER_PROPERTY_HANDLER_HPP

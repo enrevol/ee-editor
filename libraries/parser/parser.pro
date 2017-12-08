@@ -49,4 +49,5 @@ SOURCES += \
     layoutloader.cpp \
     scale9spriteloader.cpp \
     value.cpp \
-    propertytraits.cpp
+    propertytraits.cpp \
+    property.cpp

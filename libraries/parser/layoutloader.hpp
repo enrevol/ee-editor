@@ -41,21 +41,15 @@ public:
 
     static const std::string ClassName;
 
+    LayoutLoader();
+
     virtual ~LayoutLoader() override;
-
-    virtual cocos2d::Node* createNode() const override;
-
-    virtual void loadProperties(cocos2d::Node* node,
-                                const PropertyHandler& handler) const override;
-
-    virtual void storeProperties(const cocos2d::Node* node,
-                                 PropertyHandler& handler) const override;
 
     virtual std::string getClassName() const override;
 
-protected:
-    LayoutLoader();
+    virtual cocos2d::Node* createNode() const override;
 
+protected:
     virtual Self* cloneRaw() const override;
 };
 } // namespace ee

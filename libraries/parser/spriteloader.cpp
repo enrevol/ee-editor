@@ -66,9 +66,19 @@ const PropertyString Self::Property::SpriteFrame(
 
 const std::string Self::ClassName = "_Sprite";
 
-Self::SpriteLoader() {}
+Self::SpriteLoader() {
+    addProperty(Property::BlendFunc);
+    addProperty(Property::FlippedX);
+    addProperty(Property::FlippedY);
+    addProperty(Property::StretchEnabled);
+    addProperty(Property::Texture);
+}
 
 Self::~SpriteLoader() {}
+
+std::string Self::getClassName() const {
+    return ClassName;
+}
 
 /*
 writer.setProperty(NodeLoader::Property::AnchorPoint,
@@ -89,36 +99,6 @@ std::string()); Q_ASSERT(flag);
 
 cocos2d::Node* Self::createNode() const {
     return Target::create();
-}
-
-void Self::loadProperties(cocos2d::Node* node_,
-                          const PropertyHandler& handler) const {
-    auto node = dynamic_cast<Target*>(node_);
-    Super::loadProperties(node, handler);
-
-    handler.loadProperty(Property::BlendFunc, node);
-    handler.loadProperty(Property::FlippedX, node);
-    handler.loadProperty(Property::FlippedY, node);
-    handler.loadProperty(Property::StretchEnabled, node);
-    handler.loadProperty(Property::Texture, node);
-    // handler.loadProperty(Property::SpriteFrame, node);
-}
-
-void Self::storeProperties(const cocos2d::Node* node_,
-                           PropertyHandler& handler) const {
-    auto node = dynamic_cast<const Target*>(node_);
-    Super::storeProperties(node, handler);
-
-    handler.storeProperty(Property::BlendFunc, node);
-    handler.storeProperty(Property::FlippedX, node);
-    handler.storeProperty(Property::FlippedY, node);
-    handler.storeProperty(Property::StretchEnabled, node);
-    handler.storeProperty(Property::Texture, node);
-    // handler.storeProperty(Property::SpriteFrame, node);
-}
-
-std::string Self::getClassName() const {
-    return ClassName;
 }
 
 Self* Self::cloneRaw() const {

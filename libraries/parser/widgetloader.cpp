@@ -94,7 +94,21 @@ const PropertyBool Self::Property::UnifySizeEnabled(
 
 const std::string Self::ClassName = "_Widget";
 
-Self::WidgetLoader() {}
+Self::WidgetLoader() {
+    addProperty(Property::Bright);
+    addProperty(Property::Enabled);
+    addProperty(Property::FlippedX);
+    addProperty(Property::FlippedY);
+    addProperty(Property::Highlighted);
+    addProperty(Property::IgnoreContentAdaptWithSize);
+    addProperty(Property::LayoutComponentEnabled);
+    addProperty(Property::PositionPercent);
+    addProperty(Property::PropagateTouchEvents);
+    addProperty(Property::SizePercent);
+    addProperty(Property::SwallowTouches);
+    addProperty(Property::TouchEnabled);
+    addProperty(Property::UnifySizeEnabled);
+}
 
 Self::~WidgetLoader() {}
 
@@ -119,52 +133,12 @@ flag &= writer.addProperty(Property::UnifySizeEnabled, false);
 Q_ASSERT(flag);
 */
 
-cocos2d::Node* Self::createNode() const {
-    return Target::create();
-}
-
-void Self::loadProperties(cocos2d::Node* node_,
-                          const PropertyHandler& handler) const {
-    auto node = dynamic_cast<Target*>(node_);
-    Super::loadProperties(node, handler);
-
-    handler.loadProperty(Property::Bright, node);
-    handler.loadProperty(Property::Enabled, node);
-    handler.loadProperty(Property::FlippedX, node);
-    handler.loadProperty(Property::FlippedY, node);
-    handler.loadProperty(Property::Highlighted, node);
-    handler.loadProperty(Property::IgnoreContentAdaptWithSize, node);
-    handler.loadProperty(Property::LayoutComponentEnabled, node);
-    handler.loadProperty(Property::PositionPercent, node);
-    handler.loadProperty(Property::PropagateTouchEvents, node);
-    handler.loadProperty(Property::SizePercent, node);
-    handler.loadProperty(Property::SwallowTouches, node);
-    handler.loadProperty(Property::TouchEnabled, node);
-    handler.loadProperty(Property::UnifySizeEnabled, node);
-}
-
-void Self::storeProperties(const cocos2d::Node* node_,
-                           PropertyHandler& handler) const {
-    auto node = dynamic_cast<const Target*>(node_);
-    Super::storeProperties(node, handler);
-
-    handler.storeProperty(Property::Bright, node);
-    handler.storeProperty(Property::Enabled, node);
-    handler.storeProperty(Property::FlippedX, node);
-    handler.storeProperty(Property::FlippedY, node);
-    handler.storeProperty(Property::Highlighted, node);
-    handler.storeProperty(Property::IgnoreContentAdaptWithSize, node);
-    handler.storeProperty(Property::LayoutComponentEnabled, node);
-    handler.storeProperty(Property::PositionPercent, node);
-    handler.storeProperty(Property::PropagateTouchEvents, node);
-    handler.storeProperty(Property::SizePercent, node);
-    handler.storeProperty(Property::SwallowTouches, node);
-    handler.storeProperty(Property::TouchEnabled, node);
-    handler.storeProperty(Property::UnifySizeEnabled, node);
-}
-
 std::string Self::getClassName() const {
     return ClassName;
+}
+
+cocos2d::Node* Self::createNode() const {
+    return Target::create();
 }
 
 Self* Self::cloneRaw() const {

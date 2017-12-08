@@ -124,9 +124,33 @@ bool isInColorRange(int value) {
 */
 } // namespace
 
-Self::NodeLoader() {}
+Self::NodeLoader() {
+    addProperty(Property::AnchorPoint);
+    addProperty(Property::CascadeColorEnabled);
+    addProperty(Property::CascadeOpacityEnabled);
+    addProperty(Property::Color);
+    addProperty(Property::ContentSize);
+    addProperty(Property::IgnoreAnchorPointForPosition);
+    addProperty(Property::LocalZOrder);
+    addProperty(Property::Name);
+    addProperty(Property::Opacity);
+    addProperty(Property::OpacityModifyRGB);
+    addProperty(Property::Position);
+    addProperty(Property::Rotation);
+    addProperty(Property::ScaleX);
+    addProperty(Property::ScaleY);
+    addProperty(Property::Position);
+    addProperty(Property::SkewX);
+    addProperty(Property::SkewY);
+    addProperty(Property::Tag);
+    addProperty(Property::Visible);
+}
 
 Self::~NodeLoader() {}
+
+std::string Self::getClassName() const {
+    return ClassName;
+}
 
 cocos2d::Node* Self::createNode() const {
     return Target::create();
@@ -157,52 +181,29 @@ flag &= writer.addProperty(Property::Visible, true);
 
 void Self::loadProperties(cocos2d::Node* node,
                           const PropertyHandler& handler) const {
-    handler.loadProperty(Property::AnchorPoint, node);
-    handler.loadProperty(Property::CascadeColorEnabled, node);
-    handler.loadProperty(Property::CascadeOpacityEnabled, node);
-    handler.loadProperty(Property::Color, node);
-    handler.loadProperty(Property::ContentSize, node);
-    handler.loadProperty(Property::IgnoreAnchorPointForPosition, node);
-    handler.loadProperty(Property::LocalZOrder, node);
-    handler.loadProperty(Property::Name, node);
-    handler.loadProperty(Property::Opacity, node);
-    handler.loadProperty(Property::OpacityModifyRGB, node);
-    handler.loadProperty(Property::Position, node);
-    handler.loadProperty(Property::Rotation, node);
-    handler.loadProperty(Property::ScaleX, node);
-    handler.loadProperty(Property::ScaleY, node);
-    handler.loadProperty(Property::Position, node);
-    handler.loadProperty(Property::SkewX, node);
-    handler.loadProperty(Property::SkewY, node);
-    handler.loadProperty(Property::Tag, node);
-    handler.loadProperty(Property::Visible, node);
+    for (auto&& property : getProperties()) {
+        if (not property->load(handler, node)) {
+            CCLOG("Error loading property: %s", property->getName().c_str());
+        }
+    }
 }
 
 void Self::storeProperties(const cocos2d::Node* node,
                            PropertyHandler& handler) const {
-    handler.storeProperty(Property::AnchorPoint, node);
-    handler.storeProperty(Property::CascadeColorEnabled, node);
-    handler.storeProperty(Property::CascadeOpacityEnabled, node);
-    handler.storeProperty(Property::Color, node);
-    handler.storeProperty(Property::ContentSize, node);
-    handler.storeProperty(Property::IgnoreAnchorPointForPosition, node);
-    handler.storeProperty(Property::LocalZOrder, node);
-    handler.storeProperty(Property::Name, node);
-    handler.storeProperty(Property::Opacity, node);
-    handler.storeProperty(Property::OpacityModifyRGB, node);
-    handler.storeProperty(Property::Position, node);
-    handler.storeProperty(Property::Rotation, node);
-    handler.storeProperty(Property::ScaleX, node);
-    handler.storeProperty(Property::ScaleY, node);
-    handler.storeProperty(Property::Position, node);
-    handler.storeProperty(Property::SkewX, node);
-    handler.storeProperty(Property::SkewY, node);
-    handler.storeProperty(Property::Tag, node);
-    handler.storeProperty(Property::Visible, node);
+    for (auto&& property : getProperties()) {
+        if (not property->store(handler, node)) {
+            CCLOG("Error storing property: %s", property->getName().c_str());
+        }
+    }
 }
 
-std::string Self::getClassName() const {
-    return ClassName;
+Self& Self::addProperty(const ee::Property& property) {
+    properties_.push_back(&property);
+    return *this;
+}
+
+const std::vector<const ee::Property*>& Self::getProperties() const {
+    return properties_;
 }
 
 NodeLoaderPtr Self::clone() const {

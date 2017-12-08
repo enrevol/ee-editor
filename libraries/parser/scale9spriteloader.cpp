@@ -21,7 +21,10 @@ const PropertyEnum<Target::RenderingType>
 
 const std::string Self::ClassName = "_Scale9Sprite";
 
-Self::Scale9SpriteLoader() {}
+Self::Scale9SpriteLoader() {
+    addProperty(Property::State);
+    addProperty(Property::RenderingType);
+}
 
 Self::~Scale9SpriteLoader() {}
 
@@ -33,30 +36,12 @@ Self::~Scale9SpriteLoader() {}
     Q_ASSERT(flag);
     */
 
-cocos2d::Node* Self::createNode() const {
-    return Target::create();
-}
-
-void Self::loadProperties(cocos2d::Node* node_,
-                          const PropertyHandler& handler) const {
-    auto node = dynamic_cast<Target*>(node_);
-    Super::loadProperties(node, handler);
-
-    handler.loadProperty(Property::State, node);
-    handler.loadProperty(Property::RenderingType, node);
-}
-
-void Self::storeProperties(const cocos2d::Node* node_,
-                           PropertyHandler& handler) const {
-    auto node = dynamic_cast<const Target*>(node_);
-    Super::storeProperties(node, handler);
-
-    handler.storeProperty(Property::State, node);
-    handler.storeProperty(Property::RenderingType, node);
-}
-
 std::string Self::getClassName() const {
     return ClassName;
+}
+
+cocos2d::Node* Self::createNode() const {
+    return Target::create();
 }
 
 Self* Self::cloneRaw() const {

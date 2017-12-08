@@ -88,50 +88,27 @@ const PropertyEnum<Target::Type> Self::Property::LayoutType(
 
 const std::string Self::ClassName = "_Layout";
 
-Self::LayoutLoader() {}
+Self::LayoutLoader() {
+    addProperty(Property::BackgroundColor);
+    addProperty(Property::BackgroundColorOpacity);
+    addProperty(Property::BackgroundColorType);
+    addProperty(Property::BackgroundColorVector);
+    addProperty(Property::BackgroundImageCapInsets);
+    addProperty(Property::BackgroundImageColor);
+    addProperty(Property::BackgroundImageOpacity);
+    addProperty(Property::ClippingEnabled);
+    addProperty(Property::ClippingType);
+    addProperty(Property::LayoutType);
+}
 
 Self::~LayoutLoader() {}
 
-cocos2d::Node* Self::createNode() const {
-    return cocos2d::ui::Layout::create();
-}
-
-void Self::loadProperties(cocos2d::Node* node_,
-                          const PropertyHandler& handler) const {
-    auto node = dynamic_cast<Target*>(node_);
-    Super::loadProperties(node, handler);
-
-    handler.loadProperty(Property::BackgroundColor, node);
-    handler.loadProperty(Property::BackgroundColorOpacity, node);
-    handler.loadProperty(Property::BackgroundColorType, node);
-    handler.loadProperty(Property::BackgroundColorVector, node);
-    handler.loadProperty(Property::BackgroundImageCapInsets, node);
-    handler.loadProperty(Property::BackgroundImageColor, node);
-    handler.loadProperty(Property::BackgroundImageOpacity, node);
-    handler.loadProperty(Property::ClippingEnabled, node);
-    handler.loadProperty(Property::ClippingType, node);
-    handler.loadProperty(Property::LayoutType, node);
-}
-
-void Self::storeProperties(const cocos2d::Node* node_,
-                           PropertyHandler& handler) const {
-    auto node = dynamic_cast<const Target*>(node_);
-    Super::storeProperties(node, handler);
-
-    handler.storeProperty(Property::BackgroundColor, node);
-    handler.storeProperty(Property::BackgroundColorOpacity, node);
-    handler.storeProperty(Property::BackgroundColorType, node);
-    handler.storeProperty(Property::BackgroundColorVector, node);
-    handler.storeProperty(Property::BackgroundImageCapInsets, node);
-    handler.storeProperty(Property::BackgroundImageColor, node);
-    handler.storeProperty(Property::BackgroundImageOpacity, node);
-    handler.storeProperty(Property::ClippingEnabled, node);
-    handler.storeProperty(Property::ClippingType, node);
-    handler.storeProperty(Property::LayoutType, node);
-}
-
 std::string Self::getClassName() const {
     return ClassName;
+}
+
+cocos2d::Node* Self::createNode() const {
+    return cocos2d::ui::Layout::create();
 }
 
 Self* Self::cloneRaw() const {
