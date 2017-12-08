@@ -366,9 +366,11 @@ void Self::mouseRelease(QMouseEvent* event) {
 void Self::wheel(QWheelEvent* event) {
     auto x = static_cast<float>(event->posF().x());
     auto y = static_cast<float>(event->posF().y());
+    auto scrollX = static_cast<float>(event->angleDelta().x());
+    auto scrollY = static_cast<float>(event->angleDelta().y());
     EventMouse mouseEvent(EventMouse::MouseEventType::MOUSE_SCROLL);
     auto cursorPosition = parseCursorPosition(x, y);
-    mouseEvent.setScrollData(x, -y);
+    mouseEvent.setScrollData(scrollX, scrollY);
     mouseEvent.setCursorPosition(cursorPosition.x, cursorPosition.y);
     Director::getInstance()->getEventDispatcher()->dispatchEvent(&mouseEvent);
 }
