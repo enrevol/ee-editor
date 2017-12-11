@@ -3,6 +3,7 @@
 
 #include <functional>
 
+#include "optional.hpp"
 #include "value.hpp"
 
 namespace cocos2d {
@@ -51,7 +52,8 @@ private:
 public:
     using Value = ValueT;
 
-    using Reader = std::function<Value(const cocos2d::Node* node)>;
+    using Reader =
+        std::function<std::optional<Value>(const cocos2d::Node* node)>;
     using Writer = std::function<bool(cocos2d::Node* node, const Value& value)>;
 
     explicit GenericProperty(const std::string& name, const Reader& reader,
@@ -82,8 +84,9 @@ private:
     Writer writer_;
 };
 
-template <class Target, class Value,
-          class Reader = std::function<Value(const Target* node)>>
+template <
+    class Target, class Value,
+    class Reader = std::function<std::optional<Value>(const Target* node)>>
 typename GenericProperty<Value>::Reader
 makePropertyReader(const Reader& reader) {
     return [reader](const cocos2d::Node* node_) {
