@@ -1,22 +1,26 @@
 #ifndef EE_EDITOR_WIDGET_INSPECTOR_LOADER_HPP
 #define EE_EDITOR_WIDGET_INSPECTOR_LOADER_HPP
 
-#include "nodeinspectorloader.hpp"
+#include "inspectorloader.hpp"
 
 namespace ee {
-class WidgetInspectorLoader : public NodeInspectorLoader {
+class WidgetInspectorLoader : public InspectorLoader {
 private:
     using Self = WidgetInspectorLoader;
-    using Super = NodeInspectorLoader;
+    using Super = InspectorLoader;
 
 public:
     static InspectorLoaderPtr create();
 
     virtual ~WidgetInspectorLoader() override;
 
-    virtual QVector<InspectorGroup*> createInspectors() const override;
+    virtual Inspector* createInspector() const override;
 
-    virtual QString getClassName() const override;
+    virtual bool isRoot() const override;
+
+    virtual QString getParent() const override;
+
+    virtual QString getName() const override;
 
 protected:
     WidgetInspectorLoader();

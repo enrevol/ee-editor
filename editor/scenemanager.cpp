@@ -1,5 +1,6 @@
 #include "scenemanager.hpp"
 #include "inspectors/inspectorlist.hpp"
+#include "inspectors/inspectorloaderlibrary.hpp"
 #include "scene/mainscene.hpp"
 #include "scenetree/scenetree.hpp"
 #include "selection/selectionpath.hpp"
@@ -14,14 +15,17 @@ Self::SceneManager(MainScene* mainScene, SceneTree* sceneTree,
                    InspectorList* inspectorList)
     : mainScene_(mainScene)
     , sceneTree_(sceneTree)
-    , inspectorList_(inspectorList) {}
+    , inspectorList_(inspectorList) {
+    inspectorLoaderLibrary_ = std::make_unique<InspectorLoaderLibrary>();
+    inspectorLoaderLibrary_->addDefaultLoaders();
+}
 
 Self::~SceneManager() {}
 
 void Self::setNodeGraph(const NodeGraph& graph) {
-    graph_ = std::make_unique<NodeGraph>(graph);
-    mainScene_->setNodeGraph(*graph_);
-    sceneTree_->setNodeGraph(*graph_);
+    nodeGraph_ = std::make_unique<NodeGraph>(graph);
+    mainScene_->setNodeGraph(*nodeGraph_);
+    sceneTree_->setNodeGraph(*nodeGraph_);
 }
 
 void Self::connect() {
@@ -32,6 +36,7 @@ void Self::connect() {
         [this](const SelectionTree& selectionTree) {
             selectionTree_ = std::make_unique<SelectionTree>(selectionTree);
             mainScene_->selectTree(selectionTree);
+            updateInspectors(selectionTree);
         });
 
     connections_ << QObject::connect(
@@ -39,6 +44,7 @@ void Self::connect() {
         [this](const SelectionTree& selectionTree) {
             selectionTree_ = std::make_unique<SelectionTree>(selectionTree);
             sceneTree_->selectTree(selectionTree);
+            updateInspectors(selectionTree);
         });
 
     connections_ << QObject::connect(
@@ -53,5 +59,24 @@ void Self::disconnect() {
         QObject::disconnect(connection);
     }
     connections_.clear();
+}
+
+void Self::updateInspectors(const SelectionTree& selectionTree) {
+    inspectorList_->clearInspectors();
+    if (selectionTree.isEmpty()) {
+        //
+    } else {
+        QVector<QString> names;
+        for (auto&& path : selectionTree.getPaths()) {
+            auto&& graph = path.find(*nodeGraph_);
+            auto name = QString::fromStdString(graph.getBaseClass());
+            names.append(name);
+        }
+        auto&& loader = inspectorLoaderLibrary_->getLoader(names);
+        auto inspectors = inspectorLoaderLibrary_->createInspectors(loader);
+        for (auto&& inspector : inspectors) {
+            inspectorList_->addInspector(inspector);
+        }
+    }
 }
 } // namespace ee

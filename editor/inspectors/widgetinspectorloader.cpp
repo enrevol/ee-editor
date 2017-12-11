@@ -14,13 +14,19 @@ Self::WidgetInspectorLoader() {}
 
 Self::~WidgetInspectorLoader() {}
 
-QVector<InspectorGroup*> Self::createInspectors() const {
-    auto inspectors = Super::createInspectors();
-    inspectors.append(new WidgetInspector());
-    return inspectors;
+Inspector* Self::createInspector() const {
+    return new WidgetInspector();
 }
 
-QString Self::getClassName() const {
+bool Self::isRoot() const {
+    return false;
+}
+
+QString Self::getParent() const {
+    return QString::fromStdString(NodeLoader::ClassName);
+}
+
+QString Self::getName() const {
     return QString::fromStdString(WidgetLoader::ClassName);
 }
 } // namespace ee

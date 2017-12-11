@@ -9,6 +9,7 @@ class SelectionTree;
 class MainScene;
 class SceneTree;
 class InspectorList;
+class InspectorLoaderLibrary;
 
 /// Manages connections between:
 /// - Scene tree.
@@ -26,9 +27,13 @@ public:
     void connect();
     void disconnect();
 
+protected:
+    void updateInspectors(const SelectionTree& selectionTree);
+
 private:
-    std::unique_ptr<NodeGraph> graph_;
+    std::unique_ptr<NodeGraph> nodeGraph_;
     std::unique_ptr<SelectionTree> selectionTree_;
+    std::unique_ptr<InspectorLoaderLibrary> inspectorLoaderLibrary_;
     MainScene* mainScene_;
     SceneTree* sceneTree_;
     InspectorList* inspectorList_;

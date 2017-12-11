@@ -6,7 +6,7 @@
 #include <QString>
 
 namespace ee {
-class InspectorGroup;
+class Inspector;
 class InspectorLoader;
 
 using InspectorLoaderPtr = std::unique_ptr<InspectorLoader>;
@@ -15,9 +15,13 @@ class InspectorLoader {
 public:
     virtual ~InspectorLoader();
 
-    virtual QVector<InspectorGroup*> createInspectors() const = 0;
+    virtual Inspector* createInspector() const = 0;
 
-    virtual QString getClassName() const = 0;
+    virtual bool isRoot() const = 0;
+
+    virtual QString getParent() const = 0;
+
+    virtual QString getName() const = 0;
 
 protected:
     InspectorLoader();

@@ -14,13 +14,19 @@ Self::Scale9SpriteInspectorLoader() {}
 
 Self::~Scale9SpriteInspectorLoader() {}
 
-QVector<InspectorGroup*> Self::createInspectors() const {
-    auto inspectors = Super::createInspectors();
-    inspectors.append(new Scale9SpriteInspector());
-    return inspectors;
+Inspector* Self::createInspector() const {
+    return new Scale9SpriteInspector();
 }
 
-QString Self::getClassName() const {
+bool Self::isRoot() const {
+    return false;
+}
+
+QString Self::getParent() const {
+    return QString::fromStdString(SpriteLoader::ClassName);
+}
+
+QString Self::getName() const {
     return QString::fromStdString(Scale9SpriteLoader::ClassName);
 }
 } // namespace ee

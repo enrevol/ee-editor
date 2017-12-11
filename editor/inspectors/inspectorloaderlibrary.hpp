@@ -9,7 +9,7 @@
 #include <QVector>
 
 namespace ee {
-class InspectorGroup;
+class Inspector;
 
 class InspectorLoaderLibrary final {
 private:
@@ -28,8 +28,13 @@ public:
     bool addLoader(const QString& name, InspectorLoaderPtr loader);
 
     const InspectorLoaderPtr& getLoader(const QString& name) const;
+    const InspectorLoaderPtr& getLoader(const QVector<QString>& names) const;
 
-    QVector<InspectorGroup*> createInspectors(const QString& name) const;
+    QVector<Inspector*>
+    createInspectors(const InspectorLoaderPtr& loader) const;
+
+protected:
+    QVector<QString> getHierarchy(const QString& name) const;
 
 private:
     std::map<QString, InspectorLoaderPtr> loaders_;

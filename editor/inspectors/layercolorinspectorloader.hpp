@@ -14,9 +14,13 @@ public:
 
     virtual ~LayerColorInspectorLoader() override;
 
-    virtual QVector<InspectorGroup*> createInspectors() const override;
+    virtual Inspector* createInspector() const override;
 
-    virtual QString getClassName() const override;
+    virtual bool isRoot() const override;
+
+    virtual QString getParent() const override;
+
+    virtual QString getName() const override;
 
 protected:
     LayerColorInspectorLoader();

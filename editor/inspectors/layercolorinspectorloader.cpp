@@ -15,11 +15,19 @@ Self::LayerColorInspectorLoader() {}
 
 Self::~LayerColorInspectorLoader() {}
 
-QVector<InspectorGroup*> Self::createInspectors() const {
-    return Super::createInspectors();
+Inspector* Self::createInspector() const {
+    return nullptr;
 }
 
-QString Self::getClassName() const {
+bool Self::isRoot() const {
+    return false;
+}
+
+QString Self::getParent() const {
+    return QString::fromStdString(NodeLoader::ClassName);
+}
+
+QString Self::getName() const {
     return QString::fromStdString(LayerColorLoader::ClassName);
 }
 } // namespace ee
