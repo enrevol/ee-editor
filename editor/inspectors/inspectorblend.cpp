@@ -29,9 +29,10 @@ std::map<GLenum, QString> getBlendMap() {
 Self::InspectorBlend(QWidget* parent)
     : Super(parent)
     , ui_(new Ui::InspectorBlend)
-    , updating_(false) {
+    , updating_(false)
+    , src_(0)
+    , dst_(0) {
     ui_->setupUi(this);
-
     for (auto&& elt : getBlendMap()) {
         auto mode = elt.first;
         auto text = elt.second;

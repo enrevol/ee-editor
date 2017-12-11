@@ -12,7 +12,10 @@ Self::InspectorFloatXY(QWidget* parent)
     : Super(parent)
     , ui_(new Ui::InspectorFloatXY)
     , updating_(false)
-    , valueDirty_(true) {
+    , refreshed_(false)
+    , valueX_(0)
+    , valueY_(0)
+    , valueDirty_(false) {
     ui_->setupUi(this);
 
     // http://www.qtcentre.org/threads/18787-QDoubleSpinBox-setValue()-performance-issue
@@ -23,6 +26,7 @@ Self::InspectorFloatXY(QWidget* parent)
         if (valueDirty_) {
             valueDirty_ = false;
             setPropertyValue(valueX_, valueY_);
+            refreshed_ = false;
         }
     });
 
@@ -119,6 +123,11 @@ void Self::setPropertyValueLazy(float x, float y) {
 
 void Self::refreshInspector(const std::vector<const cocos2d::Node*>& nodes) {
     auto value = reader_(nodes.at(0));
-    setPropertyValue(value.first, value.second);
+    if (refreshed_) {
+        setPropertyValueLazy(value.first, value.second);
+    } else {
+        refreshed_ = true;
+        setPropertyValue(value.first, value.second);
+    }
 }
 } // namespace ee

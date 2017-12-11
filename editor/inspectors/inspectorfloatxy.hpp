@@ -48,6 +48,7 @@ private:
     Reader reader_;
     Writer writer_;
     bool updating_;
+    bool refreshed_;
     QTimer* updater_;
     float valueX_;
     float valueY_;
