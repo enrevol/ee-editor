@@ -24,12 +24,17 @@ private:
     using Self = SkeletonAnimationManager;
 
 public:
+    static const std::string NullAtlasFile;
+    static const std::string NullDataFile;
+
     static Self& getInstance();
 
     spAtlas* getAtlas(const std::string& atlasFile);
 
     spSkeletonData* getSkeletonData(const std::string& dataFile,
                                     const std::string& atlasFile, float scale);
+
+    spSkeletonData* getNullSkeletonData();
 
 protected:
     SkeletonAnimationManager();

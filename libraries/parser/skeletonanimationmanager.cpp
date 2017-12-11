@@ -2,8 +2,10 @@
 
 #include "skeletonanimationmanager.hpp"
 
+#include <spine/Atlas.h>
 #include <spine/Cocos2dAttachmentLoader.h>
 #include <spine/SkeletonAnimation.h>
+#include <spine/extension.h>
 
 namespace ee {
 namespace detail {
@@ -34,7 +36,27 @@ const SpineDataDeleter& getSkeletonDataDeleter() {
 } // namespace
 } // namespace detail
 
+namespace {
+spAtlas* createDummyAtlas() {
+    auto self = new spAtlas();
+    self->rendererObject = nullptr;
+    self->regions = nullptr;
+
+    auto page = spAtlasPage_create(self, "dummy");
+    self->pages = page;
+
+    return self;
+}
+
+std::string getDummyDataContent() {
+    return R"({"bones":[]})";
+}
+} // namespace
+
 using Self = SkeletonAnimationManager;
+
+const std::string Self::NullAtlasFile = "_____null_atlas_file";
+const std::string Self::NullDataFile = "_____null_data_file";
 
 Self& Self::getInstance() {
     static Self sharedInstance;
@@ -47,9 +69,12 @@ Self::~SkeletonAnimationManager() {}
 spAtlas* Self::getAtlas(const std::string& atlasFile) {
     auto iter = cachedAtlas_.find(atlasFile);
     if (iter == cachedAtlas_.cend()) {
-        auto atlas = spAtlas_createFromFile(atlasFile.c_str(), nullptr);
-        assert(atlas != nullptr);
-
+        auto atlas = (atlasFile == NullAtlasFile
+                          ? createDummyAtlas()
+                          : spAtlas_createFromFile(atlasFile.c_str(), nullptr));
+        if (atlas == nullptr) {
+            return nullptr;
+        }
         auto ptr = detail::SpineAtlasPtr(atlas, detail::getAtlasDeleter());
         iter = cachedAtlas_.emplace(atlasFile, std::move(ptr)).first;
     }
@@ -62,12 +87,22 @@ spSkeletonData* Self::getSkeletonData(const std::string& dataFile,
     auto iter = cachedSkeletonData_.find(std::make_pair(dataFile, scale));
     if (iter == cachedSkeletonData_.cend()) {
         auto&& atlas = getAtlas(atlasFile);
+        if (atlas == nullptr) {
+            return nullptr;
+        }
         auto attachmentLoader = &Cocos2dAttachmentLoader_create(atlas)->super;
         auto json = spSkeletonJson_createWithLoader(attachmentLoader);
         json->scale = scale;
 
         auto skeletonData =
-            spSkeletonJson_readSkeletonDataFile(json, dataFile.c_str());
+            (dataFile == NullDataFile
+                 ? spSkeletonJson_readSkeletonData(
+                       json, getDummyDataContent().c_str())
+                 : spSkeletonJson_readSkeletonDataFile(json, dataFile.c_str()));
+        if (skeletonData == nullptr) {
+            spSkeletonJson_dispose(json);
+            return nullptr;
+        }
         auto ptr = detail::SpineDataPtr(
             new detail::SpineData(skeletonData, attachmentLoader),
             detail::getSkeletonDataDeleter());
@@ -82,5 +117,9 @@ spSkeletonData* Self::getSkeletonData(const std::string& dataFile,
                    .first;
     }
     return iter->second->data;
+}
+
+spSkeletonData* Self::getNullSkeletonData() {
+    return getSkeletonData(NullDataFile, NullAtlasFile, 1.0f);
 }
 } // namespace ee

@@ -47,8 +47,12 @@ const PropertyString Self::Property::DataFile(
             if (initialized) {
                 spSkeleton_dispose(node->getSkeleton());
             }
-            auto data = SkeletonAnimationManager::getInstance().getSkeletonData(
-                value, atlasFile.value(), animationScale.value());
+            auto&& manager = SkeletonAnimationManager::getInstance();
+            auto data = manager.getSkeletonData(value, atlasFile.value(),
+                                                animationScale.value());
+            if (data == nullptr) {
+                data = manager.getNullSkeletonData();
+            }
             node->initWithData(data);
             handler.setProperty(key::initialized, true);
         }
@@ -70,8 +74,12 @@ const PropertyString Self::Property::AtlasFile(
             if (initialized) {
                 spSkeleton_dispose(node->getSkeleton());
             }
+            auto&& manager = SkeletonAnimationManager::getInstance();
             auto data = SkeletonAnimationManager::getInstance().getSkeletonData(
                 dataFile.value(), value, animationScale.value());
+            if (data == nullptr) {
+                data = manager.getNullSkeletonData();
+            }
             node->initWithData(data);
             handler.setProperty(key::initialized, true);
         }
@@ -94,8 +102,12 @@ const PropertyFloat Self::Property::AnimationScale(
             if (initialized) {
                 spSkeleton_dispose(node->getSkeleton());
             }
+            auto&& manager = SkeletonAnimationManager::getInstance();
             auto data = SkeletonAnimationManager::getInstance().getSkeletonData(
                 dataFile.value(), atlasFile.value(), value);
+            if (data == nullptr) {
+                data = manager.getNullSkeletonData();
+            }
             node->initWithData(data);
             handler.setProperty(key::initialized, true);
         }

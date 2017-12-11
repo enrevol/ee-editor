@@ -34,7 +34,9 @@ HEADERS += \
     scale9spriteloader.hpp \
     value.hpp \
     propertytraits.hpp \
-    optional.hpp
+    optional.hpp \
+    skeletonanimationloader.hpp \
+    skeletonanimationmanager.hpp
 
 SOURCES += \
     nodeloader.cpp \
@@ -50,4 +52,6 @@ SOURCES += \
     scale9spriteloader.cpp \
     value.cpp \
     propertytraits.cpp \
-    property.cpp
+    property.cpp \
+    skeletonanimationloader.cpp \
+    skeletonanimationmanager.cpp
