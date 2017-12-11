@@ -2,6 +2,7 @@
 #include "layercolorinspectorloader.hpp"
 #include "nodeinspectorloader.hpp"
 #include "scale9spriteinspectorloader.hpp"
+#include "skeletonanimationinspectorloader.hpp"
 #include "spriteinspectorloader.hpp"
 #include "widgetinspectorloader.hpp"
 
@@ -18,6 +19,7 @@ void Self::addDefaultLoaders() {
     addLoader(NodeInspectorLoader::create());
     addLoader(SpriteInspectorLoader::create());
     addLoader(Scale9SpriteInspectorLoader::create());
+    addLoader(SkeletonAnimationInspectorLoader::create());
     addLoader(WidgetInspectorLoader::create());
 }
 

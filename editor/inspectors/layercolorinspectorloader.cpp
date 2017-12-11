@@ -1,4 +1,5 @@
 #include "layercolorinspectorloader.hpp"
+#include "inspectorgroup.hpp"
 
 #include <parser/layercolorloader.hpp>
 
@@ -16,7 +17,10 @@ Self::LayerColorInspectorLoader() {}
 Self::~LayerColorInspectorLoader() {}
 
 Inspector* Self::createInspector() const {
-    return nullptr;
+    // FIXME.
+    auto inspector = new InspectorGroup();
+    inspector->setVisible(false);
+    return inspector;
 }
 
 bool Self::isRoot() const {

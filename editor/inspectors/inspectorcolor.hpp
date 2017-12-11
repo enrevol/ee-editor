@@ -2,6 +2,9 @@
 #define EE_EDITOR_INSPECTOR_COLOR_HPP
 
 #include "inspector.hpp"
+#include "optional.hpp"
+
+#include <base/ccTypes.h>
 
 namespace Ui {
 class InspectorColor;
@@ -20,7 +23,9 @@ private:
     using Super = Inspector;
 
 public:
-    using Reader = std::function<cocos2d::Color3B(const cocos2d::Node* node)>;
+    using Reader = std::function<std::optional<cocos2d::Color3B>(
+        const cocos2d::Node* node)>;
+
     using Writer =
         std::function<bool(cocos2d::Node* node, const cocos2d::Color3B& value)>;
 

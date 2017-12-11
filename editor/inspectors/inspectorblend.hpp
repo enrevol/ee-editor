@@ -2,6 +2,9 @@
 #define EE_EDITOR_INSPECTOR_BLEND_HPP
 
 #include "inspector.hpp"
+#include "optional.hpp"
+
+#include <base/ccTypes.h>
 
 namespace Ui {
 class InspectorBlend;
@@ -21,7 +24,9 @@ private:
     using Super = Inspector;
 
 public:
-    using Reader = std::function<cocos2d::BlendFunc(const cocos2d::Node* node)>;
+    using Reader = std::function<std::optional<cocos2d::BlendFunc>(
+        const cocos2d::Node* node)>;
+
     using Writer = std::function<bool(cocos2d::Node* node,
                                       const cocos2d::BlendFunc& value)>;
 

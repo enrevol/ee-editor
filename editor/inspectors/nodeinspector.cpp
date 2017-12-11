@@ -81,8 +81,8 @@ auto createAnchorPointInspector() {
         ->setSubPropertyDisplayName("X", "Y")
         ->setSingleStep(0.05f)
         ->setValuePrecision(3)
-        ->setMinimumValue(-99.99f)
-        ->setMaximumValue(+99.99f);
+        ->setMinimumValue(-99.999f)
+        ->setMaximumValue(+99.999f);
 }
 
 auto createScaleInspector() {
@@ -100,8 +100,8 @@ auto createScaleInspector() {
         ->setSubPropertyDisplayName("X", "Y")
         ->setSingleStep(0.05f)
         ->setValuePrecision(3)
-        ->setMinimumValue(-99.99f)
-        ->setMaximumValue(+99.99f);
+        ->setMinimumValue(-99.999f)
+        ->setMaximumValue(+99.999f);
 }
 
 auto createRotationInspector() {
@@ -128,10 +128,10 @@ auto createSkewInspector() {
         })
         ->setPropertyDisplayName("Skew")
         ->setSubPropertyDisplayName("X", "Y")
-        ->setSingleStep(0.05f)
-        ->setValuePrecision(3)
-        ->setMinimumValue(-99.99f)
-        ->setMaximumValue(+99.99f);
+        ->setSingleStep(1.0f)
+        ->setValuePrecision(2)
+        ->setMinimumValue(-359.99f)
+        ->setMaximumValue(+359.99f);
 };
 
 auto createTagInspector() {

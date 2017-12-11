@@ -22,14 +22,17 @@ Self::InspectorColor(QWidget* parent)
         QColorDialog dialog(currentColor, this);
         connect(&dialog, &QColorDialog::currentColorChanged,
                 [this](const QColor& color) {
+                    setPropertyValue(color);
                     Q_EMIT propertyValueChanged(color);
                 });
         dialog.exec();
         auto selectedColor = dialog.selectedColor();
         if (not selectedColor.isValid()) {
+            setPropertyValue(currentColor);
             Q_EMIT propertyValueChanged(currentColor);
             return;
         }
+        setPropertyValue(selectedColor);
         Q_EMIT propertyValueChanged(selectedColor);
     });
     connect(this, &Self::propertyValueChanged, [this](const QColor& color) {
@@ -74,6 +77,9 @@ Self* Self::setPropertyDisplayName(const QString& name) {
 
 void Self::refreshInspector(const std::vector<const cocos2d::Node*>& nodes) {
     auto color = reader_(nodes.at(0));
-    setPropertyValue(QColor::fromRgb(color.r, color.g, color.b));
+    auto r = color->r;
+    auto g = color->g;
+    auto b = color->b;
+    setPropertyValue(QColor::fromRgb(r, g, b));
 }
 } // namespace ee

@@ -83,7 +83,7 @@ Self* Self::setPropertyValue(const QString& value, bool notify) {
 
 void Self::refreshInspector(const std::vector<const cocos2d::Node*>& nodes) {
     auto value = reader_(nodes.at(0));
-    setPropertyValue(QString::fromStdString(value), false);
+    setPropertyValue(QString::fromStdString(value.value()), false);
 }
 
 void Self::dragEnterEvent(QDragEnterEvent* event) {

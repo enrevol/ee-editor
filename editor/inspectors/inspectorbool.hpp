@@ -2,6 +2,7 @@
 #define EE_EDITOR_INSPECTOR_BOOL_HPP
 
 #include "inspector.hpp"
+#include "optional.hpp"
 
 namespace Ui {
 class InspectorBool;
@@ -18,7 +19,9 @@ private:
     using Super = Inspector;
 
 public:
-    using Reader = std::function<bool(const cocos2d::Node* node)>;
+    using Reader =
+        std::function<std::optional<bool>(const cocos2d::Node* node)>;
+
     using Writer = std::function<bool(cocos2d::Node* node, bool value)>;
 
     explicit InspectorBool(QWidget* parent = nullptr);

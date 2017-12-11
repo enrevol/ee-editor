@@ -60,6 +60,6 @@ Self* Self::addSelection(const QString& name) {
 
 void Self::refreshInspector(const std::vector<const cocos2d::Node*>& nodes) {
     auto value = reader_(nodes.at(0));
-    setPropertyValue(value);
+    setPropertyValue(value.value());
 }
 } // namespace ee

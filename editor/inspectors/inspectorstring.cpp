@@ -46,6 +46,6 @@ Self* Self::setPropertyDisplayName(const QString& name) {
 
 void Self::refreshInspector(const std::vector<const cocos2d::Node*>& nodes) {
     auto value = reader_(nodes.at(0));
-    setPropertyValue(QString::fromStdString(value));
+    setPropertyValue(QString::fromStdString(value.value()));
 }
 } // namespace ee

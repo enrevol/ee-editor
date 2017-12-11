@@ -2,6 +2,7 @@
 #define EE_EDITOR_INSPECTOR_FLOAT_HPP
 
 #include "inspector.hpp"
+#include "optional.hpp"
 
 namespace Ui {
 class InspectorFloat;
@@ -16,7 +17,8 @@ private:
     using Super = Inspector;
 
 public:
-    using Reader = std::function<float(const cocos2d::Node* node)>;
+    using Reader =
+        std::function<std::optional<float>(const cocos2d::Node* node)>;
     using Writer = std::function<bool(cocos2d::Node* node, float value)>;
 
     explicit InspectorFloat(QWidget* parent = nullptr);

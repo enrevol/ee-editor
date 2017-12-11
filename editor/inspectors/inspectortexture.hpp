@@ -2,6 +2,7 @@
 #define EE_EDITOR_INSPECTOR_TEXTURE_HPP
 
 #include "inspector.hpp"
+#include "optional.hpp"
 
 namespace Ui {
 class InspectorTexture;
@@ -16,7 +17,8 @@ private:
     using Super = Inspector;
 
 public:
-    using Reader = std::function<std::string(const cocos2d::Node* node)>;
+    using Reader =
+        std::function<std::optional<std::string>(const cocos2d::Node* node)>;
     using Writer =
         std::function<bool(cocos2d::Node* node, const std::string& value)>;
 

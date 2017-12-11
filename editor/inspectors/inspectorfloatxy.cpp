@@ -76,6 +76,8 @@ Self* Self::setPropertyValue(float x, float y) {
     updating_ = true;
     ui_->propertyXInput->setValue(static_cast<double>(x));
     ui_->propertyYInput->setValue(static_cast<double>(y));
+    valueX_ = x;
+    valueY_ = y;
     updating_ = false;
     return this;
 }
@@ -123,11 +125,13 @@ void Self::setPropertyValueLazy(float x, float y) {
 
 void Self::refreshInspector(const std::vector<const cocos2d::Node*>& nodes) {
     auto value = reader_(nodes.at(0));
+    auto x = value->first;
+    auto y = value->second;
     if (refreshed_) {
-        setPropertyValueLazy(value.first, value.second);
+        setPropertyValueLazy(x, y);
     } else {
         refreshed_ = true;
-        setPropertyValue(value.first, value.second);
+        setPropertyValue(x, y);
     }
 }
 } // namespace ee

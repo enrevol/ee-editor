@@ -118,8 +118,8 @@ Self* Self::setPropertyValue(int src, int dst) {
 
 void Self::refreshInspector(const std::vector<const cocos2d::Node*>& nodes) {
     auto value = reader_(nodes.at(0));
-    auto src = static_cast<int>(value.src);
-    auto dst = static_cast<int>(value.dst);
+    auto src = static_cast<int>(value->src);
+    auto dst = static_cast<int>(value->dst);
     setPropertyValue(src, dst);
 }
 } // namespace ee
