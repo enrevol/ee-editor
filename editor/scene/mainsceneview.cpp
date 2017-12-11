@@ -282,18 +282,12 @@ cocos2d::Node* findCapturedNode(cocos2d::Node* rootNode,
 } // namespace
 
 void Self::mousePressed(cocos2d::EventMouse* event) {
-    if (rootNode_ == nullptr) {
-        return;
-    }
     auto&& position = event->getLocation();
     mousePressing_ = true;
     mouseMoved_ = false;
 }
 
 void Self::mouseMoved(cocos2d::EventMouse* event) {
-    if (rootNode_ == nullptr) {
-        return;
-    }
     mouseMoved_ = true;
     auto&& position = event->getLocation();
     if (mousePressing_) {
@@ -309,34 +303,35 @@ void Self::mouseMoved(cocos2d::EventMouse* event) {
             rulerView_->setOrigin(origin);
         }
     } else {
-        auto capturedNode = findCapturedNode(rootNode_, position);
-        if (capturedNode == nullptr) {
-            highlighter_->unhover();
-        } else {
-            highlighter_->hover(capturedNode);
+        if (rootNode_ != nullptr) {
+            auto capturedNode = findCapturedNode(rootNode_, position);
+            if (capturedNode == nullptr) {
+                highlighter_->unhover();
+            } else {
+                highlighter_->hover(capturedNode);
+            }
         }
     }
 }
 
 void Self::mouseReleased(cocos2d::EventMouse* event) {
-    if (rootNode_ == nullptr) {
-        return;
-    }
     Q_ASSERT(mousePressing_);
     mousePressing_ = false;
     auto&& position = event->getLocation();
     if (mouseMoved_) {
         // FIXME.
     } else {
-        auto selection = SelectionTree::emptySelection();
-        auto capturedNode = findCapturedNode(rootNode_, position);
-        if (capturedNode != nullptr) {
-            auto path = SelectionPath::fromNode(capturedNode, rootNode_);
-            selection.addPath(path);
-        }
-        if (selection != *selection_) {
-            selectTree(selection);
-            Q_EMIT selectionTreeChanged(selection);
+        if (rootNode_ != nullptr) {
+            auto selection = SelectionTree::emptySelection();
+            auto capturedNode = findCapturedNode(rootNode_, position);
+            if (capturedNode != nullptr) {
+                auto path = SelectionPath::fromNode(capturedNode, rootNode_);
+                selection.addPath(path);
+            }
+            if (selection != *selection_) {
+                selectTree(selection);
+                Q_EMIT selectionTreeChanged(selection);
+            }
         }
     }
 }
@@ -351,10 +346,12 @@ void Self::mouseScrolled(cocos2d::EventMouse* event) {
         multiplier -= 0.2f;
     }
     auto originScale = originNode_->getScale() * multiplier;
-    auto originPosition = mousePosition - offset * multiplier;
-    originNode_->setScale(originScale);
-    originNode_->setPosition(originPosition);
-    rulerView_->setUnitLength(originScale)->setOrigin(originPosition);
+    if (0.05f <= originScale && originScale <= 500.0f) {
+        auto originPosition = mousePosition - offset * multiplier;
+        originNode_->setScale(originScale);
+        originNode_->setPosition(originPosition);
+        rulerView_->setUnitLength(originScale)->setOrigin(originPosition);
+    }
 }
 
 void Self::updateWindowSize() {
