@@ -158,7 +158,9 @@ HEADERS += \
     inspectors/inspectorlist.hpp \
     optional.hpp \
     scene/rulerview.hpp \
-    scene/rulerline.hpp
+    scene/rulerline.hpp \
+    inspectors/skeletonanimationinspector.hpp \
+    inspectors/skeletonanimationinspectorloader.hpp
 
 SOURCES += \
     inspectors/inspector.cpp \
@@ -222,4 +224,6 @@ SOURCES += \
     scene/mainsceneview.cpp \
     inspectors/inspectorlist.cpp \
     scene/rulerview.cpp \
-    scene/rulerline.cpp
+    scene/rulerline.cpp \
+    inspectors/skeletonanimationinspector.cpp \
+    inspectors/skeletonanimationinspectorloader.cpp

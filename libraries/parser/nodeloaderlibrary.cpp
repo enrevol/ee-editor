@@ -4,6 +4,7 @@
 #include "nodeloader.hpp"
 #include "nodeloaderlibrary.hpp"
 #include "scale9spriteloader.hpp"
+#include "skeletonanimationloader.hpp"
 #include "spriteloader.hpp"
 #include "widgetloader.hpp"
 
@@ -26,6 +27,7 @@ void Self::addDefaultLoaders() {
     addLoader(std::make_unique<SpriteLoader>());
     addLoader(std::make_unique<WidgetLoader>());
     addLoader(std::make_unique<LayerColorLoader>());
+    addLoader(std::make_unique<SkeletonAnimationLoader>());
 }
 
 bool Self::hasLoader(const std::string& name) const {
