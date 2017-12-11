@@ -29,6 +29,7 @@ public:
     Self* setPropertyValue(int value);
     Self* setPropertyDisplayName(const QString& name);
     Self* addSelection(const QString& name);
+    Self* clearSelections();
 
     virtual void
     refreshInspector(const std::vector<const cocos2d::Node*>& nodes) override;

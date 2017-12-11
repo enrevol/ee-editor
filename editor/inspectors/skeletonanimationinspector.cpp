@@ -3,9 +3,13 @@
 #include "inspectorbool.hpp"
 #include "inspectorfloat.hpp"
 #include "inspectorfloatxy.hpp"
+#include "inspectorselect.hpp"
 #include "inspectorstring.hpp"
 
 #include <parser/skeletonanimationloader.hpp>
+
+#undef slots
+#include <spine/SkeletonAnimation.h>
 
 namespace ee {
 using Self = SkeletonAnimationInspector;
@@ -14,10 +18,83 @@ namespace {
 using Property = SkeletonAnimationLoader::Property;
 
 auto createDataFileInspector() {
-    return (new InspectorString())
-        ->setReader(Property::DataFile.getReader())
-        ->setWriter(Property::DataFile.getWriter())
-        ->setPropertyDisplayName("Data file");
+    QVector<Inspector*> inspectors;
+
+    auto readAnimations = [](const spine::SkeletonAnimation* node) {
+        std::vector<std::string> animations;
+        auto skeletonData =
+            const_cast<spine::SkeletonAnimation*>(node)->getSkeleton()->data;
+        for (int i = 0; i < skeletonData->animationsCount; ++i) {
+            animations.emplace_back(skeletonData->animations[i]->name);
+        }
+        return animations;
+    };
+
+    auto animation =
+        (new InspectorSelect())
+            ->setReader([readAnimations](const cocos2d::Node* node_) {
+                auto value = Property::Animation.read(node_);
+                if (not value) {
+                    return 0;
+                }
+                auto node =
+                    dynamic_cast<const spine::SkeletonAnimation*>(node_);
+                auto animations = readAnimations(node);
+                auto iter = std::find(animations.cbegin(), animations.cend(),
+                                      value.value());
+                if (iter == animations.cend()) {
+                    return 0;
+                }
+                return static_cast<int>(iter - animations.cbegin());
+            })
+            ->setWriter([readAnimations](cocos2d::Node* node_, int value) {
+                auto node = dynamic_cast<spine::SkeletonAnimation*>(node_);
+                if (node == nullptr) {
+                    return false;
+                }
+                auto animations = readAnimations(node);
+                if (static_cast<std::size_t>(value) < animations.size()) {
+                    return Property::Animation.write(
+                        node, animations.at(static_cast<std::size_t>(value)));
+                }
+                return false;
+            })
+            ->setPropertyDisplayName("Animation");
+
+    auto dataFile =
+        (new InspectorString())
+            ->setReader([readAnimations,
+                         animation](const cocos2d::Node* node_) {
+                auto value = Property::DataFile.read(node_);
+                if (value) {
+                    auto node =
+                        dynamic_cast<const spine::SkeletonAnimation*>(node_);
+                    auto animations = readAnimations(node);
+                    animation->clearSelections();
+                    for (auto&& name : animations) {
+                        animation->addSelection(QString::fromStdString(name));
+                    }
+                }
+                return value;
+            })
+            ->setWriter([readAnimations, animation](cocos2d::Node* node_,
+                                                    const std::string& value) {
+                if (not Property::DataFile.write(node_, value)) {
+                    return false;
+                }
+                auto node = dynamic_cast<spine::SkeletonAnimation*>(node_);
+                animation->clearSelections();
+                auto animations = readAnimations(node);
+                for (auto&& name : animations) {
+                    animation->addSelection(QString::fromStdString(name));
+                }
+                return true;
+            })
+            ->setPropertyDisplayName("Data file");
+
+    inspectors.append(dataFile);
+    inspectors.append(animation);
+    return inspectors;
 }
 
 auto createAtlasFileInspector() {
@@ -94,10 +171,12 @@ auto createDebugSlotsInspector() {
 Self::SkeletonAnimationInspector(QWidget* parent)
     : Super(parent) {
     setDisplayName("Skeleton Animation");
-    addInspector(createDataFileInspector());
+    auto inspectors = createDataFileInspector();
+    addInspector(inspectors[0]);
     addInspector(createAtlasFileInspector());
     addInspector(createAnimationScaleInspector());
-    addInspector(createAnimationInspector());
+    addInspector(inspectors[1]);
+    // addInspector(createAnimationInspector());
     addInspector(createSkinInspector());
     addInspector(createLoopInspector());
     addInspector(createTimeScaleInspector());

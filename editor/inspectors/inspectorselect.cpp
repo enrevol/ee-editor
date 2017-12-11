@@ -58,6 +58,11 @@ Self* Self::addSelection(const QString& name) {
     return this;
 }
 
+Self* Self::clearSelections() {
+    ui_->propertySelection->clear();
+    return this;
+}
+
 void Self::refreshInspector(const std::vector<const cocos2d::Node*>& nodes) {
     auto value = reader_(nodes.at(0));
     setPropertyValue(value.value());
