@@ -13,97 +13,93 @@
 
 namespace ee {
 using Self = SkeletonAnimationInspector;
+using Target = spine::SkeletonAnimation;
 
 namespace {
 using Property = SkeletonAnimationLoader::Property;
 
-std::vector<std::string> readAnimations(const spine::SkeletonAnimation* node) {
-    std::vector<std::string> animations;
+auto getSkeletonData(const Target* node) {
     auto skeleton = static_cast<const spSkeleton*>(
-        const_cast<spine::SkeletonAnimation*>(node)->getSkeleton());
-    auto skeletonData = skeleton->data;
+        const_cast<Target*>(node)->getSkeleton());
+    return skeleton->data;
+}
+
+std::vector<std::string> readAnimations(const Target* node) {
+    std::vector<std::string> animations;
+    auto skeletonData = getSkeletonData(node);
     for (int i = 0; i < skeletonData->animationsCount; ++i) {
         animations.emplace_back(skeletonData->animations[i]->name);
     }
     return animations;
 }
 
-int findAnimationIndex(const std::vector<std::string>& animations,
-                       const std::string& name) {
-    auto iter = std::find(animations.cbegin(), animations.cend(), name);
-    if (iter == animations.cend()) {
-        return -1;
+std::vector<std::string> readSkins(const Target* node) {
+    std::vector<std::string> skins;
+    auto skeletonData = getSkeletonData(node);
+    for (int i = 0; i < skeletonData->skinsCount; ++i) {
+        skins.emplace_back(skeletonData->skins[i]->name);
     }
-    return static_cast<int>(iter - animations.cbegin());
+    return skins;
 }
 
-auto createDataFileInspector() {
-    QVector<Inspector*> inspectors;
+int findIndex(const std::vector<std::string>& values,
+              const std::string& value) {
+    auto iter = std::find(values.cbegin(), values.cend(), value);
+    if (iter == values.cend()) {
+        return -1;
+    }
+    return static_cast<int>(iter - values.cbegin());
+}
 
-    auto animationInspector =
-        (new InspectorSelect())
-            ->setReader([](const cocos2d::Node* node_) {
-                auto value = Property::Animation.read(node_);
-                if (not value) {
-                    return -1;
-                }
+auto createDataFileInspector(InspectorSelect* animationInspector,
+                             InspectorSelect* skinInspector) {
+    return (new InspectorString())
+        ->setReader([animationInspector,
+                     skinInspector](const cocos2d::Node* node_) {
+            auto value = Property::DataFile.read(node_);
+            if (value) {
                 auto node =
                     dynamic_cast<const spine::SkeletonAnimation*>(node_);
                 auto animations = readAnimations(node);
-                return findAnimationIndex(animations, value.value());
-            })
-            ->setWriter([](cocos2d::Node* node_, int value) {
-                auto node = dynamic_cast<spine::SkeletonAnimation*>(node_);
-                if (node == nullptr) {
-                    return false;
-                }
-                auto animations = readAnimations(node);
-                if (static_cast<std::size_t>(value) < animations.size()) {
-                    return Property::Animation.write(
-                        node, animations.at(static_cast<std::size_t>(value)));
-                }
-                return false;
-            })
-            ->setPropertyDisplayName("Animation");
-
-    auto dataFileInspector =
-        (new InspectorString())
-            ->setReader([animationInspector](const cocos2d::Node* node_) {
-                auto value = Property::DataFile.read(node_);
-                if (value) {
-                    auto node =
-                        dynamic_cast<const spine::SkeletonAnimation*>(node_);
-                    auto animations = readAnimations(node);
-                    animationInspector->clearSelections();
-                    for (auto&& name : animations) {
-                        animationInspector->addSelection(
-                            QString::fromStdString(name));
-                    }
-                }
-                return value;
-            })
-            ->setWriter([animationInspector](cocos2d::Node* node_,
-                                             const std::string& value) {
-                if (not Property::DataFile.write(node_, value)) {
-                    return false;
-                }
-                auto node = dynamic_cast<spine::SkeletonAnimation*>(node_);
                 animationInspector->clearSelections();
-                auto animations = readAnimations(node);
                 for (auto&& name : animations) {
                     animationInspector->addSelection(
                         QString::fromStdString(name));
                 }
-                auto animation = Property::Animation.read(node).value();
-                animationInspector->setPropertyValue(
-                    findAnimationIndex(animations, animation));
-                return true;
-            })
-            ->setPropertyDisplayName("Data file");
 
-    inspectors.append(dataFileInspector);
-    inspectors.append(animationInspector);
-    return inspectors;
+                auto skins = readSkins(node);
+                skinInspector->clearSelections();
+                for (auto&& name : skins) {
+                    skinInspector->addSelection(QString::fromStdString(name));
+                }
+            }
+            return value;
+        })
+        ->setWriter([animationInspector, skinInspector](
+                        cocos2d::Node* node_, const std::string& value) {
+            if (not Property::DataFile.write(node_, value)) {
+                return false;
+            }
+            auto node = dynamic_cast<spine::SkeletonAnimation*>(node_);
+            animationInspector->clearSelections();
+            auto animations = readAnimations(node);
+            for (auto&& name : animations) {
+                animationInspector->addSelection(QString::fromStdString(name));
+            }
+            auto animation = Property::Animation.read(node).value();
+            animationInspector->setPropertyValue(
+                findIndex(animations, animation));
+
+            skinInspector->clearSelections();
+            auto skins = readSkins(node);
+            for (auto&& name : skins) {
+                skinInspector->addSelection(QString::fromStdString(name));
+            }
+            auto skin = Property::Skin.read(node).value();
+            skinInspector->setPropertyValue(findIndex(skins, skin));
+            return true;
+        })
+        ->setPropertyDisplayName("Data file");
 }
 
 auto createAtlasFileInspector() {
@@ -125,16 +121,54 @@ auto createAnimationScaleInspector() {
 }
 
 auto createAnimationInspector() {
-    return (new InspectorString())
-        ->setReader(Property::Animation.getReader())
-        ->setWriter(Property::Animation.getWriter())
+    return (new InspectorSelect())
+        ->setReader([](const cocos2d::Node* node_) {
+            auto value = Property::Animation.read(node_);
+            if (not value) {
+                return -1;
+            }
+            auto node = dynamic_cast<const Target*>(node_);
+            auto animations = readAnimations(node);
+            return findIndex(animations, value.value());
+        })
+        ->setWriter([](cocos2d::Node* node_, int value) {
+            auto node = dynamic_cast<Target*>(node_);
+            if (node == nullptr) {
+                return false;
+            }
+            auto animations = readAnimations(node);
+            auto index = static_cast<std::size_t>(value);
+            if (index < animations.size()) {
+                return Property::Animation.write(node, animations.at(index));
+            }
+            return false;
+        })
         ->setPropertyDisplayName("Animation");
 }
 
 auto createSkinInspector() {
-    return (new InspectorString())
-        ->setReader(Property::Skin.getReader())
-        ->setWriter(Property::Skin.getWriter())
+    return (new InspectorSelect())
+        ->setReader([](const cocos2d::Node* node_) {
+            auto value = Property::Skin.read(node_);
+            if (not value) {
+                return -1;
+            }
+            auto node = dynamic_cast<const Target*>(node_);
+            auto skins = readSkins(node);
+            return findIndex(skins, value.value());
+        })
+        ->setWriter([](cocos2d::Node* node_, int value) {
+            auto node = dynamic_cast<Target*>(node_);
+            if (node == nullptr) {
+                return false;
+            }
+            auto skins = readSkins(node);
+            auto index = static_cast<std::size_t>(value);
+            if (index < skins.size()) {
+                return Property::Skin.write(node, skins.at(index));
+            }
+            return false;
+        })
         ->setPropertyDisplayName("Skin");
 }
 
@@ -180,13 +214,15 @@ auto createDebugSlotsInspector() {
 Self::SkeletonAnimationInspector(QWidget* parent)
     : Super(parent) {
     setDisplayName("Skeleton Animation");
-    auto inspectors = createDataFileInspector();
-    addInspector(inspectors[0]);
+    auto animationInspector = createAnimationInspector();
+    auto skinInspector = createSkinInspector();
+    auto dataFileInspector =
+        createDataFileInspector(animationInspector, skinInspector);
+    addInspector(dataFileInspector);
     addInspector(createAtlasFileInspector());
     addInspector(createAnimationScaleInspector());
-    addInspector(inspectors[1]);
-    // addInspector(createAnimationInspector());
-    addInspector(createSkinInspector());
+    addInspector(animationInspector);
+    addInspector(skinInspector);
     addInspector(createLoopInspector());
     addInspector(createTimeScaleInspector());
     addInspector(createBlendFuncInspector());
