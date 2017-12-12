@@ -19,7 +19,7 @@ const PropertyEnum<Target::RenderingType>
                                   Helper::makeWriter<Target::RenderingType>(
                                       std::mem_fn(&Target::setRenderingType)));
 
-const std::string Self::ClassName = "_Scale9Sprite";
+const std::string Self::Name = "_Scale9Sprite";
 
 Self::Scale9SpriteLoader() {
     addProperty(Property::State);
@@ -28,16 +28,8 @@ Self::Scale9SpriteLoader() {
 
 Self::~Scale9SpriteLoader() {}
 
-/*
-    bool flag = true;
-    flag &= writer.addProperty(
-        Property::State,
-        static_cast<int>(cocos2d::ui::Scale9Sprite::State::NORMAL));
-    Q_ASSERT(flag);
-    */
-
-std::string Self::getClassName() const {
-    return ClassName;
+std::string Self::getName() const {
+    return Name;
 }
 
 cocos2d::Node* Self::createNode() const {

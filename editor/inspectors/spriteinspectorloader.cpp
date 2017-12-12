@@ -23,10 +23,10 @@ bool Self::isRoot() const {
 }
 
 QString Self::getParent() const {
-    return QString::fromStdString(NodeLoader::ClassName);
+    return QString::fromStdString(NodeLoader::Name);
 }
 
 QString Self::getName() const {
-    return QString::fromStdString(SpriteLoader::ClassName);
+    return QString::fromStdString(SpriteLoader::Name);
 }
 } // namespace ee

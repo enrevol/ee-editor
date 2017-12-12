@@ -1,14 +1,11 @@
 #ifndef EE_PARSER_NODE_INFO_HPP
 #define EE_PARSER_NODE_INFO_HPP
 
-#include <propertyhandler.hpp>
+#include "propertyhandler.hpp"
 
 #include <base/CCRef.h>
 
 namespace ee {
-class NodeInfoReader;
-class NodeInfoWriter;
-
 /// Stores additional properties for a node.
 class NodeInfo final : public cocos2d::Ref {
 private:

@@ -35,27 +35,6 @@ cocos2d::Node* Self::readNodeGraph(const NodeGraph& graph) const {
     return node;
 }
 
-void Self::addDefaultProperties(NodeGraph& graph) const {
-    // FIXME.
-    /*
-    auto&& loader = getNodeLoader(graph);
-    auto&& defaultProperties =
-        loader->getDefaultPropertyReader().getProperties();
-    auto&& propertyReader = graph.getPropertyReader();
-    auto&& propertyWriter = graph.getPropertyWriter();
-    for (auto&& elt : defaultProperties) {
-        auto&& key = elt.first;
-        if (propertyReader.hasProperty(key)) {
-            continue;
-        }
-        auto&& value = elt.second;
-        propertyWriter.setProperty(key, value);
-    }
-    for (auto&& child : graph.getChildren()) {
-        addDefaultProperties(child);
-    }
-    */
-}
 
 const NodeLoaderPtr& Self::getNodeLoader(const NodeGraph& graph) const {
     auto baseClass = graph.getBaseClass();

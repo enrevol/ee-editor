@@ -86,7 +86,7 @@ const PropertyEnum<Target::Type> Self::Property::LayoutType(
     Helper::makeReader<Target::Type>(std::mem_fn(&Target::getLayoutType)),
     Helper::makeWriter<Target::Type>(std::mem_fn(&Target::setLayoutType)));
 
-const std::string Self::ClassName = "_Layout";
+const std::string Self::Name = "_Layout";
 
 Self::LayoutLoader() {
     addProperty(Property::BackgroundColor);
@@ -103,8 +103,8 @@ Self::LayoutLoader() {
 
 Self::~LayoutLoader() {}
 
-std::string Self::getClassName() const {
-    return ClassName;
+std::string Self::getName() const {
+    return Name;
 }
 
 cocos2d::Node* Self::createNode() const {

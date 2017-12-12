@@ -4,9 +4,6 @@
 #include "propertyhandler.hpp"
 
 namespace ee {
-class PropertyReader;
-class PropertyWriter;
-
 class NodeGraph final {
 private:
     using Self = NodeGraph;

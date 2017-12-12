@@ -3,10 +3,6 @@
 
 #include "nodeloader.hpp"
 
-namespace spine {
-class SkeletonAnimation;
-} // namespace spine
-
 namespace ee {
 class SkeletonAnimationLoader : public NodeLoader {
 private:
@@ -28,17 +24,20 @@ public:
         static const PropertyBool DebugSlots;
     };
 
-    static const std::string ClassName;
+    static const std::string Name;
 
     SkeletonAnimationLoader();
 
     ~SkeletonAnimationLoader();
 
-    virtual std::string getClassName() const override;
+    /// @see Super.
+    virtual std::string getName() const override;
 
+    /// @see Super.
     virtual cocos2d::Node* createNode() const override;
 
 protected:
+    /// @see Super.
     virtual Self* cloneRaw() const override;
 };
 } // namespace ee

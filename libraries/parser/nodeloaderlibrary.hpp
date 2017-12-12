@@ -6,10 +6,6 @@
 
 #include "parserfwd.hpp"
 
-namespace cocos2d {
-class Node;
-} // namespace cocos2d
-
 namespace ee {
 /// A collection of node loaders.
 class NodeLoaderLibrary final {

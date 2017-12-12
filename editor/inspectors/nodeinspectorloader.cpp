@@ -27,6 +27,6 @@ QString Self::getParent() const {
 }
 
 QString Self::getName() const {
-    return QString::fromStdString(NodeLoader::ClassName);
+    return QString::fromStdString(NodeLoader::Name);
 }
 } // namespace ee

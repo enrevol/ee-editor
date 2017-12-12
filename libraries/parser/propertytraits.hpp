@@ -4,10 +4,9 @@
 #include <string>
 
 #include "optional.hpp"
+#include "parserfwd.hpp"
 
 namespace ee {
-class PropertyHandler;
-
 namespace detail {
 template <class Value>
 class PropertyTraitsNonEnum {

@@ -106,23 +106,7 @@ const PropertyBool Self::Property::Visible(
     Helper::makeReader<bool>(std::mem_fn(&Target::isVisible)),
     Helper::makeWriter<bool>(std::mem_fn(&Target::setVisible)));
 
-const std::string Self::ClassName = "_Node";
-
-namespace {
-/*
-bool isInColorRange(int value) {
-    auto min = std::numeric_limits<GLubyte>::min();
-    auto max = std::numeric_limits<GLubyte>::max();
-    if (value < static_cast<int>(min)) {
-        return false;
-    }
-    if (value > static_cast<int>(max)) {
-        return false;
-    }
-    return true;
-}
-*/
-} // namespace
+const std::string Self::Name = "_Node";
 
 Self::NodeLoader() {
     addProperty(Property::AnchorPoint);
@@ -148,36 +132,13 @@ Self::NodeLoader() {
 
 Self::~NodeLoader() {}
 
-std::string Self::getClassName() const {
-    return ClassName;
+std::string Self::getName() const {
+    return Name;
 }
 
 cocos2d::Node* Self::createNode() const {
     return Target::create();
 }
-
-/*
-bool flag = true;
-flag &= writer.addProperty(Property::AnchorPoint, cocos2d::Vec2::ZERO);
-flag &= writer.addProperty(Property::CascadeColorEnabled, false);
-flag &= writer.addProperty(Property::CascadeOpacityEnabled, false);
-flag &= writer.addProperty(Property::Color, cocos2d::Color3B::WHITE);
-flag &= writer.addProperty(Property::ContentSize, cocos2d::Size::ZERO);
-flag &= writer.addProperty(Property::IgnoreAnchorPointForPosition, false);
-flag &= writer.addProperty(Property::LocalZOrder, 0);
-flag &= writer.addProperty(Property::Name, std::string());
-flag &= writer.addProperty(Property::Opacity, 255);
-flag &= writer.addProperty(Property::OpacityModifyRGB, false);
-flag &= writer.addProperty(Property::Position, cocos2d::Point::ZERO);
-flag &= writer.addProperty(Property::Rotation, 0.0f);
-flag &= writer.addProperty(Property::ScaleX, 1.0f);
-flag &= writer.addProperty(Property::ScaleY, 1.0f);
-flag &= writer.addProperty(Property::SkewX, 0.0f);
-flag &= writer.addProperty(Property::SkewY, 0.0f);
-flag &=
-    writer.addProperty(Property::Tag, -1); // cocos2d::Node::INVALID_TAG);
-flag &= writer.addProperty(Property::Visible, true);
-*/
 
 void Self::loadProperties(cocos2d::Node* node,
                           const PropertyHandler& handler) const {
@@ -208,8 +169,7 @@ const std::vector<const ee::Property*>& Self::getProperties() const {
 
 NodeLoaderPtr Self::clone() const {
     auto result = cloneRaw();
-    // result->propertyHandler_ = propertyHandler_;
-    // result->defaultProperties_ = defaultProperties_;
+    result->properties_ = properties_;
     return NodeLoaderPtr(result);
 }
 

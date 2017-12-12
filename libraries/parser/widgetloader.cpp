@@ -92,7 +92,7 @@ const PropertyBool Self::Property::UnifySizeEnabled(
     Helper::makeReader<bool>(std::mem_fn(&Target::isUnifySizeEnabled)),
     Helper::makeWriter<bool>(std::mem_fn(&Target::setUnifySizeEnabled)));
 
-const std::string Self::ClassName = "_Widget";
+const std::string Self::Name = "_Widget";
 
 Self::WidgetLoader() {
     addProperty(Property::Bright);
@@ -112,29 +112,8 @@ Self::WidgetLoader() {
 
 Self::~WidgetLoader() {}
 
-/*
-writer.setProperty(NodeLoader::Property::AnchorPoint,
-                   cocos2d::Vec2::ANCHOR_MIDDLE);
-
-bool flag = true;
-flag &= writer.addProperty(Property::Bright, true);
-flag &= writer.addProperty(Property::Enabled, true);
-flag &= writer.addProperty(Property::FlippedX, false);
-flag &= writer.addProperty(Property::FlippedY, false);
-flag &= writer.addProperty(Property::Highlighted, false);
-flag &= writer.addProperty(Property::IgnoreContentAdaptWithSize, true);
-flag &= writer.addProperty(Property::LayoutComponentEnabled, false);
-flag &= writer.addProperty(Property::PositionPercent, cocos2d::Vec2::ZERO);
-flag &= writer.addProperty(Property::PropagateTouchEvents, true);
-flag &= writer.addProperty(Property::SizePercent, cocos2d::Vec2::ZERO);
-flag &= writer.addProperty(Property::SwallowTouches, true);
-flag &= writer.addProperty(Property::TouchEnabled, false);
-flag &= writer.addProperty(Property::UnifySizeEnabled, false);
-Q_ASSERT(flag);
-*/
-
-std::string Self::getClassName() const {
-    return ClassName;
+std::string Self::getName() const {
+    return Name;
 }
 
 cocos2d::Node* Self::createNode() const {

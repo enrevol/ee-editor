@@ -28,10 +28,10 @@ bool Self::isRoot() const {
 }
 
 QString Self::getParent() const {
-    return QString::fromStdString(NodeLoader::ClassName);
+    return QString::fromStdString(NodeLoader::Name);
 }
 
 QString Self::getName() const {
-    return QString::fromStdString(LayerColorLoader::ClassName);
+    return QString::fromStdString(LayerColorLoader::Name);
 }
 } // namespace ee

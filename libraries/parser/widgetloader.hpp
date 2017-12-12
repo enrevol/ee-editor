@@ -5,12 +5,6 @@
 
 #include <ui/UIWidget.h>
 
-namespace cocos2d {
-namespace ui {
-class Widget;
-} // namespace ui
-} // namespace cocos2d
-
 namespace ee {
 class WidgetLoader : public NodeLoader {
 private:
@@ -37,17 +31,20 @@ public:
         static const PropertyBool UnifySizeEnabled;
     };
 
-    static const std::string ClassName;
+    static const std::string Name;
 
     WidgetLoader();
 
     virtual ~WidgetLoader() override;
 
-    virtual std::string getClassName() const override;
+    /// @see Super.
+    virtual std::string getName() const override;
 
+    /// @see Super.
     virtual cocos2d::Node* createNode() const override;
 
 protected:
+    /// @see Super.
     virtual Self* cloneRaw() const override;
 };
 } // namespace ee

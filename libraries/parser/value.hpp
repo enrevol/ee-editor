@@ -6,17 +6,9 @@
 #include <vector>
 
 #include "optional.hpp"
-
-namespace cocos2d {
-class Value;
-} // namespace cocos2d
+#include "parserfwd.hpp"
 
 namespace ee {
-class Value;
-
-using ValueList = std::vector<Value>;
-using ValueMap = std::map<std::string, Value>;
-
 class Value final {
 private:
     using Self = Value;

@@ -4,16 +4,11 @@
 #include <functional>
 
 #include "optional.hpp"
+#include "parserfwd.hpp"
 #include "value.hpp"
 
 namespace cocos2d {
-struct BlendFunc;
-struct Color3B;
 class Node;
-class Vec2;
-using Point = Vec2;
-class Rect;
-class Size;
 } // namespace cocos2d
 
 namespace ee {
@@ -84,25 +79,23 @@ private:
     Writer writer_;
 };
 
-template <
-    class Target, class Value,
-    class Reader = std::function<std::optional<Value>(const Target* node)>>
-typename GenericProperty<Value>::Reader
-makePropertyReader(const Reader& reader) {
-    return [reader](const cocos2d::Node* node_) {
+template <class Target, class Value>
+typename GenericProperty<Value>::Reader makePropertyReader(
+    const std::function<std::optional<Value>(const Target* node)>& reader) {
+    return [reader](const cocos2d::Node* node_) -> std::optional<Value> {
         auto node = dynamic_cast<const Target*>(node_);
         if (node == nullptr) {
             assert(false);
+            return std::nullopt;
         }
         return reader(node);
     };
 }
 
-template <class Target, class Value,
-          class Writer = std::function<bool(Target* node, const Value& value)>>
-typename GenericProperty<Value>::Writer
-makePropertyWriter(const Writer& writer) {
-    return [writer](cocos2d::Node* node_, const Value& value) {
+template <class Target, class Value>
+typename GenericProperty<Value>::Writer makePropertyWriter(
+    const std::function<void(Target* node, const Value& value)>& writer) {
+    return [writer](cocos2d::Node* node_, const Value& value) -> bool {
         auto node = dynamic_cast<Target*>(node_);
         if (node == nullptr) {
             assert(false);
@@ -131,20 +124,6 @@ struct IsProperty : std::false_type {};
 
 template <class T>
 struct IsProperty<GenericProperty<T>> : std::true_type {};
-
-using PropertyBool = GenericProperty<bool>;
-using PropertyInt = GenericProperty<int>;
-using PropertyFloat = GenericProperty<float>;
-using PropertyString = GenericProperty<std::string>;
-
-template <class Enum>
-using PropertyEnum = GenericProperty<Enum>;
-
-using PropertyBlend = GenericProperty<cocos2d::BlendFunc>;
-using PropertyColor3B = GenericProperty<cocos2d::Color3B>;
-using PropertyPoint = GenericProperty<cocos2d::Point>;
-using PropertyRect = GenericProperty<cocos2d::Rect>;
-using PropertySize = GenericProperty<cocos2d::Size>;
 } // namespace ee
 
 #include "propertyhandler.hpp"

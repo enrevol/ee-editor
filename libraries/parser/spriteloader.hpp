@@ -3,10 +3,6 @@
 
 #include "nodeloader.hpp"
 
-namespace cocos2d {
-class Sprite;
-} // namespace cocos2d
-
 namespace ee {
 class SpriteLoader : public NodeLoader {
 private:
@@ -24,18 +20,21 @@ public:
         // static const PropertyString SpriteFrame;
     };
 
-    static const std::string ClassName;
+    static const std::string Name;
 
     /// Constructs a sprite loader.
     SpriteLoader();
 
     virtual ~SpriteLoader() override;
 
-    virtual std::string getClassName() const override;
+    /// @see Super.
+    virtual std::string getName() const override;
 
+    /// @see Super.
     virtual cocos2d::Node* createNode() const override;
 
 protected:
+    /// @see Super.
     virtual Self* cloneRaw() const override;
 };
 } // namespace ee

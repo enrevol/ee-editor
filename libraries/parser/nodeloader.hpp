@@ -3,11 +3,6 @@
 
 #include "parserfwd.hpp"
 #include "property.hpp"
-#include "propertyhandler.hpp"
-
-namespace cocos2d {
-class Node;
-} // namespace cocos2d
 
 namespace ee {
 /// Parses cocos2d::Node.
@@ -38,14 +33,16 @@ public:
         static const PropertyBool Visible;
     };
 
-    static const std::string ClassName;
+    /// Unique name of this node loader.
+    static const std::string Name;
 
     /// Constructs a node loader.
     NodeLoader();
 
     virtual ~NodeLoader();
 
-    virtual std::string getClassName() const;
+    /// Gets the unique name of this node loader.
+    virtual std::string getName() const;
 
     /// Creates a default node.
     virtual cocos2d::Node* createNode() const;
@@ -54,20 +51,22 @@ public:
     void loadProperties(cocos2d::Node* node,
                         const PropertyHandler& handler) const;
 
+    /// Stores properties from the specified node to the specified loader.
     void storeProperties(const cocos2d::Node* node,
                          PropertyHandler& handler) const;
 
+    /// Clones this node loader.
     NodeLoaderPtr clone() const;
 
 protected:
     Self& addProperty(const ee::Property& property);
     const std::vector<const ee::Property*>& getProperties() const;
 
+    /// Raw clones this node.
     virtual Self* cloneRaw() const;
 
 private:
     std::vector<const ee::Property*> properties_;
-    // cocos2d::ValueMap defaultProperties_;
 };
 } // namespace ee
 

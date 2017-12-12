@@ -5,7 +5,7 @@
 #include <string>
 
 #include "nodeloaderlibrary.hpp"
-#include "value.hpp"
+#include "parserfwd.hpp"
 
 namespace cocos2d {
 class Node;
@@ -30,10 +30,7 @@ public:
     cocos2d::Node* readDictionary(const ValueMap& dict) const;
     cocos2d::Node* readNodeGraph(const NodeGraph& graph) const;
 
-    void addDefaultProperties(NodeGraph& graph) const;
-
     const NodeLoaderPtr& getNodeLoader(const NodeGraph& graph) const;
-
     const NodeLoaderLibrary& getNodeLoaderLibrary() const;
 
 protected:

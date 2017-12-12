@@ -4,19 +4,10 @@
 #include <functional>
 #include <string>
 
+#include "parserfwd.hpp"
 #include "propertytraits.hpp"
-#include "value.hpp"
-
-namespace cocos2d {
-class Node;
-} // namespace cocos2d
 
 namespace ee {
-class Property;
-
-template <class T>
-class GenericProperty;
-
 class PropertyHandler {
 private:
     using Self = PropertyHandler;

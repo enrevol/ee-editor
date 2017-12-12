@@ -5,14 +5,14 @@
 namespace ee {
 using Self = LayerColorLoader;
 
-const std::string Self::ClassName = "_LayerColor";
+const std::string Self::Name = "_LayerColor";
 
 Self::LayerColorLoader() {}
 
 Self::~LayerColorLoader() {}
 
-std::string Self::getClassName() const {
-    return ClassName;
+std::string Self::getName() const {
+    return Name;
 }
 
 cocos2d::Node* Self::createNode() const {

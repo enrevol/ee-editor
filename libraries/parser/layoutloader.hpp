@@ -5,12 +5,6 @@
 
 #include <ui/UILayout.h>
 
-namespace cocos2d {
-namespace ui {
-class Layout;
-} // namespace ui
-} // namespace cocos2d
-
 namespace ee {
 class LayoutLoader : public WidgetLoader {
 private:
@@ -39,17 +33,20 @@ public:
         static const PropertyEnum<cocos2d::ui::Layout::Type> LayoutType;
     };
 
-    static const std::string ClassName;
+    static const std::string Name;
 
     LayoutLoader();
 
     virtual ~LayoutLoader() override;
 
-    virtual std::string getClassName() const override;
+    /// @see Super.
+    virtual std::string getName() const override;
 
+    /// @see Super.
     virtual cocos2d::Node* createNode() const override;
 
 protected:
+    /// @see Super.
     virtual Self* cloneRaw() const override;
 };
 } // namespace ee

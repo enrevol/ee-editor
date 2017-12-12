@@ -64,7 +64,7 @@ const PropertyString Self::Property::SpriteFrame(
     }));
 */
 
-const std::string Self::ClassName = "_Sprite";
+const std::string Self::Name = "_Sprite";
 
 Self::SpriteLoader() {
     addProperty(Property::BlendFunc);
@@ -76,26 +76,9 @@ Self::SpriteLoader() {
 
 Self::~SpriteLoader() {}
 
-std::string Self::getClassName() const {
-    return ClassName;
+std::string Self::getName() const {
+    return Name;
 }
-
-/*
-writer.setProperty(NodeLoader::Property::AnchorPoint,
-                   cocos2d::Vec2::ANCHOR_MIDDLE);
-
-bool flag = true;
-flag &= writer.addProperty(Property::BlendFunc,
-                           cocos2d::BlendFunc::ALPHA_PREMULTIPLIED);
-flag &= writer.addProperty(Property::FlippedX,
-false); flag &=
-writer.addProperty(Property::FlippedY, false);
-flag &=
-writer.addProperty(Property::StretchEnabled,
-true); flag &=
-writer.addProperty(Property::Texture,
-std::string()); Q_ASSERT(flag);
-*/
 
 cocos2d::Node* Self::createNode() const {
     return Target::create();

@@ -31,6 +31,25 @@ constexpr auto skin = "";
 constexpr auto loop = false;
 } // namespace defaults
 
+namespace {
+void initializeNode(Target* node, const std::string& dataFile,
+                    const std::string& atlasFile, float scale) {
+    auto&& handler = NodeInfo::getPropertyHandler(node);
+    auto initialized = handler.getProperty<bool>(key::initialized)
+                           .value_or(defaults::initialized);
+    if (initialized) {
+        spSkeleton_dispose(node->getSkeleton());
+    }
+    auto&& manager = SkeletonAnimationManager::getInstance();
+    auto data = manager.getSkeletonData(dataFile, atlasFile, scale);
+    if (data == nullptr) {
+        data = manager.getNullSkeletonData();
+    }
+    node->initWithData(data);
+    handler.setProperty(key::initialized, true);
+}
+} // namespace
+
 const PropertyString Self::Property::DataFile(
     key::data_file, Helper::makeReader<std::string>([](const Target* node) {
         auto&& handler = NodeInfo::getPropertyHandler(node);
@@ -42,19 +61,7 @@ const PropertyString Self::Property::DataFile(
         auto animationScale = AnimationScale.read(node);
         auto atlasFile = AtlasFile.read(node);
         if (animationScale && atlasFile) {
-            auto initialized = handler.getProperty<bool>(key::initialized)
-                                   .value_or(defaults::initialized);
-            if (initialized) {
-                spSkeleton_dispose(node->getSkeleton());
-            }
-            auto&& manager = SkeletonAnimationManager::getInstance();
-            auto data = manager.getSkeletonData(value, atlasFile.value(),
-                                                animationScale.value());
-            if (data == nullptr) {
-                data = manager.getNullSkeletonData();
-            }
-            node->initWithData(data);
-            handler.setProperty(key::initialized, true);
+            initializeNode(node, value, *atlasFile, *animationScale);
         }
     }));
 
@@ -69,19 +76,7 @@ const PropertyString Self::Property::AtlasFile(
         auto animationScale = AnimationScale.read(node);
         auto dataFile = DataFile.read(node);
         if (animationScale && dataFile) {
-            auto initialized = handler.getProperty<bool>(key::initialized)
-                                   .value_or(defaults::initialized);
-            if (initialized) {
-                spSkeleton_dispose(node->getSkeleton());
-            }
-            auto&& manager = SkeletonAnimationManager::getInstance();
-            auto data = SkeletonAnimationManager::getInstance().getSkeletonData(
-                dataFile.value(), value, animationScale.value());
-            if (data == nullptr) {
-                data = manager.getNullSkeletonData();
-            }
-            node->initWithData(data);
-            handler.setProperty(key::initialized, true);
+            initializeNode(node, *dataFile, value, *animationScale);
         }
     }));
 
@@ -97,19 +92,7 @@ const PropertyFloat Self::Property::AnimationScale(
         auto atlasFile = AtlasFile.read(node);
         auto dataFile = DataFile.read(node);
         if (atlasFile && dataFile) {
-            auto initialized = handler.getProperty<bool>(key::initialized)
-                                   .value_or(defaults::initialized);
-            if (initialized) {
-                spSkeleton_dispose(node->getSkeleton());
-            }
-            auto&& manager = SkeletonAnimationManager::getInstance();
-            auto data = SkeletonAnimationManager::getInstance().getSkeletonData(
-                dataFile.value(), atlasFile.value(), value);
-            if (data == nullptr) {
-                data = manager.getNullSkeletonData();
-            }
-            node->initWithData(data);
-            handler.setProperty(key::initialized, true);
+            initializeNode(node, *dataFile, *atlasFile, value);
         }
     }));
 
@@ -170,7 +153,7 @@ const PropertyBool Self::Property::DebugSlots(
     Helper::makeReader<bool>(std::mem_fn(&Target::getDebugSlotsEnabled)),
     Helper::makeWriter<bool>(std::mem_fn(&Target::setDebugSlotsEnabled)));
 
-const std::string Self::ClassName = "_SkeletonAnimation";
+const std::string Self::Name = "_SkeletonAnimation";
 
 Self::SkeletonAnimationLoader() {
     addProperty(Property::DataFile);
@@ -187,8 +170,8 @@ Self::SkeletonAnimationLoader() {
 
 Self::~SkeletonAnimationLoader() {}
 
-std::string Self::getClassName() const {
-    return ClassName;
+std::string Self::getName() const {
+    return Name;
 }
 
 cocos2d::Node* Self::createNode() const {
