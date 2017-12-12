@@ -54,12 +54,18 @@ Self* Self::setPropertyDisplayName(const QString& name) {
 }
 
 Self* Self::addSelection(const QString& name) {
+    Q_ASSERT(not updating_);
+    updating_ = true;
     ui_->propertySelection->addItem(name);
+    updating_ = false;
     return this;
 }
 
 Self* Self::clearSelections() {
+    Q_ASSERT(not updating_);
+    updating_ = true;
     ui_->propertySelection->clear();
+    updating_ = false;
     return this;
 }
 

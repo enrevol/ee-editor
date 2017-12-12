@@ -17,25 +17,26 @@ using Self = SkeletonAnimationInspector;
 namespace {
 using Property = SkeletonAnimationLoader::Property;
 
+std::vector<std::string> readAnimations(const spine::SkeletonAnimation* node) {
+    std::vector<std::string> animations;
+    auto skeleton = static_cast<const spSkeleton*>(
+        const_cast<spine::SkeletonAnimation*>(node)->getSkeleton());
+    auto skeletonData = skeleton->data;
+    for (int i = 0; i < skeletonData->animationsCount; ++i) {
+        animations.emplace_back(skeletonData->animations[i]->name);
+    }
+    return animations;
+}
+
 auto createDataFileInspector() {
     QVector<Inspector*> inspectors;
 
-    auto readAnimations = [](const spine::SkeletonAnimation* node) {
-        std::vector<std::string> animations;
-        auto skeletonData =
-            const_cast<spine::SkeletonAnimation*>(node)->getSkeleton()->data;
-        for (int i = 0; i < skeletonData->animationsCount; ++i) {
-            animations.emplace_back(skeletonData->animations[i]->name);
-        }
-        return animations;
-    };
-
     auto animation =
         (new InspectorSelect())
-            ->setReader([readAnimations](const cocos2d::Node* node_) {
+            ->setReader([](const cocos2d::Node* node_) {
                 auto value = Property::Animation.read(node_);
                 if (not value) {
-                    return 0;
+                    return -1;
                 }
                 auto node =
                     dynamic_cast<const spine::SkeletonAnimation*>(node_);
@@ -43,11 +44,11 @@ auto createDataFileInspector() {
                 auto iter = std::find(animations.cbegin(), animations.cend(),
                                       value.value());
                 if (iter == animations.cend()) {
-                    return 0;
+                    return -1;
                 }
                 return static_cast<int>(iter - animations.cbegin());
             })
-            ->setWriter([readAnimations](cocos2d::Node* node_, int value) {
+            ->setWriter([](cocos2d::Node* node_, int value) {
                 auto node = dynamic_cast<spine::SkeletonAnimation*>(node_);
                 if (node == nullptr) {
                     return false;
@@ -63,8 +64,7 @@ auto createDataFileInspector() {
 
     auto dataFile =
         (new InspectorString())
-            ->setReader([readAnimations,
-                         animation](const cocos2d::Node* node_) {
+            ->setReader([animation](const cocos2d::Node* node_) {
                 auto value = Property::DataFile.read(node_);
                 if (value) {
                     auto node =
@@ -77,19 +77,19 @@ auto createDataFileInspector() {
                 }
                 return value;
             })
-            ->setWriter([readAnimations, animation](cocos2d::Node* node_,
-                                                    const std::string& value) {
-                if (not Property::DataFile.write(node_, value)) {
-                    return false;
-                }
-                auto node = dynamic_cast<spine::SkeletonAnimation*>(node_);
-                animation->clearSelections();
-                auto animations = readAnimations(node);
-                for (auto&& name : animations) {
-                    animation->addSelection(QString::fromStdString(name));
-                }
-                return true;
-            })
+            ->setWriter(
+                [animation](cocos2d::Node* node_, const std::string& value) {
+                    if (not Property::DataFile.write(node_, value)) {
+                        return false;
+                    }
+                    auto node = dynamic_cast<spine::SkeletonAnimation*>(node_);
+                    animation->clearSelections();
+                    auto animations = readAnimations(node);
+                    for (auto&& name : animations) {
+                        animation->addSelection(QString::fromStdString(name));
+                    }
+                    return true;
+                })
             ->setPropertyDisplayName("Data file");
 
     inspectors.append(dataFile);
