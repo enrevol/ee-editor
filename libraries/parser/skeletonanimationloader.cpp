@@ -34,6 +34,10 @@ constexpr auto loop = false;
 namespace {
 void initializeNode(Target* node, const std::string& dataFile,
                     const std::string& atlasFile, float scale) {
+    auto animation = Self::Property::Animation.read(node);
+    auto skin = Self::Property::Skin.read(node);
+    auto loop = Self::Property::Loop.read(node);
+    auto timeScale = Self::Property::TimeScale.read(node);
     auto&& handler = NodeInfo::getPropertyHandler(node);
     auto initialized = handler.getProperty<bool>(key::initialized)
                            .value_or(defaults::initialized);
@@ -46,6 +50,10 @@ void initializeNode(Target* node, const std::string& dataFile,
         data = manager.getNullSkeletonData();
     }
     node->initWithData(data);
+    Self::Property::Animation.write(node, animation.value());
+    Self::Property::Skin.write(node, skin.value());
+    Self::Property::Loop.write(node, loop.value());
+    Self::Property::TimeScale.write(node, timeScale.value());
     handler.setProperty(key::initialized, true);
 }
 } // namespace
